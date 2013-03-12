@@ -21,4 +21,23 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import fleet_special_equipment
+from openerp import pooler, tools
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+
+class fleet_special_equipment(osv.osv):
+    _name = 'fleet.special.equipment'
+    _columns = {
+        'name':fields.char('Name', size=64, required=False, readonly=False),
+        'serial':fields.char('Serial No.', size=64, required=False, readonly=False),
+        'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),
+    }
+
+fleet_special_equipment()
+
+class fleet_vehicle(osv.osv):
+    _inherit = 'fleet.vehicle'
+    _columns = {
+        'equipment_ids':fields.one2many('fleet.special.equipment', 'vehicle_id', 'Equipment', required=False),
+    }
+fleet_vehicle()
