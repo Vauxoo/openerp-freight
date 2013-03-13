@@ -35,25 +35,24 @@ class hr_employee(osv.osv):
     }
 
     def _get_expired_licenses(self, cr, uid, ids, context=None):
-        message = ""
+        message_expired = "<p><b>Licenses expired this week : </b></p>"
+        message_unlicensed = "<p><b>Users without driver license</b></p>"
         now = datetime.datetime.now()
         employee_ids = self.search(cr, uid, [])
         for employee in self.browse(cr,uid, employee_ids):
             if employee.date:
                 date_dt = datetime.datetime.strptime(employee.date, "%Y-%m-%d")
                 if now > date_dt:
-                    message += " <li> <b>No.</b> "+employee.driver_license+" <b>Employee:</b> "+employee.name+" <b>on</b> "+employee.date+"</li> " 
-        message += "<p>Users whitout driver license</p>"
-        for employee in self.browse(cr,uid, employee_ids):
+                    message_expired += " <li> <b>No.</b> "+employee.driver_license+" <b>Employee:</b> "+employee.name+" <b>on</b> "+employee.date+"</li> " 
             if not employee.driver_license:
-                message += "<li> <b>Employee:</b> "+employee.name+"</li>"
+                message_unlicensed += "<li> <b>Employee:</b> "+employee.name+"</li>"
                     
-        return message
+        return message_expired + message_unlicensed
 
     def send_expiration_message(self, cr, uid,ids, context=None):
         (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
-        exp_msg = self._get_expired_licenses(cr, uid, ids)
-        self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body='Licenses expired this week : '+exp_msg, subtype='mail.mt_comment', context=context)
+        msg = self._get_expired_licenses(cr, uid, ids)
+        self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
         print self._get_expired_licenses(cr, uid, ids)
 
         return 
