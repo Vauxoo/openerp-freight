@@ -1,0 +1,12 @@
+<openerp>
+    <data noupdate="1">
+
+        <record id="mail_group_1" model="mail.group">
+          <field name="name">Fleet Management</field>
+          <field name="description">Here you will see all the messages asociated to fleet management</field>
+          <field name="group_ids" eval="[(4, ref('fleet.group_fleet_user'))]" />
+          <field name="public">private</field>
+      </record>
+        
+    </data>
+</openerp>
