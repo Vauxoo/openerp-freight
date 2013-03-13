@@ -43,6 +43,11 @@ class hr_employee(osv.osv):
                 date_dt = datetime.datetime.strptime(employee.date, "%Y-%m-%d")
                 if now > date_dt:
                     message += " <li> <b>No.</b> "+employee.driver_license+" <b>Employee:</b> "+employee.name+" <b>on</b> "+employee.date+"</li> " 
+        message += "<p>Users whitout driver license</p>"
+        for employee in self.browse(cr,uid, employee_ids):
+            if not employee.driver_license:
+                message += "<li> <b>Employee:</b> "+employee.name+"</li>"
+                    
         return message
 
     def send_expiration_message(self, cr, uid,ids, context=None):

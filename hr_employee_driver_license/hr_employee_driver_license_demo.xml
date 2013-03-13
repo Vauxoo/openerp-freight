@@ -7,6 +7,17 @@
           <field name="group_ids" eval="[(4, ref('fleet.group_fleet_user'))]" />
           <field name="public">private</field>
       </record>
-        
+        <record forcecreate="True" id="ir_cron_expired_licenses_action" model="ir.cron">
+            <field name="name">Expired Driver Licenses</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'hr.employee'" name="model"/>
+            <field eval="'send_expiration_message'" name="function"/>
+            <field eval="'()'" name="args"/>
+        </record>        
+
     </data>
 </openerp>
