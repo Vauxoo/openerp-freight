@@ -24,14 +24,31 @@
 from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
+import time
 
 class fleet_service_type(osv.osv):
-    """
-    fleet_service_type
-    """
     
     _inherit = 'fleet.service.type'
     _columns = {
         'category': fields.selection([('contract', 'Contract'), ('service', 'Service'), ('both', 'Both'),('paperwork','Paperwork')], 'Category', required=True, help='Choose wheter the service refer to contracts, vehicle services or both'),
     }
 fleet_service_type()
+
+class fleet_service_paperwork_line(osv.osv):  
+    _name = 'fleet.service.paperwork.line'
+    _columns = {
+        'vehicle_paperwork_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),     
+        'service_id':fields.many2one('fleet.service.type', 'Service', required=False),   
+        'date': fields.date('Expiration Date'),
+        'status': fields.selection([('pending', 'Pending'), ('valid', 'Valid'), ('expired', 'Expired')], 'Status', required=True, help='The state of the paperwork'),
+    }
+
+fleet_service_paperwork_line()
+
+class fleet_vehicle(osv.osv):
+    
+    _inherit = 'fleet.vehicle'
+    _columns = {
+        'service_type_paperwork_ids':fields.one2many('fleet.service.paperwork.line', 'vehicle_paperwork_id', 'Paperworks', required=False),
+    }
+fleet_vehicle()
