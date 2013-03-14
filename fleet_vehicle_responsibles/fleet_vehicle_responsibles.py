@@ -25,4 +25,13 @@ from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
-
+class fleet_vehicle(osv.osv):
+    """
+    fleet_vehicle
+    """
+    
+    _inherit = 'fleet.vehicle'
+    _columns = {
+        'driver_ids':fields.many2many('hr.employee', 'vehicle_drivers_rel', 'vehicle_id', 'employee_id', 'Driver'),
+    }
+fleet_vehicle()
