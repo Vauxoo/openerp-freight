@@ -25,6 +25,7 @@ from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import time
+import datetime
 
 class fleet_service_type(osv.osv):
     
@@ -42,6 +43,27 @@ class fleet_service_paperwork_line(osv.osv):
         'date': fields.date('Expiration Date'),
         'status': fields.selection([('pending', 'Pending'), ('valid', 'Valid'), ('expired', 'Expired')], 'Status', required=True, help='The state of the paperwork'),
     }
+
+    def _get_expired_paperworks(self, cr, uid, ids, context=None):
+        vehicle_obj = self.pool.get('fleet.vehicle')
+        service_obj = self.pool.get('fleet.service.type')
+        message_expired = "<p><b>Paperworks expired this week : </b></p>"
+        now = datetime.datetime.now()
+        paperwork_ids = self.search(cr, uid, [])
+        for paperwork in self.browse(cr,uid, paperwork_ids):
+            
+            if paperwork.date:
+                date_dt = datetime.datetime.strptime(paperwork.date, "%Y-%m-%d")
+                if now > date_dt and paperwork.status == 'valid':
+                    message_expired += " <li><b>Document: </b> "+service_obj.browse(cr,uid,[paperwork.service_id.id])[0].name+" <b>Vehicle:</b> "+vehicle_obj.browse(cr, uid,[paperwork.vehicle_paperwork_id.id])[0].name+" <b>on</b> "+paperwork.date+"</li> " 
+                    
+        return message_expired
+
+    def send_expiration_message(self, cr, uid,ids, context=None):
+        (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
+        msg = self._get_expired_paperworks(cr, uid, ids)
+        self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
+        return 
 
 fleet_service_paperwork_line()
 

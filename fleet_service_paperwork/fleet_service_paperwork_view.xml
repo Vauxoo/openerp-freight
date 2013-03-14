@@ -13,6 +13,7 @@
                                     <field name="service_id" domain="[('category','=','paperwork')]"/>
                                     <field name="date"/>
                                     <field name="status"/>
+                                    <button name="send_expiration_message" string="Message" type="object" />
                                 </tree>
                             </field>
                         </page>

@@ -36,6 +36,7 @@
     "init_xml" : [
     ],
     "demo_xml" : [
+        "fleet_service_paperwork_data.xml",
     ],
     "update_xml" : [
         "fleet_service_paperwork_view.xml",
