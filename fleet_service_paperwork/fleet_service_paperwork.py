@@ -40,6 +40,7 @@ class fleet_service_paperwork_line(osv.osv):
     _columns = {
         'vehicle_paperwork_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),     
         'service_id':fields.many2one('fleet.service.type', 'Service', required=False),   
+        'partner_id':fields.many2one('res.partner', 'Supplier', required=False),
         'date': fields.date('Expiration Date'),
         'status': fields.selection([('pending', 'Pending'), ('valid', 'Valid'), ('expired', 'Expired')], 'Status', required=True, help='The state of the paperwork'),
     }

@@ -11,6 +11,7 @@
                             <field name="service_type_paperwork_ids" >
                                 <tree editable="bottom">
                                     <field name="service_id" domain="[('category','=','paperwork')]"/>
+                                    <field name="partner_id"/>
                                     <field name="date"/>
                                     <field name="status"/>
                                     <button name="send_expiration_message" string="Message" type="object" />
