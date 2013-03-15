@@ -35,10 +35,11 @@
     "category" : "Human Resources",
     "init_xml" : [
     ],
-    "demo_xml" : ["hr_employee_driver_license_demo.xml"
+    "demo_xml" : [
     ],
     "update_xml" : [
         "hr_employee_driver_license_view.xml",
+        "hr_employee_driver_license_demo.xml",
     ],
     "active": False,
     "installable": True,

@@ -35,9 +35,11 @@
     "init_xml" : [
     ],
     "demo_xml" : [
+
     ],
     "update_xml" : [
         "fleet_expiring_parts_view.xml",
+        "fleet_expiring_parts_data.xml",
     ],
     "active": False,
     "installable": True,
