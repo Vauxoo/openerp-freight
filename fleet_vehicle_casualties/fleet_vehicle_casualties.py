@@ -42,30 +42,10 @@ class fleet_casualty_type(osv.osv):
     }
 fleet_casualty_type()
 
-class fleet_vehicle_casualties(osv.osv):
-    _name = 'crm.clai'
-    _columns = {
-        'name':fields.char('Casualty', size=64, required=False, readonly=False),
-        'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),   
-        'date': fields.date('Date'),
-        'state':fields.selection([
-            ('closed','Closed'),    
-            ('executed','Done'),
-            ('inprogress','In Progress'),
-            ('reprogrammed','Reprogrammed'),
-            
-        ],'State', select=True, readonly=False),
-        'type':fields.selection([
-            ('accident','Accident'),
-            ('incident','Incident'),
-            
-        ],'Type', select=True, readonly=False),
-    }
-fleet_vehicle_casualties()
 
 class fleet_vehicle(osv.osv):    
     _inherit = 'fleet.vehicle'
     _columns = {
-        'casualties_ids':fields.one2many('fleet.vehicle.casualties', 'vehicle_id', 'Casualties', required=False),
+        'casualties_ids':fields.one2many('crm.claim', 'vehicle_id', 'Casualties', required=False),
     }
 fleet_vehicle()

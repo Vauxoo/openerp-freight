@@ -24,7 +24,7 @@
 {
     "name" : "Fleet Vehicle Casualties",
     "version" : "0.1",
-    "depends" : ["fleet","crm_claim"],
+    "depends" : ["fleet_special_equipment","crm_claim"],
     "author" : "Vauxoo",
     "description" : """
         This module adds the following features: Add vehicle casualties as car crashes and several kind of accidents.
