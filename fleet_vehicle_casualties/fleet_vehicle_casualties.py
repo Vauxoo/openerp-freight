@@ -25,18 +25,22 @@ from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
+
 class crm_claim(osv.osv):
     
     _inherit = 'crm.claim'
     _columns = {
         'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),   
-        'type':fields.selection([
-            ('accident','Accident'),
-            ('incident','Incident'),
-            
-        ],'Type', select=True, readonly=False),
+        'type_id':fields.many2one('fleet.casualty.type', 'Type', required=False),
     }
 crm_claim()
+
+class fleet_casualty_type(osv.osv):
+    _name = 'fleet.casualty.type'
+    _columns = {
+        'name':fields.char('Type', size=64, required=False, readonly=False),
+    }
+fleet_casualty_type()
 
 class fleet_vehicle_casualties(osv.osv):
     _name = 'crm.clai'
