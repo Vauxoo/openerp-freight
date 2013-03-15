@@ -24,5 +24,33 @@
 from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
+import time
+import datetime
+
+class fleet_service_expiring_line(osv.osv):  
+    _name = 'fleet.service.expiring.line'
+    _columns = {
+        'vehicle_expiring_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),     
+        'product_id':fields.many2one('product.product', 'Spare Part', required=False),   
+        'based':fields.selection([
+            ('km','Kilometers'),
+            ('date','Date'),            
+        ],'Based on', select=True, readonly=False), 
+        'date': fields.date('Expiration Date'),
+        'kilometers': fields.integer('Kilometers'),
+    }
+    _defaults = {
+        'based':'date',
+    }
 
 
+
+fleet_service_expiring_line()
+
+class fleet_vehicle(osv.osv):
+    
+    _inherit = 'fleet.vehicle'
+    _columns = {
+        'service_expiring_ids':fields.one2many('fleet.service.expiring.line', 'vehicle_expiring_id', 'Expiring Spare Parts', required=False),
+    }
+fleet_vehicle()
