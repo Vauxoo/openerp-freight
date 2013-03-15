@@ -26,14 +26,31 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
 
-class crm_claim(osv.osv):
+class fleet_vehicle_casualty(osv.osv):
     
-    _inherit = 'crm.claim'
+    _name = 'fleet.vehicle.casualty'
+    _description = 'Fleet Vehicle Claim'
+    _inherits = {'crm.claim': "crm_casualty_id",}
+    _inherit = ['mail.thread']
     _columns = {
         'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),   
         'type_id':fields.many2one('fleet.casualty.type', 'Type', required=False),
+        'driver_id':fields.many2one('hr.employee', 'Driver', required=True, help="Here goes the name of the person guilty/causant of the complain"),
     }
-crm_claim()
+
+    def onchange_partner_id(self, cr, uid, ids, part, email=False):
+        """This function returns value of partner address based on partner
+           :param part: Partner's id
+           :param email: ignored
+        """
+        if not part:
+            return {'value': {'email_from': False,
+                              'partner_phone': False
+                            }
+                   }
+        address = self.pool.get('res.partner').browse(cr, uid, part)
+        return {'value': {'email_from': address.email, 'partner_phone': address.phone}}
+fleet_vehicle_casualty()
 
 class fleet_casualty_type(osv.osv):
     _name = 'fleet.casualty.type'
@@ -46,6 +63,6 @@ fleet_casualty_type()
 class fleet_vehicle(osv.osv):    
     _inherit = 'fleet.vehicle'
     _columns = {
-        'casualties_ids':fields.one2many('crm.claim', 'vehicle_id', 'Casualties', required=False),
+        'casualties_ids':fields.one2many('fleet.vehicle.casualty', 'vehicle_id', 'Casualties', required=False),
     }
 fleet_vehicle()
