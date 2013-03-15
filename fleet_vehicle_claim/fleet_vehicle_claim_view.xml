@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="crm_claim.crm_case_claims_form_view"/>
             <field name="arch" type="xml">
                 <field name="date" position="after">
-                    <field name="vehicle_id" on_change="set_is_vehicle(vehicle_id)"/>
+                    <field name="vehicle_claim_id" on_change="set_is_vehicle(vehicle_id)"/>
                     <field name="is_vehicle" invisible="True"/>
                 </field>
                 <field name="section_id" position="replace">
@@ -26,7 +26,7 @@
 
                 <tree string="Vehicle Claims" colors="blue:state=='pending' and not(date_deadline and (date_deadline &lt; current_date));gray:state in ('close', 'cancel');red:date_deadline and (date_deadline &lt; current_date)">
                     <field name="name"/>
-                    <field name="vehicle_id"/>
+                    <field name="vehicle_claim_id"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
                     <field name="date"/>
@@ -41,6 +41,19 @@
 
             </field>
         </record>
+
+            <record model="ir.ui.view" id="view_fleet_vehicle_claims_form_inherit">
+            <field name="name">fleet.vehicle.claims.form.inherit</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet_special_equipment.view_fleet_vehicle_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@string='Equipment']" position="after">
+                        <page string="Vehicle Claims">
+                            <field name="claim_ids"/>
+                        </page>
+                </xpath>
+            </field>
+        </record> 
 
         <record model="ir.actions.act_window" id="crm_case_categ_claim0">
             <field name="name">Claims</field>

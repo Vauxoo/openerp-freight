@@ -24,7 +24,7 @@
 {
     "name" : "Fleet Vehicle Claim",
     "version" : "0.1",
-    "depends" : ["crm_claim","fleet",],
+    "depends" : ["crm_claim","fleet_special_equipment",],
     "author" : "Vauxoo",
     "description" : """
     This module adds the capability to create complains about vehicles, drivers as:

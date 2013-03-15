@@ -28,7 +28,7 @@ from openerp.tools.translate import _
 class crm_claim(osv.osv):
     _inherit = 'crm.claim'
     _columns = {
-        'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),
+        'vehicle_claim_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),
         'is_vehicle':fields.boolean('Vehicle Claim', required=False, help="This field adds the capability to filter claims by type"),
         'driver_id':fields.many2one('hr.employee', 'Driver', required=True, help="Here goes the name of the person guilty/causant of the complain"),
     }
@@ -38,3 +38,14 @@ class crm_claim(osv.osv):
         v['is_vehicle']= True if vehicle_id else False
         return {'value':v}
 crm_claim()
+
+class fleet_vehicle(osv.osv):
+    """
+    fleet_vehicle
+    """
+    
+    _inherit = 'fleet.vehicle'
+    _columns = {
+        'claim_ids':fields.one2many('crm.claim', 'vehicle_claim_id', 'Vehicle Claims', required=False),
+    }
+fleet_vehicle()
