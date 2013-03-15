@@ -25,20 +25,43 @@ from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
-class fleet_vehicle_casualties(osv.osv):
-    """
-    OpenERP Model : fleet_vehicle_casualties
-    """
+class crm_claim(osv.osv):
     
-    _name = 'fleet.vehicle.casualties'
+    _inherit = 'crm.claim'
+    _columns = {
+        'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),   
+        'type':fields.selection([
+            ('accident','Accident'),
+            ('incident','Incident'),
+            
+        ],'Type', select=True, readonly=False),
+    }
+crm_claim()
+
+class fleet_vehicle_casualties(osv.osv):
+    _name = 'crm.clai'
     _columns = {
         'name':fields.char('Casualty', size=64, required=False, readonly=False),
+        'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),   
+        'date': fields.date('Date'),
+        'state':fields.selection([
+            ('closed','Closed'),    
+            ('executed','Done'),
+            ('inprogress','In Progress'),
+            ('reprogrammed','Reprogrammed'),
+            
+        ],'State', select=True, readonly=False),
+        'type':fields.selection([
+            ('accident','Accident'),
+            ('incident','Incident'),
+            
+        ],'Type', select=True, readonly=False),
     }
 fleet_vehicle_casualties()
 
 class fleet_vehicle(osv.osv):    
     _inherit = 'fleet.vehicle'
     _columns = {
-        'casualties_ids':fields.one2many('fleet.vehicle.casualties', 'casualty_id', 'Casualties', required=False),
+        'casualties_ids':fields.one2many('fleet.vehicle.casualties', 'vehicle_id', 'Casualties', required=False),
     }
 fleet_vehicle()
