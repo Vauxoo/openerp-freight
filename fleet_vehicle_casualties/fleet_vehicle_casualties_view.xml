@@ -1,21 +1,24 @@
 <openerp>
     <data>
         
-        <record model="ir.ui.view" id="view_crm_casualty_vehicle_form_inherit">
-            <field name="name">crm.casualties.vehicle.form.inherit</field>
-            <field name="model">crm.claim</field>
-            <field name="inherit_id" ref="crm_claim.crm_case_claims_form_view"/>
-            <field name="arch" type="xml">
-                <field name="date" position="after">
-                    <field name="type_id"/>
-                </field>
-            </field>
-        </record>
+<!--        <record model="ir.ui.view" id="view_crm_casualty_vehicle_form_inherit">-->
+<!--            <field name="name">crm.casualties.vehicle.form.inherit</field>-->
+<!--            <field name="model">crm.claim</field>-->
+<!--            <field name="inherit_id" ref="crm_claim.crm_case_claims_form_view"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <field name="vehicle_claim_id" position="replace">-->
+<!--                    <field name="vehicle_id"/>-->
+<!--                </field>-->
+<!--                <field name="date" position="after">-->
+<!--                    <field name="type_id"/>-->
+<!--                </field>-->
+<!--            </field>-->
+<!--        </record>-->
+
         <record model="ir.ui.view" id="view_vehicle_casualties_tree">
             <field name="name">crm.claim.vehicle.tree</field>
             <field name="model">crm.claim</field>
             <field name="arch" type="xml">
-
                 <tree string="Vehicle Casualties" colors="blue:state=='pending' and not(date_deadline and (date_deadline &lt; current_date));gray:state in ('close', 'cancel');red:date_deadline and (date_deadline &lt; current_date)">
                     <field name="name"/>
                     <field name="vehicle_id"/>

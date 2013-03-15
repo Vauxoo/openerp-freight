@@ -25,19 +25,35 @@ from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
-class crm_claim(osv.osv):
-    _inherit = 'crm.claim'
+class fleet_vehicle_claim(osv.osv):
+    _name = 'fleet.vehicle.claim'
+    _description = 'Fleet Vehicle Claim'
+    _inherits = {'crm.claim': "crm_claim_id",}
+    _inherit = ['mail.thread']
     _columns = {
         'vehicle_claim_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),
         'is_vehicle':fields.boolean('Vehicle Claim', required=False, help="This field adds the capability to filter claims by type"),
         'driver_id':fields.many2one('hr.employee', 'Driver', required=True, help="Here goes the name of the person guilty/causant of the complain"),
     }
 
+    def onchange_partner_id(self, cr, uid, ids, part, email=False):
+        """This function returns value of partner address based on partner
+           :param part: Partner's id
+           :param email: ignored
+        """
+        if not part:
+            return {'value': {'email_from': False,
+                              'partner_phone': False
+                            }
+                   }
+        address = self.pool.get('res.partner').browse(cr, uid, part)
+        return {'value': {'email_from': address.email, 'partner_phone': address.phone}}
+
     def set_is_vehicle(self,cr,uid,ids,vehicle_id):
         v={}
         v['is_vehicle']= True if vehicle_id else False
         return {'value':v}
-crm_claim()
+fleet_vehicle_claim()
 
 class fleet_vehicle(osv.osv):
     """
@@ -46,6 +62,6 @@ class fleet_vehicle(osv.osv):
     
     _inherit = 'fleet.vehicle'
     _columns = {
-        'claim_ids':fields.one2many('crm.claim', 'vehicle_claim_id', 'Vehicle Claims', required=False),
+        'claim_ids':fields.one2many('fleet.vehicle.claim', 'vehicle_claim_id', 'Vehicle Claims', required=False),
     }
 fleet_vehicle()
