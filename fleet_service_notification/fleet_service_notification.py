@@ -25,4 +25,29 @@ from openerp import pooler, tools
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
+class fleet_vehicle_log_services(osv.osv):    
+    _inherit = 'fleet.vehicle.log.services'
 
+    def _get_services_created(self, cr, uid, ids, context=None):
+        message_service = "<p><b>A Failure/Service has been reported : </b></p>"
+        service = self.browse(cr, uid, ids)[0]
+        message_service += "<li> <b>Vehicle</b> "+service.vehicle_id.name+" <b>Service:</b> "+service.cost_subtype_id.name+" <b>Description</b> "+service.notes+"</li> " 
+                    
+        return message_service
+
+    def send_service_message(self, cr, uid,ids, context=None):
+        (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
+        msg = self._get_services_created(cr, uid, ids)
+        self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
+        return
+
+    def create(self, cr, uid, vals, context={}):
+        res_id = super(fleet_vehicle_log_services, self).create(cr, uid, vals, context)
+        print res_id
+        self.send_service_message(cr,uid,[res_id])
+        return res_id
+
+ 
+
+    
+fleet_vehicle_log_services()

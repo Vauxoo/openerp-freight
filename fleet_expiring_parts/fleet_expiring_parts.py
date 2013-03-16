@@ -65,9 +65,6 @@ class fleet_service_expiring_line(osv.osv):
                 max_id = odo_obj.search(cr,uid,[('vehicle_id','=',spart.vehicle_expiring_id.id)], limit=1, order='value desc')                
                 actual_odo = odo_obj.browse(cr, uid,max_id)[0].value
                 odo_diff = actual_odo-spart.last_odometer
-                print actual_odo
-                print spart.last_odometer
-                print odo_diff
                 if odo_diff > spart.kilometers:
                     message_expired += " <li><b>Part: </b> "+product_obj.browse(cr,uid,[spart.product_id.id])[0].name+" <b>Vehicle:</b> "+vehicle_obj.browse(cr, uid,[spart.vehicle_expiring_id.id])[0].name+" <b>over</b> "+str(odo_diff)+"<b> Kms after recommended</b></li> "
         return message_expired

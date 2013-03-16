@@ -24,7 +24,7 @@
 {
     "name" : "Fleet Service Notification",
     "version" : "0.1",
-    "depends" : ["hr_employee_driver_license",],
+    "depends" : ["hr_employee_driver_license","fleet",],
     "author" : "Vauxoo",
     "description" : """
     What do this module:
