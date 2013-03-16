@@ -31,7 +31,7 @@ class fleet_vehicle_log_services(osv.osv):
     def _get_services_created(self, cr, uid, ids, context=None):
         message_service = "<p><b>A Failure/Service has been reported : </b></p>"
         service = self.browse(cr, uid, ids)[0]
-        message_service += "<li> <b>Vehicle</b> "+service.vehicle_id.name+" <b>Service:</b> "+service.cost_subtype_id.name+" <b>Description</b> "+service.notes+"</li> " 
+        message_service += "<li> <b>Vehicle</b> "+service.vehicle_id.name+" <b>Service:</b> <a href='#id="+str(service.id)+"&view_type=form&model=fleet.vehicle.log.services'>"+service.cost_subtype_id.name+"</a> <b>Description</b> "+service.notes+"</li> " 
                     
         return message_service
 
