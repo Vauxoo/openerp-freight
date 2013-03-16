@@ -17,7 +17,6 @@
                                     <field name="kilometers" attrs="{'readonly':[('based','=','date')]}"/>
                                     <field name="last_odometer" attrs="{'readonly':[('based','=','date')]}"/>
                                     <field name="state"/>
-                                    <button name="send_expiration_message" string="Expiring" type="object" />
                                 </tree>
                             </field>
                         </page>
