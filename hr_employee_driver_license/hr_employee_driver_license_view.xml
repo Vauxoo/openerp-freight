@@ -11,7 +11,6 @@
                     <group string="Driver Information">
                         <field name="driver_license"/>
                         <field name="date"/>
-                        <button name="send_expiration_message" string="Message" type="object" />
                     </group>
                 </field>
             </field>

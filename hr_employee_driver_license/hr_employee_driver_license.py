@@ -43,9 +43,9 @@ class hr_employee(osv.osv):
             if employee.date:
                 date_dt = datetime.datetime.strptime(employee.date, "%Y-%m-%d")
                 if now > date_dt:
-                    message_expired += " <li> <b>No.</b> "+employee.driver_license+" <b>Employee:</b> "+employee.name+" <b>on</b> "+employee.date+"</li> " 
+                    message_expired += " <li> <b>No.</b> "+employee.driver_license+" <b>Employee:</b> <a href='#id="+str(employee.id)+"&view_type=form&model=hr.employee'>"+employee.name+"</a> <b>on</b> "+employee.date+"</li> " 
             if not employee.driver_license:
-                message_unlicensed += "<li> <b>Employee:</b> "+employee.name+"</li>"
+                message_unlicensed += "<li> <b>Employee:</b> <a href='#id="+str(employee.id)+"&view_type=form&model=hr.employee'>"+employee.name+"</a></li>"
                     
         return message_expired + message_unlicensed
 
