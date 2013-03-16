@@ -56,7 +56,7 @@ class fleet_service_paperwork_line(osv.osv):
             if paperwork.date:
                 date_dt = datetime.datetime.strptime(paperwork.date, "%Y-%m-%d")
                 if now > date_dt and paperwork.status == 'valid':
-                    message_expired += " <li><b>Document: </b> "+service_obj.browse(cr,uid,[paperwork.service_id.id])[0].name+" <b>Vehicle:</b> "+vehicle_obj.browse(cr, uid,[paperwork.vehicle_paperwork_id.id])[0].name+" <b>on</b> "+paperwork.date+"</li> " 
+                    message_expired += " <li><b>Document: </b> "+service_obj.browse(cr,uid,[paperwork.service_id.id])[0].name+" <b>Vehicle:</b> <a href='#id="+str(paperwork.vehicle_paperwork_id.id)+"&view_type=form&model=fleet.vehicle'>"+vehicle_obj.browse(cr, uid,[paperwork.vehicle_paperwork_id.id])[0].name+" <b>on</b> "+paperwork.date+"</li> " 
                     
         return message_expired
 
