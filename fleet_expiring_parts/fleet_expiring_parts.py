@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
+#    OpenERP, Open Source Management Solution
 #    Copyright (C)2010-  OpenERP SA (<http://openerp.com>). All Rights Reserved
 #    oszckar@gmail.com
 #
@@ -27,26 +27,27 @@ from openerp.tools.translate import _
 import time
 import datetime
 
-class fleet_service_expiring_line(osv.osv):  
+
+class fleet_service_expiring_line(osv.osv):
     _name = 'fleet.service.expiring.line'
     _columns = {
-        'vehicle_expiring_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),     
-        'product_id':fields.many2one('product.product', 'Spare Part', required=False),   
-        'based':fields.selection([
-            ('km','Kilometers'),
-            ('date','Date'),            
-        ],'Based on', select=True, readonly=False), 
+        'vehicle_expiring_id': fields.many2one('fleet.vehicle', 'Vehicle', required=False),
+        'product_id': fields.many2one('product.product', 'Spare Part', required=False),
+        'based': fields.selection([
+            ('km', 'Kilometers'),
+            ('date', 'Date'),
+        ], 'Based on', select=True, readonly=False),
         'date': fields.date('Expiration Date'),
         'kilometers': fields.integer('Kilometers'),
-        'last_odometer': fields.integer('Odometer on switch'),   
-        'state':fields.selection([
-            ('using','Using'),
-            ('dumped','Dumped'),
-            
-        ],'State', select=True, readonly=False),
+        'last_odometer': fields.integer('Odometer on switch'),
+        'state': fields.selection([
+            ('using', 'Using'),
+            ('dumped', 'Dumped'),
+
+        ], 'State', select=True, readonly=False),
     }
     _defaults = {
-        'based':'date',
+        'based': 'date',
     }
 
     def _get_expired_parts(self, cr, uid, ids, context=None):
@@ -56,31 +57,37 @@ class fleet_service_expiring_line(osv.osv):
         message_expired = "<p><b>Spare parts expired this week : </b></p>"
         now = datetime.datetime.now()
         spare_parts_ids = self.search(cr, uid, [])
-        for spart in self.browse(cr,uid, spare_parts_ids):
+        for spart in self.browse(cr, uid, spare_parts_ids):
             if spart.based == 'date' and spart.date and spart.state == 'using':
                 date_dt = datetime.datetime.strptime(spart.date, "%Y-%m-%d")
                 if now > date_dt:
-                    message_expired += " <li><b>Part: </b> "+product_obj.browse(cr,uid,[spart.product_id.id])[0].name+" <b>Vehicle:</b> "+vehicle_obj.browse(cr, uid,[spart.vehicle_expiring_id.id])[0].name+" <b>on</b> "+spart.date+"</li> " 
+                    message_expired += " <li><b>Part: </b> " + product_obj.browse(cr, uid, [spart.product_id.id])[
+                        0].name + " <b>Vehicle:</b> " + vehicle_obj.browse(cr, uid, [spart.vehicle_expiring_id.id])[0].name + " <b>on</b> " + spart.date + "</li> "
             if spart.based == 'km' and spart.kilometers and spart.state == 'using':
-                max_id = odo_obj.search(cr,uid,[('vehicle_id','=',spart.vehicle_expiring_id.id)], limit=1, order='value desc')                
-                actual_odo = odo_obj.browse(cr, uid,max_id)[0].value
-                odo_diff = actual_odo-spart.last_odometer
+                max_id = odo_obj.search(cr, uid, [(
+                    'vehicle_id', '=', spart.vehicle_expiring_id.id)], limit=1, order='value desc')
+                actual_odo = odo_obj.browse(cr, uid, max_id)[0].value
+                odo_diff = actual_odo - spart.last_odometer
                 if odo_diff > spart.kilometers:
-                    message_expired += " <li><b>Part: </b> "+product_obj.browse(cr,uid,[spart.product_id.id])[0].name+" <b>Vehicle:</b> "+vehicle_obj.browse(cr, uid,[spart.vehicle_expiring_id.id])[0].name+" <b>over</b> "+str(odo_diff)+"<b> Kms after recommended</b></li> "
+                    message_expired += " <li><b>Part: </b> " + product_obj.browse(cr, uid, [spart.product_id.id])[0].name + " <b>Vehicle:</b> " + vehicle_obj.browse(
+                        cr, uid, [spart.vehicle_expiring_id.id])[0].name + " <b>over</b> " + str(odo_diff) + "<b> Kms after recommended</b></li> "
         return message_expired
 
-    def send_expiration_message(self, cr, uid,ids, context=None):
-        (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
+    def send_expiration_message(self, cr, uid, ids, context=None):
+        (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(
+            cr, uid, 'hr_employee_driver_license', 'mail_group_1')
         msg = self._get_expired_parts(cr, uid, ids)
-        self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
-        return 
+        self.pool.get('mail.group').message_post(cr, uid, [
+                                                 mail_group_id], body=msg, subtype='mail.mt_comment', context=context)
+        return
 
 fleet_service_expiring_line()
 
+
 class fleet_vehicle(osv.osv):
-    
+
     _inherit = 'fleet.vehicle'
     _columns = {
-        'service_expiring_ids':fields.one2many('fleet.service.expiring.line', 'vehicle_expiring_id', 'Expiring Spare Parts', required=False),
+        'service_expiring_ids': fields.one2many('fleet.service.expiring.line', 'vehicle_expiring_id', 'Expiring Spare Parts', required=False),
     }
 fleet_vehicle()
