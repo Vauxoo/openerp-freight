@@ -45,9 +45,11 @@ class fleet_service_expiring_line(osv.osv):
             ('dumped', 'Dumped'),
 
         ], 'State', select=True, readonly=False),
+        'company_id':fields.many2one('res.company', 'Company', required=False),
     }
     _defaults = {
         'based': 'date',
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'fleet.service.expiring.line', context=c),
     }
 
     def _get_expired_parts(self, cr, uid, ids, context=None):
@@ -88,6 +90,7 @@ class fleet_vehicle(osv.osv):
 
     _inherit = 'fleet.vehicle'
     _columns = {
+        
         'service_expiring_ids': fields.one2many('fleet.service.expiring.line', 'vehicle_expiring_id', 'Expiring Spare Parts', required=False),
     }
 fleet_vehicle()

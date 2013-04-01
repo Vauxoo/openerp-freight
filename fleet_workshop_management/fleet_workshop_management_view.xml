@@ -1,7 +1,7 @@
 <openerp>
     <data>
  
-
+        
 
         <record model="ir.ui.view" id="view_fleet_vehicle_service_stage_form_inherit">
             <field name="name">fleet.vehicle.log.services.form.inherit</field>
@@ -14,6 +14,9 @@
                       <field name="stage_id" widget="statusbar" clickable="True"/>
                     </header>
                 </xpath>
+                <field name="vendor_id" position="replace">
+                    <field name="vendor_id" string="Workshop"/>
+                </field>
             </field>
         </record>
         

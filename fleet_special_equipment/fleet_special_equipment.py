@@ -31,13 +31,17 @@ class fleet_special_equipment(osv.osv):
         'name':fields.char('Name', size=64, required=False, readonly=False),
         'serial':fields.char('Serial No.', size=64, required=False, readonly=False),
         'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),
+        'company_id':fields.many2one('res.company', 'Company', required=False),
+    }
+    _sql_constraints = [('serial_uniq','unique(serial)', 'This serial number vehicle must be unique!')]
+    _defaults = {
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'fleet.special.equipment', context=c),
     }
 
-fleet_special_equipment()
 
 class fleet_vehicle(osv.osv):
     _inherit = 'fleet.vehicle'
     _columns = {
         'equipment_ids':fields.one2many('fleet.special.equipment', 'vehicle_id', 'Equipment', required=False),
     }
-fleet_vehicle()
+

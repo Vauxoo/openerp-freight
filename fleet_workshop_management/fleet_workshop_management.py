@@ -30,8 +30,11 @@ class fleet_service_stage(osv.osv):
     _columns = {
         'name':fields.char('Stage', size=64, required=False, readonly=False),
         'stage_default':fields.boolean('Default', required=False),
+        'company_id':fields.many2one('res.company', 'Company', required=False),
     }
-
+    _defaults = {
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'fleet.service.stage', context=c),
+    }
 fleet_service_stage()
 
 class fleet_vehicle_log_services(osv.osv):

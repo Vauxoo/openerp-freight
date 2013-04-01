@@ -36,6 +36,10 @@ class fleet_vehicle_casualty(osv.osv):
         'vehicle_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),   
         'type_id':fields.many2one('fleet.casualty.type', 'Type', required=False),
         'driver_id':fields.many2one('hr.employee', 'Driver', required=True, help="Here goes the name of the person guilty/causant of the complain"),
+        'company_id':fields.many2one('res.company', 'Company', required=False),
+    }
+    _defaults = {
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'fleet.vehicle.casualty', context=c),
     }
 
     def onchange_partner_id(self, cr, uid, ids, part, email=False):
