@@ -36,9 +36,9 @@
     ],
     "demo_xml" : [
     ],
-    "update_xml" : [
-        "fleet_workshop_management_view.xml",
-        "fleet_workshop_management_data.xml",   
+    "data" : [
+        "fleet_workshop_management_data.xml",
+        "fleet_workshop_management_view.xml",   
      ],
     "active": False,
     "installable": True,
