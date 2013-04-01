@@ -43,7 +43,7 @@ class fleet_vehicle_log_services(osv.osv):
     def _get_default_stage_id(self, cr, uid, context=None):
         """ Gives default stage_id """
         stage_ids = self.pool.get('fleet.service.stage').search(cr,uid,[('name','=','New'),])
-        return stage_ids[0] and stage_ids or False
+        return stage_ids[0] and stage_ids[0] or False
 
     _columns = {
         'stage_id':fields.many2one('fleet.service.stage', 'Stage', track_visibility='onchange',required=False, domain="['|',('stage_default', '=', True),('stage_default', '=', False)]"),
