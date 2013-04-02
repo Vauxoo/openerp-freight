@@ -24,7 +24,7 @@
 {
     "name" : "Fleet Vehicle Responsibles",
     "version" : "0.1",
-    "depends" : ["fleet",],
+    "depends" : ["fleet","hr"],
     "author" : "Vauxoo",
     "description" : """
     This module provides the capability to add multiple responsibles to a vehicle
