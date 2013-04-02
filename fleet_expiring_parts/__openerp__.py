@@ -24,7 +24,7 @@
 {
     "name" : "Fleet Expiring Parts",
     "version" : "0.1",
-    "depends" : ["fleet","hr_employee_driver_license","product"],
+    "depends" : ["fleet","hr_employee_driver_license","product","fleet_special_equipment"],
     "author" : "Vauxoo",
     "description" : """
     What do this module:
