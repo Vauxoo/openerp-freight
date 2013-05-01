@@ -1,3 +1,5 @@
 id,active,group_id:id,name,model_id,perm_create,perm_unlink,perm_write,perm_read
 fleet_extended_11,1,fleet.group_fleet_user,fleet_vehicle_casualty_user,fleet.vehicle.casualty,1,0,1,1
 fleet_extended_12,1,fleet.group_fleet_manager,fleet_vehicle_casualty_manager,fleet.vehicle.casualty,1,1,1,1
+fleet_extended_111,1,fleet.group_fleet_user,fleet_vehicle_casualty_user,fleet.casualty.type,1,1,1,1
+
