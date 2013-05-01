@@ -40,6 +40,7 @@
     "update_xml" : [
         "fleet_expiring_parts_view.xml",
         "fleet_expiring_parts_data.xml",
+        "security/ir.model.access.csv",
     ],
     "active": False,
     "installable": True,

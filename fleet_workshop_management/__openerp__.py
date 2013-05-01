@@ -38,7 +38,8 @@
     ],
     "data" : [
         "fleet_workshop_management_data.xml",
-        "fleet_workshop_management_view.xml",   
+        "fleet_workshop_management_view.xml",
+        "security/ir.model.access.csv",           
      ],
     "active": False,
     "installable": True,

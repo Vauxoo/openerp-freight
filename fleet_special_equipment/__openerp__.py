@@ -42,6 +42,7 @@
     ],
     "update_xml" : [
         "fleet_special_equipment_view.xml",
+        "security/ir.model.access.csv",
     ],
     "active": False,
     "installable": True,

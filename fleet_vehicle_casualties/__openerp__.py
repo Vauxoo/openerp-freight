@@ -38,6 +38,7 @@
     ],
     "update_xml" : [
         "fleet_vehicle_casualties_view.xml",
+        "security/ir.model.access.csv",
     ],
     "active": False,
     "installable": True,
