@@ -45,7 +45,7 @@ class fleet_service_paperwork_line(osv.osv):
         'status': fields.selection([('pending', 'Pending'), ('valid', 'Valid'), ('expired', 'Expired')], 'Status', required=True, help='The state of the paperwork'),
     }
 
-    def _get_expired_paperworks(self, cr, uid, ids, context=None):
+    def _get_expired_paperworks(self, cr, uid, context=None):
         vehicle_obj = self.pool.get('fleet.vehicle')
         service_obj = self.pool.get('fleet.service.type')
         message_expired = "<p><b>Paperworks expired this week : </b></p>"
@@ -60,9 +60,9 @@ class fleet_service_paperwork_line(osv.osv):
                     
         return message_expired
 
-    def send_expiration_message(self, cr, uid,ids, context=None):
+    def send_expiration_message(self, cr, uid, context=None):
         (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
-        msg = self._get_expired_paperworks(cr, uid, ids)
+        msg = self._get_expired_paperworks(cr, uid)
         self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
         return 
 

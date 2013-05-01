@@ -52,7 +52,7 @@ class fleet_service_expiring_line(osv.osv):
         'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'fleet.service.expiring.line', context=c),
     }
 
-    def _get_expired_parts(self, cr, uid, ids, context=None):
+    def _get_expired_parts(self, cr, uid, context=None):
         vehicle_obj = self.pool.get('fleet.vehicle')
         product_obj = self.pool.get('product.product')
         odo_obj = self.pool.get('fleet.vehicle.odometer')
@@ -75,10 +75,10 @@ class fleet_service_expiring_line(osv.osv):
                         cr, uid, [spart.vehicle_expiring_id.id])[0].name + "</a> <b>over</b> " + str(odo_diff) + "<b> Kms after recommended</b></li> "
         return message_expired
 
-    def send_expiration_message(self, cr, uid, ids, context=None):
+    def send_expiration_message(self, cr, uid, context=None):
         (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(
             cr, uid, 'hr_employee_driver_license', 'mail_group_1')
-        msg = self._get_expired_parts(cr, uid, ids)
+        msg = self._get_expired_parts(cr, uid)
         self.pool.get('mail.group').message_post(cr, uid, [
                                                  mail_group_id], body=msg, subtype='mail.mt_comment', context=context)
         return

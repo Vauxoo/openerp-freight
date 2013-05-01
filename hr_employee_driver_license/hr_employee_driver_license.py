@@ -34,7 +34,7 @@ class hr_employee(osv.osv):
         'date': fields.date('Expiration Date'),
     }
 
-    def _get_expired_licenses(self, cr, uid, ids, context=None):
+    def _get_expired_licenses(self, cr, uid, context=None):
         message_expired = "<p><b>Licenses expired this week : </b></p>"
         message_unlicensed = "<p><b>Users without driver license</b></p>"
         now = datetime.datetime.now()
@@ -49,11 +49,10 @@ class hr_employee(osv.osv):
                     
         return message_expired + message_unlicensed
 
-    def send_expiration_message(self, cr, uid,ids, context=None):
+    def send_expiration_message(self, cr, uid, context=None):
         (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
-        msg = self._get_expired_licenses(cr, uid, ids)
+        msg = self._get_expired_licenses(cr, uid)
         self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
-        print self._get_expired_licenses(cr, uid, ids)
 
         return 
 
