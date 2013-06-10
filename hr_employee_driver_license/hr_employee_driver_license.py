@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
+#    OpenERP, Open Source Management Solution
 #    Copyright (C)2010-  OpenERP SA (<http://openerp.com>). All Rights Reserved
 #    oszckar@gmail.com
 #
@@ -43,18 +43,20 @@ class hr_employee(osv.osv):
             if employee.date:
                 date_dt = datetime.datetime.strptime(employee.date, "%Y-%m-%d")
                 if now > date_dt:
-                    message_expired += " <li> <b>No.</b> "+employee.driver_license+" <b>Employee:</b> <a href='#id="+str(employee.id)+"&view_type=form&model=hr.employee'>"+employee.name+"</a> <b>on</b> "+employee.date+"</li> " 
+                    message_expired += " <li> <b>No.</b> "+employee.driver_license+" <b>Employee:</b> <a href='#id="+str(employee.id)+"&view_type=form&model=hr.employee'>"+employee.name+"</a> <b>on</b> "+employee.date+"</li> "
             if not employee.driver_license:
                 message_unlicensed += "<li> <b>Employee:</b> <a href='#id="+str(employee.id)+"&view_type=form&model=hr.employee'>"+employee.name+"</a></li>"
-                    
+
         return message_expired + message_unlicensed
 
     def send_expiration_message(self, cr, uid, context=None):
+        if context is None:
+            context = {}
         (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
         msg = self._get_expired_licenses(cr, uid)
         self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
 
-        return 
+        return
 
 hr_employee()
 
