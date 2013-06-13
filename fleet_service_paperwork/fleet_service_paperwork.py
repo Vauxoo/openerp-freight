@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution    
+#    OpenERP, Open Source Management Solution
 #    Copyright (C)2010-  OpenERP SA (<http://openerp.com>). All Rights Reserved
 #    oszckar@gmail.com
 #
@@ -28,18 +28,18 @@ import time
 import datetime
 
 class fleet_service_type(osv.osv):
-    
+
     _inherit = 'fleet.service.type'
     _columns = {
         'category': fields.selection([('contract', 'Contract'), ('service', 'Service'), ('both', 'Both'),('paperwork','Paperwork')], 'Category', required=True, help='Choose wheter the service refer to contracts, vehicle services or both'),
     }
 fleet_service_type()
 
-class fleet_service_paperwork_line(osv.osv):  
+class fleet_service_paperwork_line(osv.osv):
     _name = 'fleet.service.paperwork.line'
     _columns = {
-        'vehicle_paperwork_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),     
-        'service_id':fields.many2one('fleet.service.type', 'Service', required=False),   
+        'vehicle_paperwork_id':fields.many2one('fleet.vehicle', 'Vehicle', required=False),
+        'service_id':fields.many2one('fleet.service.type', 'Service', required=False),
         'partner_id':fields.many2one('res.partner', 'Supplier', required=False),
         'date': fields.date('Expiration Date'),
         'status': fields.selection([('pending', 'Pending'), ('valid', 'Valid'), ('expired', 'Expired')], 'Status', required=True, help='The state of the paperwork'),
@@ -52,24 +52,26 @@ class fleet_service_paperwork_line(osv.osv):
         now = datetime.datetime.now()
         paperwork_ids = self.search(cr, uid, [])
         for paperwork in self.browse(cr,uid, paperwork_ids):
-            
+
             if paperwork.date:
                 date_dt = datetime.datetime.strptime(paperwork.date, "%Y-%m-%d")
                 if now > date_dt and paperwork.status == 'valid':
-                    message_expired += " <li><b>Document: </b> "+service_obj.browse(cr,uid,[paperwork.service_id.id])[0].name+" <b>Vehicle:</b> <a href='#id="+str(paperwork.vehicle_paperwork_id.id)+"&view_type=form&model=fleet.vehicle'>"+vehicle_obj.browse(cr, uid,[paperwork.vehicle_paperwork_id.id])[0].name+"</a> <b>on</b> "+paperwork.date+"</li> " 
-                    
+                    message_expired += " <li><b>Document: </b> "+service_obj.browse(cr,uid,[paperwork.service_id.id])[0].name+" <b>Vehicle:</b> <a href='#id="+str(paperwork.vehicle_paperwork_id.id)+"&view_type=form&model=fleet.vehicle'>"+vehicle_obj.browse(cr, uid,[paperwork.vehicle_paperwork_id.id])[0].name+"</a> <b>on</b> "+paperwork.date+"</li> "
+
         return message_expired
 
     def send_expiration_message(self, cr, uid, context=None):
+        if context is None:
+            context={}
         (model, mail_group_id) = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'hr_employee_driver_license', 'mail_group_1')
         msg = self._get_expired_paperworks(cr, uid)
         self.pool.get('mail.group').message_post(cr, uid, [mail_group_id],body = msg, subtype='mail.mt_comment', context=context)
-        return 
+        return
 
 fleet_service_paperwork_line()
 
 class fleet_vehicle(osv.osv):
-    
+
     _inherit = 'fleet.vehicle'
     _columns = {
         'service_type_paperwork_ids':fields.one2many('fleet.service.paperwork.line', 'vehicle_paperwork_id', 'Paperworks', required=False),

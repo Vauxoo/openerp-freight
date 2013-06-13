@@ -16,7 +16,6 @@
             <field eval="False" name="doall"/>
             <field eval="'hr.employee'" name="model"/>
             <field eval="'send_expiration_message'" name="function"/>
-            <field eval="'(False,)'" name="args"/>
         </record>        
 
     </data>
