@@ -26,7 +26,7 @@
 from openerp.osv import fields, osv, orm
 from openerp.tools.translate import _
 from openerp import tools
-
+import time
 
 class fleet_shipment(osv.Model):
 
@@ -64,10 +64,32 @@ class fleet_shipment(osv.Model):
             string='State',
             required=True,
             help='Fleet Shipment Order State'),
+        'current_burden': fields.float(
+            string='Current Burden',
+            help='Current Burden'),
+        'date': fields.datetime(
+            string='Shipment Date',
+            required=True,
+            help='Date of the delivery was send'),
+        'work_shift': fields.selection(
+            [('morning', 'Morning'),
+             ('afternoon', 'Afternoon'),
+             ('night', 'Night')],
+            string='Work Shift',
+            required=True,
+            help='Work Shift'),
+        'zone': fields.text(
+            string='Urban Zone',
+            size=256,
+            required=True,
+            help='Urban Zone'),
     }
 
     _defaults = {
         'state': 'draft',
+        'work_shift': 'morning',
+        'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'zone': 'NO DEFINED',
     }
 
     def assign_fleet_shipment(self, cr, uid, ids, context=None):
