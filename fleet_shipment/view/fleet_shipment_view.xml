@@ -96,7 +96,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="delivery"/>
                     <field name="fleet_shipment_id"/>
-                    <field name="delivery_address"/>
+                    <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
                 </xpath>
             </field>
         </record>
