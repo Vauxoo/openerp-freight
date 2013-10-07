@@ -169,4 +169,9 @@ class pos_order(osv.Model):
             string='Is Delivery?',
             help=('If this checkbox is checked then current order it or it'
                   ' will be delivery.')),
+        'delivery_address': fields.many2one(
+            'res.partner',
+            'Delivery Address',
+            help=('Delivery Address selected in the POS to make the delivery'
+                  ' of the customer')),
     }
