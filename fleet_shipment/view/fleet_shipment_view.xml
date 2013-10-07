@@ -8,6 +8,12 @@
             <field name="arch" type="xml">
                 <form string="Fleet Shipment" version="7.0">
                     <header>
+                        <button 
+                            name="assign_fleet_shipment"
+                            type="object"
+                            string="Assign"
+                            states="draft"
+                            class="oe_highlight"/>
                         <field name="state"
                             widget="statusbar"
                             statusbar_visible="draft,new,pending,overdue,in_transit,return"

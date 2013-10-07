@@ -70,6 +70,16 @@ class fleet_shipment(osv.Model):
         'state': 'draft',
     }
 
+    def assign_fleet_shipment(self, cr, uid, ids, context=None):
+        """
+        Change the state of a fleet shipment order from draft to new (assigned
+        order).
+        @return: True
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'state': 'new'}, context=context)
+        return True
+
 class pos_order(osv.Model):
 
     _inherit = "pos.order"
