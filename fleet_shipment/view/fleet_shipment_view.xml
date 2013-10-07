@@ -31,7 +31,16 @@
                         </group>
                         <notebook>
                             <page string="POS Orders">
-                                <field name="pos_order_ids" nolabel="1"/>
+                                <field name="pos_order_ids" nolabel="1" widget="many2many">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="pos_reference"/>
+                                        <field name="date_order"/>
+                                        <field name="partner_id"/>
+                                        <field name="user_id"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
 
