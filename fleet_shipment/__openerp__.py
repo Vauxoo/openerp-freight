@@ -40,7 +40,9 @@ units.
 .. note:: fleet_shipment module can be found in ``lp:vauxoo-private/fleet``.
 ''',
     'depends': ['base', 'mail', 'fleet', 'point_of_sale'],
-    'data': [],
+    'data': [
+        'view/fleet_shipment_view.xml',
+    ],
     'demo': [],
     'test': [],
     'active': False,
