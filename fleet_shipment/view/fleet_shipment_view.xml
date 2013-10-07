@@ -8,7 +8,10 @@
             <field name="arch" type="xml">
                 <form string="Fleet Shipment" version="7.0">
                     <header>
-
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="draft,new,pending,overdue,in_transit,return"
+                            statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;in_transit&quot;:&quot;green&quot;,&quot;return&quot;:&quot;red&quot;}"/>
                     </header>
                     <sheet>
 
@@ -33,6 +36,7 @@
             <field name="arch" type="xml">
                 <tree string="Fleet Shipments" version="7.0">
                     <field name="name"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
