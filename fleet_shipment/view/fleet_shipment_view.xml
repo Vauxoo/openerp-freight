@@ -79,5 +79,27 @@
             action="fleet_shipment_action"
             />
 
+        <record id="pos_order_form_w_delivery" model="ir.ui.view">
+            <field name="name">Pos Order Form with Delivery</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="delivery"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="pos_order_tree_w_delivery" model="ir.ui.view">
+            <field name="name">Pos Order Tree with Delivery</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='session_id']" position="after">
+                    <field name="delivery" string="Delivery"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </openerp>
