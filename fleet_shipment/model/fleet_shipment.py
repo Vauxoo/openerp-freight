@@ -54,8 +54,21 @@ class fleet_shipment(osv.Model):
             string='POS Orders',
             required=True,
             help='POS Orders'),
+        'state': fields.selection(
+            [('draft','Waiting for Assignment'),
+             ('new','Assigned'),
+             ('pending','Dispatch Pending'),
+             ('overdue','Overdue'),
+             ('in_transit','In Transit'),
+             ('return','Return')],
+            string='State',
+            required=True,
+            help='Fleet Shipment Order State'),
     }
 
+    _defaults = {
+        'state': 'draft',
+    }
 
 class pos_order(osv.Model):
 
