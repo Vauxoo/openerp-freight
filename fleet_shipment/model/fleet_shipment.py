@@ -111,4 +111,8 @@ class pos_order(osv.Model):
             'fleet.shipment',
             string='Fleet Shipment',
             help='Fleet Shipment'),
+        'delivery': fields.boolean(
+            string='Is Delivery?',
+            help=('If this checkbox is checked then current order it or it'
+                  ' will be delivery.')),
     }
