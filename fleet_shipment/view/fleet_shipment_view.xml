@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="fleet_shipment_form" model="ir.ui.view">
+            <field name="name">Fleet Shipment Form</field>
+            <field name="model">fleet.shipment</field>
+            <field name="arch" type="xml">
+                <form string="Fleet Shipment" version="7.0">
+                    <header>
+                        <button 
+                            name="assign_fleet_shipment"
+                            type="object"
+                            string="Assign"
+                            states="draft"
+                            class="oe_highlight"/>
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="draft,new,pending,overdue,in_transit,return"
+                            statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;in_transit&quot;:&quot;green&quot;,&quot;return&quot;:&quot;red&quot;}"/>
+                    </header>
+                    <sheet>
+
+                        <group colspan="4">
+                            <field name="name"/>
+                            <field name="transport_unit_id"/>
+                            <field name="current_burden"/>
+                            <field name="date"/>
+                            <field name="work_shift"/>
+                            <field name="zone"/>
+                        </group>
+                        <notebook>
+                            <page string="POS Orders">
+                                <field name="pos_order_ids" nolabel="1"/>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="fleet_shipment_tree" model="ir.ui.view">
+            <field name="name">Fleet Shipment Tree</field>
+            <field name="model">fleet.shipment</field>
+            <field name="arch" type="xml">
+                <tree string="Fleet Shipments" version="7.0">
+                    <field name="name"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="fleet_shipment_action" model="ir.actions.act_window">
+            <field name="name">Fleet Shipment Action</field>
+            <field name="res_model">fleet.shipment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help">Fleet Shipment Action Help</field>
+        </record>
+
+        <menuitem 
+            id="delivery_main_menu"
+            name="Delivery"
+            sequence="20"
+            />
+
+        <menuitem 
+            id="fleet_shipment_main_menu"
+            name="Fleet Shipment"
+            parent="delivery_main_menu"
+            sequence="20" 
+            />
+
+        <menuitem 
+            id="fleet_shipment_menu"
+            name="Fleet Shipment"
+            parent="fleet_shipment_main_menu"
+            action="fleet_shipment_action"
+            />
+
+    </data>
+</openerp>
