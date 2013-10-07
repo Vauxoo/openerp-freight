@@ -30,8 +30,12 @@
     'website': 'http://www.vauxoo.com/',
     'category': 'Fleet',
     'description': '''
-    
-    ''',
+Fleet Delivery
+==============
+
+fleet.vehicle model is edited to allow for delivery transport units.
+
+''',
     'depends': ['base', 'fleet'],
     'data': [
         "view/fleet_delivery_view.xml",
