@@ -31,7 +31,7 @@
                         </group>
                         <notebook>
                             <page string="POS Orders">
-                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]">
+                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft',))]}">
                                     <tree>
                                         <field name="name"/>
                                         <field name="pos_reference"/>
