@@ -16,7 +16,7 @@
                             class="oe_highlight"/>
                         <field name="state"
                             widget="statusbar"
-                            statusbar_visible="draft,new,pending,overdue,in_transit,return"
+                            statusbar_visible="draft,awaiting,pending,overdue,in_transit,return"
                             statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;in_transit&quot;:&quot;green&quot;,&quot;return&quot;:&quot;red&quot;}"/>
                     </header>
                     <sheet>

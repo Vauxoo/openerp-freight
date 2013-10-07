@@ -55,9 +55,11 @@ class fleet_shipment(osv.Model):
             required=True,
             help='POS Orders'),
         'state': fields.selection(
-            [('draft','Waiting for Assignment'),
-             ('new','Assigned'),
-             ('pending','Dispatch Pending'),
+            [('draft','Draft'),
+             ('awaiting','Waiting for Assignment'),
+             ('exception','Exception'),
+             ('confirm','Confirmed'),
+             ('pending','Pending Dispatch'),
              ('overdue','Overdue'),
              ('in_transit','In Transit'),
              ('return','Return')],
@@ -94,12 +96,12 @@ class fleet_shipment(osv.Model):
 
     def assign_fleet_shipment(self, cr, uid, ids, context=None):
         """
-        Change the state of a fleet shipment order from draft to new (assigned
-        order).
+        Change the state of a fleet shipment order from 'draft' to 'awaiting'
+        state (assigned order).
         @return: True
         """
         context = context or {}
-        self.write(cr, uid, ids, {'state': 'new'}, context=context)
+        self.write(cr, uid, ids, {'state': 'awaiting'}, context=context)
         return True
 
     def onchange_current_burden(self, cr, uid, ids, transport_unit_id,
