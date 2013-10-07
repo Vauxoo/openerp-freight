@@ -145,24 +145,15 @@ class fleet_shipment(osv.Model):
         fleet shipment.
         """
         context = context or {}
-
-        print '\n'*3
-        print 'values', values
-        print 'context', context
-
         for fd_brw in self.browse(cr, uid, ids, context=context):
             vehicle_id = values.get('transport_unit_id', False) \
                 or fd_brw.transport_unit_id.id
-            print 'vehicle_id', vehicle_id
             if values.get('current_burden', False):
                 self._check_vehicle_volumentric_capacity(
                     cr, uid, vehicle_id, values.get('current_burden'),
                     context=context)
         res = super(fleet_shipment, self).write(
             cr, uid, ids, values, context=context)
-
-        print '\n'*3
-
         return res
 
 class pos_order(osv.Model):
