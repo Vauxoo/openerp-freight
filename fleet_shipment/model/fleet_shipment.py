@@ -23,26 +23,50 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-{
-    'name': 'Fleet Shipment',
-    'version': '1.0',
-    'author': 'Vauxoo',
-    'website': 'http://www.vauxoo.com/',
-    'category': '',
-    'description': '''
-Fleet Shipment
-==============
+from openerp.osv import fields, osv, orm
+from openerp.tools.translate import _
+from openerp import tools
 
-This module add a new model for shipment process that manage the shipment of
-the orders of delivery generate for the POS and relate it to the transport
-units.
 
-.. note:: fleet_shipment module can be found in ``lp:vauxoo-private/fleet``.
-''',
-    'depends': ['base', 'mail', 'fleet', 'point_of_sale'],
-    'data': [],
-    'demo': [],
-    'test': [],
-    'active': False,
-    'installable': True,
-}
+class fleet_shipment(osv.Model):
+
+    _name = 'fleet.shipment'
+    _description = _('Fleet Shipment')
+    _inherit = ['mail.thread']
+
+    '''
+    Fleet Shipment
+    '''
+
+    _columns = {
+        'name': fields.char(
+            string='Number Reference',
+            size=256,
+            required=True,
+            help='Number Reference'),
+        'transport_unit_id': fields.many2one(
+            'fleet.vehicle',
+            string='Transport Unit',
+            required=True,
+            help='Transport Unit'),
+        'pos_order_ids': fields.one2many(
+            'pos.order', 'fleet_shipment_id',
+            string='POS Orders',
+            required=True,
+            help='POS Orders'),
+    }
+
+
+class pos_order(osv.Model):
+
+    _inherit = "pos.order"
+
+    _columns = {
+        'fleet_shipment_id': fields.many2one(
+            'fleet.shipment',
+            string='Fleet Shipment',
+            required=True,
+            help='Fleet Shipment'),
+    }
+
+
