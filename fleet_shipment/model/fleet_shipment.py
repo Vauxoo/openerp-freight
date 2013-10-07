@@ -110,8 +110,5 @@ class pos_order(osv.Model):
         'fleet_shipment_id': fields.many2one(
             'fleet.shipment',
             string='Fleet Shipment',
-            required=True,
             help='Fleet Shipment'),
     }
-
-
