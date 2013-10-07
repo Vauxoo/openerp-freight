@@ -102,6 +102,69 @@ class fleet_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'new'}, context=context)
         return True
 
+    def onchange_current_burden(self, cr, uid, ids, transport_unit_id,
+                                current_burden, context=None):
+        """
+        this method verify that the current burden is equal or less to the
+        volumetric capacity of the fleet vehicle.
+        @param transport_unit_id: fleet vehicle id.
+        @param current_burden: volumetric weight in float enter by the user in
+                                the fleet shipment order.
+        @return: the current burden value.
+        """
+        context = context or {}
+        res = {'value': {}}
+        fv_obj = self.pool.get('fleet.vehicle')
+        fv_brw = fv_obj.browse(cr, uid, transport_unit_id, context=context)
+        self._check_vehicle_volumentric_capacity(
+            cr, uid, transport_unit_id, current_burden, context=context)
+        return res
+
+    def _check_vehicle_volumentric_capacity(self, cr, uid, vehicle_id,
+                                            current_burden, context=None):
+        """
+        Raise an exception when trying to set the fleet shipment current
+        burden with a value greater that the vehicle volumetric capacity.
+        @param vehicle_id: fleet vehicle id
+        @param current_burden: fleet shipment order float value.
+        @return True
+        """
+        context = context or {}
+        fv_obj = self.pool.get('fleet.vehicle')
+        fv_brw = fv_obj.browse(cr, uid, vehicle_id, context=context)
+        if current_burden > fv_brw.volumetric_capacity:
+            raise osv.except_osv(
+                _('Error!!'),
+                _('The Burden volume you are entering is greater than youre'
+                  ' transport volumetric capacity.'))
+        return True
+
+    def write(self, cr, uid, ids, values, context=None):
+        """
+        Overwrite the ORM write method to check that the current burden of the
+        fleet shipment.
+        """
+        context = context or {}
+
+        print '\n'*3
+        print 'values', values
+        print 'context', context
+
+        for fd_brw in self.browse(cr, uid, ids, context=context):
+            vehicle_id = values.get('transport_unit_id', False) \
+                or fd_brw.transport_unit_id.id
+            print 'vehicle_id', vehicle_id
+            if values.get('current_burden', False):
+                self._check_vehicle_volumentric_capacity(
+                    cr, uid, vehicle_id, values.get('current_burden'),
+                    context=context)
+        res = super(fleet_shipment, self).write(
+            cr, uid, ids, values, context=context)
+
+        print '\n'*3
+
+        return res
+
 class pos_order(osv.Model):
 
     _inherit = "pos.order"

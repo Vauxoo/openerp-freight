@@ -24,7 +24,7 @@
                         <group colspan="4">
                             <field name="name"/>
                             <field name="transport_unit_id"/>
-                            <field name="current_burden"/>
+                            <field name="current_burden" on_change="onchange_current_burden(transport_unit_id,current_burden)"/>
                             <field name="date"/>
                             <field name="work_shift"/>
                             <field name="zone"/>
