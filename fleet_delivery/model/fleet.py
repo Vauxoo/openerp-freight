@@ -23,21 +23,22 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-{
-    'name': 'Fleet Delivery',
-    'version': '1.0',
-    'author': 'Vauxoo',
-    'website': 'http://www.vauxoo.com/',
-    'category': 'Fleet',
-    'description': '''
-    
-    ''',
-    'depends': ['base', 'fleet'],
-    'data': [
-        "view/fleet_delivery_view.xml",
-        ],
-    'demo': [],
-    'test': [],
-    'active': False,
-    'installable': True,
-}
+from openerp.osv import fields, osv
+import time
+import datetime
+from openerp import tools
+from openerp.osv.orm import except_orm
+from openerp.tools.translate import _
+
+class fleet_vehicle(osv.Model):
+    _inherit = 'fleet.vehicle'
+    _description = 'Information on a vehicle'
+
+    _columns = {
+            'volumetric_capacity' : fields.float('Volumetric Weight Capacity', help='Vehicle Volumetric Weight Capacity'), 
+            'type':fields.selection( [('transport','Transport'),('automobile','Automobile')], string="Vehicle Type", 
+                help='Vehicle Type'), 
+     }
+
+
+
