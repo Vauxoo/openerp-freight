@@ -139,22 +139,6 @@ class fleet_shipment(osv.Model):
                   ' transport volumetric capacity.'))
         return True
 
-    def write(self, cr, uid, ids, values, context=None):
-        """
-        Overwrite the ORM write method to check that the current burden of the
-        fleet shipment.
-        """
-        context = context or {}
-        for fd_brw in self.browse(cr, uid, ids, context=context):
-            vehicle_id = values.get('transport_unit_id', False) \
-                or fd_brw.transport_unit_id.id
-            if values.get('current_burden', False):
-                self._check_vehicle_volumentric_capacity(
-                    cr, uid, vehicle_id, values.get('current_burden'),
-                    context=context)
-        res = super(fleet_shipment, self).write(
-            cr, uid, ids, values, context=context)
-        return res
 
 class pos_order(osv.Model):
 
