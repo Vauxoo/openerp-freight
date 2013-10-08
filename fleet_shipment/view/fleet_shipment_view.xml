@@ -9,9 +9,9 @@
                 <form string="Fleet Shipment" version="7.0">
                     <header>
                         <button 
-                            name="assign_fleet_shipment"
+                            name="action_prepare"
                             type="object"
-                            string="Assign"
+                            string="Prepare"
                             states="draft"
                             class="oe_highlight"/>
                         <field name="state"

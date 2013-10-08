@@ -105,7 +105,7 @@ class fleet_shipment(osv.Model):
         'zone': 'NO DEFINED',
     }
 
-    def assign_fleet_shipment(self, cr, uid, ids, context=None):
+    def action_prepare(self, cr, uid, ids, context=None):
         """
         Change the state of a fleet shipment order from 'draft' to 'awaiting'
         state (assigned order).
