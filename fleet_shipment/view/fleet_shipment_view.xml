@@ -9,21 +9,22 @@
                 <form string="Fleet Shipment" version="7.0">
                     <header>
                         <button 
-                            name="assign_fleet_shipment"
+                            name="action_prepare"
                             type="object"
-                            string="Assign"
+                            string="Prepare"
                             states="draft"
                             class="oe_highlight"/>
+                        <button name="action_assign" type="object" string="Assign" states="awaiting" class="oe_highlight"/>
                         <field name="state"
                             widget="statusbar"
-                            statusbar_visible="draft,new,pending,overdue,in_transit,return"
+                            statusbar_visible="draft,awaiting,pending,overdue,in_transit,return"
                             statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;in_transit&quot;:&quot;green&quot;,&quot;return&quot;:&quot;red&quot;}"/>
                     </header>
                     <sheet>
 
                         <group colspan="4">
                             <field name="name"/>
-                            <field name="transport_unit_id"/>
+                            <field name="transport_unit_id" domain="[('type','=','transport')]"/>
                             <field name="current_burden"/>
                             <field name="date"/>
                             <field name="work_shift"/>
@@ -31,7 +32,16 @@
                         </group>
                         <notebook>
                             <page string="POS Orders">
-                                <field name="pos_order_ids" nolabel="1"/>
+                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft',))]}">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="pos_reference"/>
+                                        <field name="date_order"/>
+                                        <field name="partner_id"/>
+                                        <field name="user_id"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
 
@@ -78,6 +88,30 @@
             parent="fleet_shipment_main_menu"
             action="fleet_shipment_action"
             />
+
+        <record id="pos_order_form_w_delivery" model="ir.ui.view">
+            <field name="name">Pos Order Form with Delivery</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="delivery"/>
+                    <field name="fleet_shipment_id"/>
+                    <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="pos_order_tree_w_delivery" model="ir.ui.view">
+            <field name="name">Pos Order Tree with Delivery</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='session_id']" position="after">
+                    <field name="delivery" string="Delivery"/>
+                </xpath>
+            </field>
+        </record>
 
     </data>
 </openerp>

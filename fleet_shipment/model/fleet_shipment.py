@@ -55,15 +55,28 @@ class fleet_shipment(osv.Model):
             required=True,
             help='POS Orders'),
         'state': fields.selection(
-            [('draft','Waiting for Assignment'),
-             ('new','Assigned'),
-             ('pending','Dispatch Pending'),
+            [('draft','Draft'),
+             ('awaiting','Waiting for Assignment'),
+             ('exception','Exception'),
+             ('confirm','Confirmed'),
+             ('pending','Pending Dispatch'),
              ('overdue','Overdue'),
              ('in_transit','In Transit'),
              ('return','Return')],
             string='State',
             required=True,
-            help='Fleet Shipment Order State'),
+            help=('Indicate Fleet Shipment Order State. The possible states'
+                  ' are:\n'
+                  '\t- Draft: A rough copy of the document, just a draft.\n'
+                  '\t- Waiting for Assignment: A fleet shipment order proposal'
+                  ' that need to be corroborated\n'
+                  '\t- Exception: The fleet shipment order is totally set.\n'
+                  '\t- Confirmed: The delivery have been cheked and assigned.\n'
+                  '\t- Pending Dispatch: Waiting for be delivery.\n'
+                  '\t- Overdue: The fleet shipment is late.\n'
+                  '\t- In Transit: Is already send to delivery.\n'
+                  '\t- Return: The vehicle is return to the parking.\n'
+            )),
         'current_burden': fields.float(
             string='Current Burden',
             help='Current Burden'),
@@ -92,15 +105,69 @@ class fleet_shipment(osv.Model):
         'zone': 'NO DEFINED',
     }
 
-    def assign_fleet_shipment(self, cr, uid, ids, context=None):
+    def action_prepare(self, cr, uid, ids, context=None):
         """
-        Change the state of a fleet shipment order from draft to new (assigned
-        order).
+        Change the state of a fleet shipment order from 'draft' to 'awaiting'
+        state (assigned order).
         @return: True
         """
         context = context or {}
-        self.write(cr, uid, ids, {'state': 'new'}, context=context)
+        self.write(cr, uid, ids, {'state': 'awaiting'}, context=context)
         return True
+
+    def action_assign(self, cr, uid, ids, context=None):
+        """
+        Change the state of a fleet shipment order from 'awaiting' to
+        'exception' (if there is a problem with the fleet shipment order) or
+        'confirm' is all the values were successfully valuated. 
+
+        In the process it verify some conditions:
+
+          - that the current burden of the fleet shipment is less or equal to
+            the fleet vehicle volumetric capacity.
+
+        @return: True
+        """
+        context = context or {}
+        exceptions = list()
+        exception_msg = str()
+
+        for fso_brw in self.browse(cr, uid, ids, context=context):
+            exceptions.append(
+                not self.check_volumetric_weight(
+                    cr, uid, fso_brw.transport_unit_id.id,
+                    fso_brw.current_burden, context=context))
+            if exceptions[-1]:
+                exception_msg += _('The current burden volume you are entering'
+                    ' is greater than the volumetric capacity of youre'
+                    ' transport unit (%s > %s).\n' %
+                    (fso_brw.current_burden,
+                     fso_brw.transport_unit_id.volumetric_capacity))
+
+        self.write(
+            cr, uid, ids,
+            {'state': any(exceptions) and 'exception' or 'confirm'},
+            context=context)
+
+        return True
+
+
+    def check_volumetric_weight(self, cr, uid, vehicle_id, current_burden,
+                                context=None):
+        """
+        Check if the fleet shipment order current burden value is less than th
+        vehicle volumetric capacity.
+        @param vehicle_id: fleet vehicle id
+        @param current_burden: fleet shipment order float value.
+        @return: True if the current burdern is less than the vehicle
+            volumetric weight. False if the current burdern is greater than the
+            vehicle volumetric weight
+        """
+        context = context or {}
+        fv_obj = self.pool.get('fleet.vehicle')
+        fv_brw = fv_obj.browse(cr, uid, vehicle_id, context=context)
+        return current_burden <= fv_brw.volumetric_capacity and True or False
+
 
 class pos_order(osv.Model):
 
@@ -111,4 +178,13 @@ class pos_order(osv.Model):
             'fleet.shipment',
             string='Fleet Shipment',
             help='Fleet Shipment'),
+        'delivery': fields.boolean(
+            string='Is Delivery?',
+            help=('If this checkbox is checked then current order it or it'
+                  ' will be delivery.')),
+        'delivery_address': fields.many2one(
+            'res.partner',
+            'Delivery Address',
+            help=('Delivery Address selected in the POS to make the delivery'
+                  ' of the customer')),
     }

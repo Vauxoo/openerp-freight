@@ -37,9 +37,10 @@ This module add a new model for shipment process that manage the shipment of
 the orders of delivery generate for the POS and relate it to the transport
 units.
 
-.. note:: fleet_shipment module can be found in ``lp:vauxoo-private/fleet``.
+.. note:: You can found the dependecies ``fleet_shipment`` and
+  ``fleet_delivery`` modules in ``lp:vauxoo-private/fleet``.
 ''',
-    'depends': ['base', 'mail', 'fleet', 'point_of_sale'],
+    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'fleet_delivery'],
     'data': [
         'view/fleet_shipment_view.xml',
     ],
