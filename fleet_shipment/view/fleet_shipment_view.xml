@@ -15,6 +15,7 @@
                             states="draft"
                             class="oe_highlight"/>
                         <button name="action_assign" type="object" string="Assign" states="awaiting" class="oe_highlight"/>
+                        <button name="action_force" string="Force" type="object" help="Click this to force the confirmation of the shipment"/>
                         <field name="state"
                             widget="statusbar"
                             statusbar_visible="draft,awaiting,pending,overdue,in_transit,return"

@@ -151,6 +151,17 @@ class fleet_shipment(osv.Model):
 
         return True
 
+    def action_force(self, cr, uid, ids, context=None):
+        """
+        This method force the fleet shipment to be confirm even if the
+        valuation conditions of zone and burden are not fulfilled.
+        """
+        context = context or {}
+        raise osv.except_osv(
+            _('Warning'),
+            _('This functionality is still in development'))
+        return True
+
 
     def check_volumetric_weight(self, cr, uid, vehicle_id, current_burden,
                                 context=None):
