@@ -125,36 +125,30 @@ class fleet_shipment(osv.Model):
 
           - that the current burden of the fleet shipment is less or equal to
             the fleet vehicle volumetric capacity.
-          - that the pos order records included in the fleet shipment order
-            belongs to the fleet shipment order urban zone.
 
         @return: True
         """
         context = context or {}
-        error_msj = str()
-
-        raise osv.except_osv(
-            _('Warning'),
-            _('This Functionality is still in development'))
+        exceptions = list()
+        exception_msg = str()
 
         for fso_brw in self.browse(cr, uid, ids, context=context):
-            if not self.check_volumetric_weight(
-                cr, uid, fso_brw.transport_unit_id.id, fso_brw.current_burden,
-                context=context)
-                error_msj += _( 'The current burden volume you are entering is'
-                    ' greater than the volumetric capacity of youre transport'
-                    ' unit (%s > %s).\n' %
+            exceptions.append(
+                not self.check_volumetric_weight(
+                    cr, uid, fso_brw.transport_unit_id.id,
+                    fso_brw.current_burden, context=context))
+            if exceptions[-1]:
+                exception_msg += _('The current burden volume you are entering'
+                    ' is greater than the volumetric capacity of youre'
+                    ' transport unit (%s > %s).\n' %
                     (fso_brw.current_burden,
                      fso_brw.transport_unit_id.volumetric_capacity))
 
-            #~ self._check_urban_zone(
-                #~ cr, uid, fso_brw.id, fso_brw.pos_order_ids, context=context)
+        self.write(
+            cr, uid, ids,
+            {'state': any(exceptions) and 'exception' or 'confirm'},
+            context=context)
 
-        #~ self.write(cr, uid, ids, {'state': 'exception'}, context=context)
-        #~ self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
-
-        if error_msj:
-            raise osv.except_osv(_('Error!!'), error_msj)
         return True
 
 
