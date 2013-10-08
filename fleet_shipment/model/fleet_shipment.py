@@ -65,7 +65,18 @@ class fleet_shipment(osv.Model):
              ('return','Return')],
             string='State',
             required=True,
-            help='Fleet Shipment Order State'),
+            help=('Indicate Fleet Shipment Order State. The possible states'
+                  ' are:\n'
+                  '\t- Draft: A rough copy of the document, just a draft.\n'
+                  '\t- Waiting for Assignment: A fleet shipment order proposal'
+                  ' that need to be corroborated\n'
+                  '\t- Exception: The fleet shipment order is totally set.\n'
+                  '\t- Confirmed: The delivery have been cheked and assigned.\n'
+                  '\t- Pending Dispatch: Waiting for be delivery.\n'
+                  '\t- Overdue: The fleet shipment is late.\n'
+                  '\t- In Transit: Is already send to delivery.\n'
+                  '\t- Return: The vehicle is return to the parking.\n'
+            )),
         'current_burden': fields.float(
             string='Current Burden',
             help='Current Burden'),
