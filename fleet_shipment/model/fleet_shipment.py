@@ -131,45 +131,38 @@ class fleet_shipment(osv.Model):
         @return: True
         """
         context = context or {}
+        error_msj = str()
 
         raise osv.except_osv(
             _('Warning'),
             _('This Functionality is still in development'))
 
-        #~ for fso_brw in self.browse(cr, uid, ids, context=context):
-            #~ self._check_vehicle_volumentric_capacity(
-                #~ cr, uid, fso_brw.transport_unit_id.id, fso_brw.current_burden,
-                #~ context=context)
+        for fso_brw in self.browse(cr, uid, ids, context=context):
+            if not self.check_volumetric_weight(
+                cr, uid, fso_brw.transport_unit_id.id, fso_brw.current_burden,
+                context=context)
+                error_msj += _( 'The current burden volume you are entering is'
+                    ' greater than the volumetric capacity of youre transport'
+                    ' unit (%s > %s).\n' %
+                    (fso_brw.current_burden,
+                     fso_brw.transport_unit_id.volumetric_capacity))
+
             #~ self._check_urban_zone(
                 #~ cr, uid, fso_brw.id, fso_brw.pos_order_ids, context=context)
 
         #~ self.write(cr, uid, ids, {'state': 'exception'}, context=context)
         #~ self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
+
+        if error_msj:
+            raise osv.except_osv(_('Error!!'), error_msj)
         return True
 
-    def onchange_current_burden(self, cr, uid, ids, transport_unit_id,
-                                current_burden, context=None):
-        """
-        this method verify that the current burden is equal or less to the
-        volumetric capacity of the fleet vehicle.
-        @param transport_unit_id: fleet vehicle id.
-        @param current_burden: volumetric weight in float enter by the user in
-                                the fleet shipment order.
-        @return: the current burden value.
-        """
-        context = context or {}
-        res = {'value': {}}
-        fv_obj = self.pool.get('fleet.vehicle')
-        fv_brw = fv_obj.browse(cr, uid, transport_unit_id, context=context)
-        self._check_vehicle_volumentric_capacity(
-            cr, uid, transport_unit_id, current_burden, context=context)
-        return res
 
-    def _check_vehicle_volumentric_capacity(self, cr, uid, vehicle_id,
-                                            current_burden, context=None):
+    def check_volumetric_weight(self, cr, uid, vehicle_id, current_burden,
+                                context=None):
         """
-        Raise an exception when trying to set the fleet shipment current
-        burden with a value greater that the vehicle volumetric capacity.
+        Check if the fleet shipment order current burden value is less than th
+        vehicle volumetric capacity.
         @param vehicle_id: fleet vehicle id
         @param current_burden: fleet shipment order float value.
         @return True
@@ -177,12 +170,7 @@ class fleet_shipment(osv.Model):
         context = context or {}
         fv_obj = self.pool.get('fleet.vehicle')
         fv_brw = fv_obj.browse(cr, uid, vehicle_id, context=context)
-        if current_burden > fv_brw.volumetric_capacity:
-            raise osv.except_osv(
-                _('Error!!'),
-                _('The Burden volume you are entering is greater than youre'
-                  ' transport volumetric capacity.'))
-        return True
+        return fv_brw.volumetric_capacity > current_burden and True or False
 
 
 class pos_order(osv.Model):
