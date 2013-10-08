@@ -115,6 +115,38 @@ class fleet_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'awaiting'}, context=context)
         return True
 
+    def action_assign(self, cr, uid, ids, context=None):
+        """
+        Change the state of a fleet shipment order from 'awaiting' to
+        'exception' (if there is a problem with the fleet shipment order) or
+        'confirm' is all the values were successfully valuated. 
+
+        In the process it verify some conditions:
+
+          - that the current burden of the fleet shipment is less or equal to
+            the fleet vehicle volumetric capacity.
+          - that the pos order records included in the fleet shipment order
+            belongs to the fleet shipment order urban zone.
+
+        @return: True
+        """
+        context = context or {}
+
+        raise osv.except_osv(
+            _('Warning'),
+            _('This Functionality is still in development'))
+
+        #~ for fso_brw in self.browse(cr, uid, ids, context=context):
+            #~ self._check_vehicle_volumentric_capacity(
+                #~ cr, uid, fso_brw.transport_unit_id.id, fso_brw.current_burden,
+                #~ context=context)
+            #~ self._check_urban_zone(
+                #~ cr, uid, fso_brw.id, fso_brw.pos_order_ids, context=context)
+
+        #~ self.write(cr, uid, ids, {'state': 'exception'}, context=context)
+        #~ self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
+        return True
+
     def onchange_current_burden(self, cr, uid, ids, transport_unit_id,
                                 current_burden, context=None):
         """

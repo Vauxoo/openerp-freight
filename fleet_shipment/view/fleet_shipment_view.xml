@@ -14,6 +14,7 @@
                             string="Prepare"
                             states="draft"
                             class="oe_highlight"/>
+                        <button name="action_assign" type="object" string="Assign" states="awaiting" class="oe_highlight"/>
                         <field name="state"
                             widget="statusbar"
                             statusbar_visible="draft,awaiting,pending,overdue,in_transit,return"
