@@ -165,12 +165,14 @@ class fleet_shipment(osv.Model):
         vehicle volumetric capacity.
         @param vehicle_id: fleet vehicle id
         @param current_burden: fleet shipment order float value.
-        @return True
+        @return: True if the current burdern is less than the vehicle
+            volumetric weight. False if the current burdern is greater than the
+            vehicle volumetric weight
         """
         context = context or {}
         fv_obj = self.pool.get('fleet.vehicle')
         fv_brw = fv_obj.browse(cr, uid, vehicle_id, context=context)
-        return fv_brw.volumetric_capacity > current_burden and True or False
+        return current_burden <= fv_brw.volumetric_capacity and True or False
 
 
 class pos_order(osv.Model):
