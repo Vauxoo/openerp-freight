@@ -34,7 +34,6 @@ class fleet_zone(osv.Model):
     _columns = {
         'name' : fields.char('Zone Name', 256, help='Zone Name'),
         'benchmark_ids' : fields.one2many('fleet.benchmark', 'zone_id', 'Benchmark', help=''),
-        'sequence': fields.integer('Sequence', help="Gives the sequence of this benchmark when displaying the zone."),   
     }
 
 class fleet_benchmark(osv.Model):
@@ -43,5 +42,5 @@ class fleet_benchmark(osv.Model):
     _columns = {
         "name" : fields.char("Zone Benchmark", 256, help="Zone Benchmark"),
         "zone_id" : fields.many2one("fleet.zone", "Zone", help=""),
-        
+        'sequence': fields.integer('Sequence', help="Gives the sequence of this benchmark when displaying the zone."),   
     }
