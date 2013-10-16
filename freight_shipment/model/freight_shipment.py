@@ -76,9 +76,14 @@ class freight_shipment(osv.Model):
                   '\t- In Transit: Is already send to delivery.\n'
                   '\t- Return: The vehicle is return to the parking.\n'
             )),
-        'current_burden': fields.float(
-            string='Current Burden',
-            help='Current Burden'),
+        'weight': fields.float(
+            string='Weight',
+            help='Weight'
+        ),
+        'volumetric_weight': fields.float(
+            string='Volumetric Weight',
+            help='Volumetric Weight'
+        ),
         'date': fields.datetime(
             string='Shipment Date',
             required=True,
@@ -132,8 +137,8 @@ class freight_shipment(osv.Model):
 
         In the process it verify some conditions:
 
-          - that the current burden of the freight.shipment is less or equal to
-            the fleet vehicle volumetric capacity.
+          - that the volumetrict weight  of the freight.shipment is less or
+            equal to the fleet vehicle volumetric capacity.
 
         @return: True
         """
@@ -145,12 +150,12 @@ class freight_shipment(osv.Model):
             exceptions.append(
                 not self.check_volumetric_weight(
                     cr, uid, fso_brw.transport_unit_id.id,
-                    fso_brw.current_burden, context=context))
+                    fso_brw.volumetric_weight, context=context))
             if exceptions[-1]:
-                exception_msg += _('The current burden volume you are entering'
-                    ' is greater than the volumetric capacity of youre'
-                    ' transport unit (%s > %s).\n' %
-                    (fso_brw.current_burden,
+                exception_msg += _('The volumetric weight volume you are'
+                    ' entering is greater than the volumetric capacity of'
+                    ' youre transport unit (%s > %s).\n' %
+                    (fso_brw.volumetric_weight,
                      fso_brw.transport_unit_id.volumetric_capacity))
 
         self.write(
@@ -172,13 +177,13 @@ class freight_shipment(osv.Model):
         return True
 
 
-    def check_volumetric_weight(self, cr, uid, vehicle_id, current_burden,
+    def check_volumetric_weight(self, cr, uid, vehicle_id, volumetric_weight,
                                 context=None):
         """
-        Check if the freight.shipment order current burden value is less than th
-        vehicle volumetric capacity.
+        Check if the freight.shipment order volumetric_weight value is
+        less than th vehicle volumetric capacity.
         @param vehicle_id: fleet vehicle id
-        @param current_burden: freight.shipment order float value.
+        @param volumetric_weight: freight.shipment order float value.
         @return: True if the current burdern is less than the vehicle
             volumetric weight. False if the current burdern is greater than the
             vehicle volumetric weight
@@ -186,7 +191,8 @@ class freight_shipment(osv.Model):
         context = context or {}
         fv_obj = self.pool.get('fleet.vehicle')
         fv_brw = fv_obj.browse(cr, uid, vehicle_id, context=context)
-        return current_burden <= fv_brw.volumetric_capacity and True or False
+        return volumetric_weight <= fv_brw.volumetric_capacity \
+               and True or False
 
 
 class sale_order(osv.Model):
