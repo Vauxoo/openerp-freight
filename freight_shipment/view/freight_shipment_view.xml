@@ -70,12 +70,20 @@
             </field>
         </record>
 
-        <record id="freight_shipment_action" model="ir.actions.act_window">
-            <field name="name">Freight Shipment Action</field>
+        <record id="freight_shipment_fleet_action" model="ir.actions.act_window">
+            <field name="name">Fleet Shipment</field>
             <field name="res_model">freight.shipment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="help">Freight Shipment Action Help</field>
+            <field name="help">Freight Shipment Fleet Help</field>
+        </record>
+
+        <record id="freight_shipment_delivery_action" model="ir.actions.act_window">
+            <field name="name">Delivery Shipment</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help">Freight Shipment Delivery Help</field>
         </record>
 
         <menuitem 
@@ -92,10 +100,17 @@
             />
 
         <menuitem 
-            id="freight_shipment_menu"
-            name="Freight Shipment"
+            id="freight_shipment_fleet_menu"
+            name="Fleet"
             parent="freight_shipment_main_menu"
-            action="freight_shipment_action"
+            action="freight_shipment_fleet_action"
+            />
+
+        <menuitem 
+            id="freight_shipment_delivery_menu"
+            name="Delivery"
+            parent="freight_shipment_main_menu"
+            action="freight_shipment_delivery_action"
             />
 
         <record id="pos_order_form_w_delivery" model="ir.ui.view">
