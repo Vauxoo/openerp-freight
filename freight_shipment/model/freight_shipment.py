@@ -52,7 +52,6 @@ class freight_shipment(osv.Model):
         'pos_order_ids': fields.one2many(
             'pos.order', 'freight_shipment_id',
             string='POS Orders',
-            required=True,
             help='POS Orders'),
         'state': fields.selection(
             [('draft','Draft'),
