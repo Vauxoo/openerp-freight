@@ -2,9 +2,9 @@
 <openerp>
     <data>
 
-        <record id="fleet_shipment_form" model="ir.ui.view">
+        <record id="freight_shipment_form" model="ir.ui.view">
             <field name="name">Fleet Shipment Form</field>
-            <field name="model">fleet.shipment</field>
+            <field name="model">freight.shipment</field>
             <field name="arch" type="xml">
                 <form string="Fleet Shipment" version="7.0">
                     <header>
@@ -51,9 +51,9 @@
             </field>
         </record>
 
-        <record id="fleet_shipment_tree" model="ir.ui.view">
+        <record id="freight_shipment_tree" model="ir.ui.view">
             <field name="name">Fleet Shipment Tree</field>
-            <field name="model">fleet.shipment</field>
+            <field name="model">freight.shipment</field>
             <field name="arch" type="xml">
                 <tree string="Fleet Shipments" version="7.0">
                     <field name="name"/>
@@ -62,9 +62,9 @@
             </field>
         </record>
 
-        <record id="fleet_shipment_action" model="ir.actions.act_window">
+        <record id="freight_shipment_action" model="ir.actions.act_window">
             <field name="name">Fleet Shipment Action</field>
-            <field name="res_model">fleet.shipment</field>
+            <field name="res_model">freight.shipment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="help">Fleet Shipment Action Help</field>
@@ -77,17 +77,17 @@
             />
 
         <menuitem 
-            id="fleet_shipment_main_menu"
+            id="freight_shipment_main_menu"
             name="Fleet Shipment"
             parent="delivery_main_menu"
             sequence="20" 
             />
 
         <menuitem 
-            id="fleet_shipment_menu"
+            id="freight_shipment_menu"
             name="Fleet Shipment"
-            parent="fleet_shipment_main_menu"
-            action="fleet_shipment_action"
+            parent="freight_shipment_main_menu"
+            action="freight_shipment_action"
             />
 
         <record id="pos_order_form_w_delivery" model="ir.ui.view">
@@ -97,7 +97,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="delivery"/>
-                    <field name="fleet_shipment_id"/>
+                    <field name="freight_shipment_id"/>
                     <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
                 </xpath>
             </field>
