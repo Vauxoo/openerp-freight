@@ -29,6 +29,7 @@
                             <field name="current_burden"/>
                             <field name="date"/>
                             <field name="work_shift"/>
+                            <field name="type"/>
                             <field name="zone"/>
                         </group>
                         <notebook>

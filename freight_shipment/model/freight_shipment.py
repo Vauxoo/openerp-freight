@@ -96,6 +96,12 @@ class freight_shipment(osv.Model):
             size=256,
             required=True,
             help='Urban Zone'),
+        'type': fields.selection(
+            [('delivery', 'Delivery'),
+             ('fleet', 'Fleet')],
+            string='Type',
+            help='Freight Type',
+        ),
     }
 
     _defaults = {
