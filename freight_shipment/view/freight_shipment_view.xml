@@ -34,6 +34,7 @@
                         </group>
                         <notebook>
                             <page string="Orders">
+                                <field name="sale_order_ids" nolabel="1"/>
                                 <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft',))]}">
                                     <tree>
                                         <field name="name"/>
@@ -115,5 +116,16 @@
             </field>
         </record>
 
+        <record id="freight_shipment_sale_order_form_view" model="ir.ui.view">
+            <field name="name">Freight Shipment Sale Order Form View</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoiced']" position="after">
+                    <field name="freight_shipment_id"/>
+                </xpath>
+            </field>
+        </record>
     </data>
+
 </openerp>

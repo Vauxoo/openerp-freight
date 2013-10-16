@@ -102,6 +102,11 @@ class freight_shipment(osv.Model):
             string='Type',
             help='Freight Type',
         ),
+        'sale_order_ids': fields.one2many(
+            'sale.order', 'freight_shipment_id',
+            string='Sale Orders',
+            help='Sale Orders'
+        ),
     }
 
     _defaults = {
@@ -183,6 +188,19 @@ class freight_shipment(osv.Model):
         fv_obj = self.pool.get('fleet.vehicle')
         fv_brw = fv_obj.browse(cr, uid, vehicle_id, context=context)
         return current_burden <= fv_brw.volumetric_capacity and True or False
+
+
+class sale_order(osv.Model):
+
+    _inherit = "sale.order"
+    _columns = {
+        'freight_shipment_id': fields.many2one(
+            'freight.shipment',
+            string='Freight Shipment',
+            help=('Freight Shipment Order where this Sale Order is going to'
+                  ' be delivery.')
+        ),
+    }
 
 
 class pos_order(osv.Model):
