@@ -35,7 +35,6 @@
                         </group>
                         <notebook>
                             <page string="Orders">
-                                <field name="sale_order_ids" nolabel="1"/>
                                 <field name="picking_ids" nolabel="1"/>
                                 <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft',))]}">
                                     <tree>
@@ -47,6 +46,11 @@
                                         <field name="state"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="Information">
+                                <group string="Sale Orders">
+                                    <field name="sale_order_ids" nolabel="1"/>
+                                </group>
                             </page>
                         </notebook>
 
