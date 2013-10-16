@@ -24,14 +24,14 @@
 ###############################################################################
 
 {
-    'name': 'Fleet Zone',
+    'name': 'Freight Zone',
     'version': '1.0',
     'author': 'Vauxoo',
     'website': 'http://www.vauxoo.com/',
-    'category': 'Fleet',
+    'category': 'Freight',
     'description': '''
-Fleet Zone
-==========
+Freight Zone
+============
 
 -------------
 Main Features
@@ -40,7 +40,7 @@ Main Features
 ''',
     'depends': ['base'],
     'data': [
-        'view/fleet_zone.xml',
+        'view/freight_zone.xml',
         ],
     'demo': [],
     'test': [],
