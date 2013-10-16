@@ -24,14 +24,14 @@
 ###############################################################################
 
 {
-    'name': 'Fleet Shipment',
+    'name': 'Freight Shipment',
     'version': '1.0',
     'author': 'Vauxoo',
     'website': 'http://www.vauxoo.com/',
     'category': '',
     'description': '''
-Fleet Shipment
-==============
+Freight Shipment
+================
 
 This module add a new model for shipment process that manage the shipment of
 the orders of delivery generate for the POS and relate it to the transport

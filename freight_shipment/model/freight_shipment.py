@@ -31,11 +31,11 @@ import time
 class freight_shipment(osv.Model):
 
     _name = 'freight.shipment'
-    _description = _('Fleet Shipment')
+    _description = _('Freight Shipment')
     _inherit = ['mail.thread']
 
     '''
-    Fleet Shipment
+    Freight Shipment
     '''
 
     _columns = {
@@ -64,7 +64,7 @@ class freight_shipment(osv.Model):
              ('return','Return')],
             string='State',
             required=True,
-            help=('Indicate Fleet Shipment Order State. The possible states'
+            help=('Indicate Freight Shipment Order State. The possible states'
                   ' are:\n'
                   '\t- Draft: A rough copy of the document, just a draft.\n'
                   '\t- Waiting for Assignment: A freight.shipment order proposal'
@@ -233,8 +233,8 @@ class pos_order(osv.Model):
     _columns = {
         'freight_shipment_id': fields.many2one(
             'freight.shipment',
-            string='Fleet Shipment',
-            help='Fleet Shipment'),
+            string='Freight Shipment',
+            help='Freight Shipment'),
         'delivery': fields.boolean(
             string='Is Delivery?',
             help=('If this checkbox is checked then current order it or it'

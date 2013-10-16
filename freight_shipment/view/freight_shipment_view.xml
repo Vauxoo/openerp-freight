@@ -3,10 +3,10 @@
     <data>
 
         <record id="freight_shipment_form" model="ir.ui.view">
-            <field name="name">Fleet Shipment Form</field>
+            <field name="name">Freight Shipment Form</field>
             <field name="model">freight.shipment</field>
             <field name="arch" type="xml">
-                <form string="Fleet Shipment" version="7.0">
+                <form string="Freight Shipment" version="7.0">
                     <header>
                         <button 
                             name="action_prepare"
@@ -60,10 +60,10 @@
         </record>
 
         <record id="freight_shipment_tree" model="ir.ui.view">
-            <field name="name">Fleet Shipment Tree</field>
+            <field name="name">Freight Shipment Tree</field>
             <field name="model">freight.shipment</field>
             <field name="arch" type="xml">
-                <tree string="Fleet Shipments" version="7.0">
+                <tree string="Freight Shipments" version="7.0">
                     <field name="name"/>
                     <field name="state"/>
                 </tree>
@@ -71,11 +71,11 @@
         </record>
 
         <record id="freight_shipment_action" model="ir.actions.act_window">
-            <field name="name">Fleet Shipment Action</field>
+            <field name="name">Freight Shipment Action</field>
             <field name="res_model">freight.shipment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="help">Fleet Shipment Action Help</field>
+            <field name="help">Freight Shipment Action Help</field>
         </record>
 
         <menuitem 
@@ -86,14 +86,14 @@
 
         <menuitem 
             id="freight_shipment_main_menu"
-            name="Fleet Shipment"
+            name="Freight Shipment"
             parent="delivery_main_menu"
             sequence="20" 
             />
 
         <menuitem 
             id="freight_shipment_menu"
-            name="Fleet Shipment"
+            name="Freight Shipment"
             parent="freight_shipment_main_menu"
             action="freight_shipment_action"
             />
