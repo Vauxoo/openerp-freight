@@ -75,7 +75,11 @@
             <field name="res_model">freight.shipment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="help">Freight Shipment Fleet Help</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create an Fleet Shipment. 
+                </p>
+            </field>
         </record>
 
         <record id="freight_shipment_delivery_action" model="ir.actions.act_window">
@@ -83,7 +87,11 @@
             <field name="res_model">freight.shipment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="help">Freight Shipment Delivery Help</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create an Shipment Delivery 
+                </p>
+            </field>
         </record>
 
         <menuitem 
