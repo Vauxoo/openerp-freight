@@ -40,7 +40,7 @@ Main Features
 ''',
     'depends': ['base'],
     'data': [
-        'view/freight_zone.xml',
+        'view/freight_zone_view.xml',
         ],
     'demo': [],
     'test': [],
