@@ -36,6 +36,7 @@
                         <notebook>
                             <page string="Orders">
                                 <field name="sale_order_ids" nolabel="1"/>
+                                <field name="picking_ids" nolabel="1"/>
                                 <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft',))]}">
                                     <tree>
                                         <field name="name"/>
@@ -127,6 +128,18 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="freight_shipment_picking_out_form_view" model="ir.ui.view">
+            <field name="name">Freight Shipment Picking Out Form View</field>
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_state']" position="after">
+                    <field name="freight_shipment_id"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 
 </openerp>

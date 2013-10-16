@@ -112,6 +112,11 @@ class freight_shipment(osv.Model):
             string='Sale Orders',
             help='Sale Orders'
         ),
+        'picking_ids': fields.one2many(
+            'stock.picking.out', 'freight_shipment_id',
+            string='Delivery Orders (Pickings)',
+            help='Delivery Orders (Pickings)'
+        ),
     }
 
     _defaults = {
@@ -205,6 +210,18 @@ class sale_order(osv.Model):
             string='Freight Shipment',
             help=('Freight Shipment Order where this Sale Order is going to'
                   ' be delivery.')
+        ),
+    }
+
+
+class stock_picking_out(osv.Model):
+
+    _inherit = "stock.picking.out"
+    _columns = {
+        'freight_shipment_id': fields.many2one(
+            'freight.shipment',
+            string='Freight Shipment',
+            help='Freight Shipment Order'
         ),
     }
 
