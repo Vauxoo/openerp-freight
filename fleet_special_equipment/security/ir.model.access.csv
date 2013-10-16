@@ -1,3 +1,0 @@
-id,active,group_id:id,name,model_id,perm_create,perm_unlink,perm_write,perm_read
-fleet_extended_9,1,fleet.group_fleet_user,fleet_special_equipment_user,fleet.special.equipment,1,0,1,1
-fleet_extended_10,1,fleet.group_fleet_manager,fleet_special_equipment_manager,fleet.special.equipment,1,1,1,1
