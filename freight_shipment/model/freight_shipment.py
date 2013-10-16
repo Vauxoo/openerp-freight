@@ -91,11 +91,11 @@ class freight_shipment(osv.Model):
             string='Work Shift',
             required=True,
             help='Work Shift'),
-        'zone': fields.text(
-            string='Urban Zone',
-            size=256,
+        'zone_id': fields.many2one(
+            'freight.zone',
+            string='Zone',
             required=True,
-            help='Urban Zone'),
+            help='Zone'),
         'type': fields.selection(
             [('delivery', 'Delivery'),
              ('fleet', 'Fleet')],
@@ -108,7 +108,6 @@ class freight_shipment(osv.Model):
         'state': 'draft',
         'work_shift': 'morning',
         'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
-        'zone': 'NO DEFINED',
     }
 
     def action_prepare(self, cr, uid, ids, context=None):
