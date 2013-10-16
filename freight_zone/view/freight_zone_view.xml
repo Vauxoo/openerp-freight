@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <record id="fleet_zone_form" model="ir.ui.view">
+        <record id="freight_zone_form" model="ir.ui.view">
             <field name="name">Zone</field>
-            <field name="model">fleet.zone</field>
+            <field name="model">freight.zone</field>
             <field name="arch" type="xml">
                 <form string="Zone" version="7.0">
                     <group>
@@ -27,61 +27,61 @@
             </field>
         </record>
         
-        <record id="fleet_zone_tree" model="ir.ui.view">
-            <field name="name">Fleet Zone</field>
-            <field name="model">fleet.zone</field>
+        <record id="freight_zone_tree" model="ir.ui.view">
+            <field name="name">freight Zone</field>
+            <field name="model">freight.zone</field>
             <field name="arch" type="xml">
-                <tree string="Fleet Zone" version="7.0">
+                <tree string="freight Zone" version="7.0">
                     <field name="name"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="fleet_zone_action">
-            <field name="name">Fleet Zone</field>
-            <field name="res_model">fleet.zone</field>
+        <record model="ir.actions.act_window" id="freight_zone_action">
+            <field name="name">freight Zone</field>
+            <field name="res_model">freight.zone</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="help">Fleet Zone Help</field>
+            <field name="help">freight Zone Help</field>
         </record>
         
         <menuitem 
-            id="fleet_zone_main_menu" 
+            id="freight_zone_main_menu" 
             name="Zone" 
             sequence="20" 
             />
 
         <menuitem 
-            id="fleet_zone_title" 
-            name="Zone Fleet" 
-            parent="fleet_zone_main_menu" 
+            id="freight_zone_title" 
+            name="Zone freight" 
+            parent="freight_zone_main_menu" 
             sequence="20" 
             />
 
         <menuitem 
-            id="zone_fleet_menu"
+            id="zone_freight_menu"
             name="Zone"
-            parent="fleet_zone_title"
-            action="fleet_zone_action"
+            parent="freight_zone_title"
+            action="freight_zone_action"
             />
         
-        <record id="fleet_benchmark_form" model="ir.ui.view">
-            <field name="name">Fleet benchmark</field>
-            <field name="model">fleet.benchmark</field>
+        <record id="freight_benchmark_form" model="ir.ui.view">
+            <field name="name">freight benchmark</field>
+            <field name="model">freight.benchmark</field>
             <field name="arch" type="xml">
-                <form string="Fleet Benchmark" version="7.0">
+                <form string="freight Benchmark" version="7.0">
                     <field name="sequence"/>
                     <field name="name"/>
                 </form>
             </field>
         </record>
         
-        <record id="fleet_benchmark_tree" model="ir.ui.view">
-            <field name="name">Fleet benchmark</field>
-            <field name="model">fleet.benchmark</field>
+        <record id="freight_benchmark_tree" model="ir.ui.view">
+            <field name="name">freight benchmark</field>
+            <field name="model">freight.benchmark</field>
             <field name="arch" type="xml">
-                <tree string="Fleet Benchmark" version="7.0">
+                <tree string="freight Benchmark" version="7.0">
                     <field name="sequence"/>
                     <field name="name"/>
                     <field name="zone_id"/>
@@ -89,11 +89,11 @@
             </field>
         </record>
 
-        <record id="fleet_benchmark_search" model="ir.ui.view">
-            <field name="name">Fleet Benchmark</field>
-            <field name="model">fleet.benchmark</field>
+        <record id="freight_benchmark_search" model="ir.ui.view">
+            <field name="name">freight Benchmark</field>
+            <field name="model">freight.benchmark</field>
             <field name="arch" type="xml">
-                <search string="Fleet Benchmark">
+                <search string="freight Benchmark">
                     <group expand="0" string="Group By...">
                         <filter string="Zone" icon="terp-folder-orange" domain="" context="{'group_by':'zone_id'}"/>
                     </group>
@@ -101,28 +101,28 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="fleet_benchmark_action">
-            <field name="name">Fleet Benchmark</field>
-            <field name="res_model">fleet.benchmark</field>
+        <record model="ir.actions.act_window" id="freight_benchmark_action">
+            <field name="name">freight Benchmark</field>
+            <field name="res_model">freight.benchmark</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
-            <field name="search_view_id" ref="fleet_benchmark_search"/>
+            <field name="search_view_id" ref="freight_benchmark_search"/>
             <!--<field name="view_id" ref="periodic_inventory_valuation_line_list"/>            -->         
         </record>
 
         <menuitem 
-            id="fleet_benchmark" 
+            id="freight_benchmark" 
             name="Zone Benchmarks" 
-            parent="fleet_zone_main_menu" 
+            parent="freight_zone_main_menu" 
             sequence="30" 
             />
 
         <menuitem 
-            id="fleet_benchmark_menu"
+            id="freight_benchmark_menu"
             name="Benchmark"
-            parent="fleet_benchmark"
-            action="fleet_benchmark_action"
+            parent="freight_benchmark"
+            action="freight_benchmark_action"
             />
         
     
