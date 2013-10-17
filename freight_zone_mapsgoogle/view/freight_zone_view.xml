@@ -66,6 +66,64 @@
             action="freight_zone_mapsgoogle_action"
             />
         
+        <record id="freight_benchmark_mapsgoogle_form" model="ir.ui.view">
+            <field name="name">freight benchmark</field>
+            <field name="model">freight.benchmark.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <form string="freight Benchmark" version="7.0">
+                    <field name="sequence"/>
+                    <field name="name"/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="freight_benchmark_mapsgoogle_tree" model="ir.ui.view">
+            <field name="name">freight benchmark</field>
+            <field name="model">freight.benchmark.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <tree string="freight Benchmark" version="7.0">
+                    <field name="sequence"/>
+                    <field name="name"/>
+                    <field name="zone_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="freight_benchmark_mapsgoogle_search" model="ir.ui.view">
+            <field name="name">freight Benchmark</field>
+            <field name="model">freight.benchmark.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <search string="freight Benchmark">
+                    <group expand="0" string="Group By...">
+                        <filter string="Zone" icon="terp-folder-orange" domain="" context="{'group_by':'zone_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_benchmark_mapsgoogle_action">
+            <field name="name">freight Benchmark</field>
+            <field name="res_model">freight.benchmark.mapsgoogle</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="freight_benchmark_mapsgoogle_search"/>
+            <!--<field name="view_id" ref="periodic_inventory_valuation_line_list"/>            -->         
+        </record>
+
+        <menuitem 
+            id="freight_benchmark_mapsgoogle" 
+            name="Zone Benchmarks" 
+            parent="freight_zone_mapsgoogle_main_menu" 
+            sequence="30" 
+            />
+
+        <menuitem 
+            id="freight_benchmark_mapsgoogle_menu"
+            name="Benchmark"
+            parent="freight_benchmark_mapsgoogle"
+            action="freight_benchmark_mapsgoogle_action"
+            />
     
     </data>
 </openerp>

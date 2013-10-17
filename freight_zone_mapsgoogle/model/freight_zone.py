@@ -33,7 +33,7 @@ class freight_zone(osv.Model):
     _description = 'Zone'
     _columns = {
         'name' : fields.char('Zone Name', 256, help='Zone Name'),
-        'benchmark_ids' : fields.one2many('freight.benchmark', 'zone_id', 'Benchmark', help=''),
+        'benchmark_ids' : fields.one2many('freight.benchmark.mapsgoogle', 'zone_id', 'Benchmark', help=''),
     }
 
 class freight_benchmark(osv.Model):
@@ -41,6 +41,6 @@ class freight_benchmark(osv.Model):
     _description = "Zone Benchmark"
     _columns = {
         "name" : fields.char("Zone Benchmark", 256, help="Zone Benchmark"),
-        "zone_id" : fields.many2one("freight.zone", "Zone", help=""),
+        "zone_id" : fields.many2one("freight.zone.mapsgoogle", "Zone", help=""),
         'sequence': fields.integer('Sequence', help="Gives the sequence of this benchmark when displaying the zone."),   
     }
