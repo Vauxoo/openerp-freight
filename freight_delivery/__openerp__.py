@@ -24,21 +24,21 @@
 ###############################################################################
 
 {
-    'name': 'Fleet Delivery',
+    'name': 'Freight Delivery',
     'version': '1.0',
     'author': 'Vauxoo',
     'website': 'http://www.vauxoo.com/',
-    'category': 'Fleet',
+    'category': 'Freight',
     'description': '''
-Fleet Delivery
-==============
+Freight Delivery
+================
 
 fleet.vehicle model is edited to allow for delivery transport units.
 
 ''',
     'depends': ['base', 'fleet'],
     'data': [
-        "view/fleet_delivery_view.xml",
+        "view/freight_delivery_view.xml",
         ],
     'demo': [],
     'test': [],
