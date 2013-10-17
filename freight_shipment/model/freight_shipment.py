@@ -244,6 +244,19 @@ class sale_order(osv.Model):
         ),
     }
 
+    def _prepare_order_picking(self, cr, uid, order, context=None):
+        """
+        Overwrite the _prepare_order_picking method to add the prefered fregiht
+        shipment order sete din the sale order to the pickings generating in
+        the confirm sale order process.
+        """
+        context = context or {}
+        res = super(sale_order, self)._prepare_order_picking(
+            cr, uid, order, context=context)
+        res.update(
+            {'freight_shipment_id': order.prefered_freight_shipment_id.id})
+        return res
+
 
 class pos_order(osv.Model):
 
