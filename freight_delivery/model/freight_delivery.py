@@ -35,6 +35,7 @@ class fleet_vehicle(osv.Model):
     _description = 'Information on a vehicle'
 
     _columns = {
+            'physical_capacity' : fields.float('Physical Weight Capacity', help='Vehicle Physical Weight Capacity'), 
             'volumetric_capacity' : fields.float('Volumetric Weight Capacity', help='Vehicle Volumetric Weight Capacity'), 
             'type':fields.selection( [('transport','Transport'),('automobile','Automobile')], string="Vehicle Type", 
                 help='Vehicle Type'), 
