@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="freight_zone_mapsgoogle_form" model="ir.ui.view">
+            <field name="name">Zone</field>
+            <field name="model">freight.zone.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <form string="Zone" version="7.0">
+                    <group>
+                        <field name="name" class="oe_inline"/>
+                    </group>    
+                    <notebook>
+                        <page string='Benchmarks'>
+                            <field name='benchmark_ids' nolabel='1'>
+                                <tree>
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                </tree>
+                                <form>
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+        
+        <record id="freight_zone_mapsgoogle_tree" model="ir.ui.view">
+            <field name="name">freight Zone</field>
+            <field name="model">freight.zone.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <tree string="freight Zone" version="7.0">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_zone_mapsgoogle_action">
+            <field name="name">freight Zone</field>
+            <field name="res_model">freight.zone.mapsgoogle</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help">freight Zone Help</field>
+        </record>
+        
+        <menuitem 
+            id="freight_zone_mapsgoogle_main_menu" 
+            name="Zone" 
+            sequence="20" 
+            />
+
+        <menuitem 
+            id="freight_zone_mapsgoogle_title" 
+            name="Zone freight" 
+            parent="freight_zone_mapsgoogle_main_menu" 
+            sequence="20" 
+            />
+
+        <menuitem 
+            id="zone_freight_mapsgoogle_menu"
+            name="Zone"
+            parent="freight_zone_mapsgoogle_title"
+            action="freight_zone_mapsgoogle_action"
+            />
+        
+    
+    </data>
+</openerp>
