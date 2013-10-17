@@ -18,5 +18,15 @@
             </field>
         </record>
         
+        <record model="ir.ui.view" id="product_inherit_volumetric">
+            <field name="name">product.normal.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Weights']" position="inside">
+                        <field name="volumetric_weight"/> 
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>

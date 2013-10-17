@@ -23,27 +23,36 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-from openerp.osv import fields, osv
-import time
-import datetime
-from openerp import tools
-from openerp.osv.orm import except_orm
-from openerp.tools.translate import _
+{
+    'name': 'Freight Weight',
+    'version': '1.0',
+    'author': 'Vauxoo',
+    'website': 'http://www.vauxoo.com/',
+    'category': 'Freight',
+    'description': '''
+Freight Weight
+==============
 
-class fleet_vehicle(osv.Model):
-    _inherit = 'fleet.vehicle'
-    _description = 'Information on a vehicle'
+Main features
+-------------
+**Product**
 
-    _columns = {
-            'physical_capacity' : fields.float('Physical Weight Capacity', help='Vehicle Physical Weight Capacity'), 
-            'volumetric_capacity' : fields.float('Volumetric Weight Capacity', help='Vehicle Volumetric Weight Capacity'), 
-            'type':fields.selection(
-                [('automobile','Automobile'),('freight','Freight'),('delivery', 'Delivery')],string="Vehicle Type", 
-                help='Vehicle Type'), 
-     }
+Permission is needed to activate the "Allow to define several packaging method" to display
+the fields of volume and volumetric weight in product.
+Volumetric weight is calculated using the formula (volume / 5000)
 
-    _defaults = {
-            'type': 'automobile',
-            
-            }
+**Vehicle**
 
+Now you have two fields, volumetric weight capacity and physical weight capacity.
+
+''',
+    'depends': ['base', 'fleet', 'product'],
+    'data': [
+        "data/freight_data.xml",
+        "view/freight_delivery_view.xml",
+        ],
+    'demo': [],
+    'test': [],
+    'active': False,
+    'installable': True,
+}
