@@ -101,7 +101,7 @@
 
         <menuitem 
             id="delivery_main_menu"
-            name="Delivery"
+            name="Freight"
             sequence="20"
             />
 
