@@ -30,7 +30,7 @@
                             <field name="volumetric_weight"/>
                             <field name="date"/>
                             <field name="work_shift"/>
-                            <field name="type"/>
+                            <field name="type" invisible="1"/>
                             <field name="zone_id"/>
                         </group>
                         <notebook>
