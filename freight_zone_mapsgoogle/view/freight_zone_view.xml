@@ -37,6 +37,11 @@
             </field>
         </record>
 
+       <record model="ir.actions.client" id="freight_zone_mapsgoogle_action">                                      
+           <field name="name">freight Zone GOOGLE</field>                                          
+           <field name="tag">example.action</field>                                                                                                    
+       </record>     
+<!--
         <record model="ir.actions.act_window" id="freight_zone_mapsgoogle_action">
             <field name="name">freight Zone</field>
             <field name="res_model">freight.zone.mapsgoogle</field>
@@ -45,7 +50,7 @@
             <field name="view_mode">tree,form</field>
             <field name="help">freight Zone Help</field>
         </record>
-        
+    -->    
         <menuitem 
             id="freight_zone_mapsgoogle_main_menu" 
             name="Zone" 
