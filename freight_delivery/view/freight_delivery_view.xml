@@ -9,8 +9,9 @@
                 <xpath expr="//sheet" position="inside">
                     <group col="2" string="Transport unit">
                         <group>
-                            <field name="volumetric_capacity" attrs="{'required': [('type','=','transport')]}"/> 
                             <field name="type" required="True"/> 
+                            <field name="physical_capacity" attrs="{'required': [('type','=','freight')], 'invisible': [('type','in',('automobile', 'delivery'))]}"/> 
+                            <field name="volumetric_capacity" attrs="{'required': [('type','=','freight')], 'invisible': [('type','in',('automobile', 'delivery'))]}"/> 
                         </group>
                     </group>
                 </xpath>
