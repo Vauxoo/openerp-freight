@@ -29,9 +29,9 @@ from openerp import tools
 import time
 
 
-class stock_picking_out(osv.Model):
+class stock_picking(osv.Model):
 
-    _inherit = "stock.picking.out"
+    _inherit = "stock.picking"
     _columns = {
         'freight_shipment_id': fields.many2one(
             'freight.shipment',
@@ -127,7 +127,7 @@ class freight_shipment(osv.Model):
                   ' with the current order.')
         ),
         'picking_ids': fields.one2many(
-            'stock.picking.out', 'freight_shipment_id',
+            'stock.picking', 'freight_shipment_id',
             string='Delivery Orders (Pickings)',
             help='Delivery Orders (Pickings)'
         ),

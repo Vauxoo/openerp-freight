@@ -165,12 +165,12 @@
             </field>
         </record>
 
-        <record id="freight_shipment_picking_out_form_view" model="ir.ui.view">
-            <field name="name">Freight Shipment Picking Out Form View</field>
-            <field name="model">stock.picking.out</field>
-            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+        <record id="freight_shipment_picking_form_view" model="ir.ui.view">
+            <field name="name">Freight Shipment Picking Form View</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='invoice_state']" position="after">
+                <xpath expr="//form" position="inside">
                     <field name="freight_shipment_id"/>
                 </xpath>
             </field>
