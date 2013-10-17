@@ -29,6 +29,7 @@ import datetime
 from openerp import tools
 from openerp.osv.orm import except_orm
 from openerp.tools.translate import _
+import openerp.addons.decimal_precision as dp
 
 class fleet_vehicle(osv.Model):
     _inherit = 'fleet.vehicle'
