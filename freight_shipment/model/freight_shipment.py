@@ -107,15 +107,23 @@ class freight_shipment(osv.Model):
             string='Type',
             help='Freight Type',
         ),
-        'sale_order_ids': fields.one2many(
-            'sale.order', 'freight_shipment_id',
-            string='Sale Orders',
-            help='Sale Orders'
+        'prefered_sale_order_ids': fields.one2many(
+            'sale.order', 'prefered_freight_shipment_id',
+            string='Prefered Sale Orders',
+            help=('The Sale Orders who its prefered freight shipment was set'
+                  ' with the current order.')
         ),
         'picking_ids': fields.one2many(
             'stock.picking.out', 'freight_shipment_id',
             string='Delivery Orders (Pickings)',
             help='Delivery Orders (Pickings)'
+        ),
+        'sale_order_ids': fields.many2many(
+            'sale.order',
+            'sale_order_freight_shipment_rel',
+            'fs_id', 'sale_order_id',
+            string='Processed Sale Orders',
+            help=('Sale Orders real send')
         ),
     }
 
@@ -205,11 +213,21 @@ class sale_order(osv.Model):
 
     _inherit = "sale.order"
     _columns = {
-        'freight_shipment_id': fields.many2one(
+        'prefered_freight_shipment_id': fields.many2one(
             'freight.shipment',
-            string='Freight Shipment',
-            help=('Freight Shipment Order where this Sale Order is going to'
-                  ' be delivery.')
+            string='Prefered Freight Shipment',
+            help=('Prefered Freight Shipment Order the users set when creating'
+                  ' the Sale Order. This is the prefered Freight Shipment' 
+                  ' where the sale order products will be send. Is not always'
+                  'the real final destination')
+        ),
+        'freight_shipment_ids': fields.many2many(
+            'freight.shipment',
+            'sale_orders_freight_shipment_rel',
+            'sale_order_id', 'fs_id',
+            string='Final Freight Shipments',
+            help=('It represent the real final destination Freight Shipment'
+                  ' orders where this sale order was send.')
         ),
     }
 

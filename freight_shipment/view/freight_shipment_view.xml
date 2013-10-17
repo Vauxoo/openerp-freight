@@ -47,9 +47,14 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Information">
-                                <group string="Sale Orders">
-                                    <field name="sale_order_ids" nolabel="1"/>
+                            <page string="Sale Orders">
+                                <group name="sale-order-group" colspan="4">
+                                    <group string="Prefered" colspan="4">
+                                        <field name="prefered_sale_order_ids" nolabel="1"/>
+                                    </group>
+			            <group string="Shipped" colspan="4">
+				         <field name="sale_order_ids" nolabel="1"/>
+                                    </group> 
                                 </group>
                             </page>
                         </notebook>
@@ -150,8 +155,12 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='invoiced']" position="after">
-                    <field name="freight_shipment_id"/>
+                <xpath expr="//page[@string='Other Information']/group" position="inside">
+                    <group name="freigh-section" string="Freight Shipment" colspan="4">
+			<field name="prefered_freight_shipment_id"/>
+			<label for="freight_shipment_ids"/>
+			<field name="freight_shipment_ids" nolabel="1" colspan="4"/>
+		    </group>
                 </xpath>
             </field>
         </record>
