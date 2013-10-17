@@ -47,3 +47,30 @@ class fleet_vehicle(osv.Model):
             
             }
 
+class product_product(osv.Model):
+    _inherit = 'product.product'
+
+    def _calculate_weight(self, cr, uid, ids, name, args, context=None):
+        result = dict.fromkeys(ids, False)
+        for obj in self.browse(cr, uid, ids, context=context):
+            result[obj.id] = obj.volume / 5000
+        return result
+    def _set_volumetric_weight(self, cr, uid, id, name, value, args, context=None):
+        return self.write(cr, uid, [id], {'volumetric_weight': value},
+                context=context)
+
+    _columns = {
+            'volumetric_weight':fields.function(
+            fnct=_calculate_weight,
+            fnct_inv=_set_volumetric_weight,
+            string='Volumetric Weight',
+            type="float", 
+            store={
+                'product.product': (lambda self, cr, uid, ids, c={}: ids, ['volume'], 10),
+            },
+            help='Product Volumetric Weight',
+            digits_compute=dp.get_precision('Volumetric Weight'),
+            ), 
+
+            #'divider' : fields.float('Divider', help='Product Volumetric Weight'), 
+     }

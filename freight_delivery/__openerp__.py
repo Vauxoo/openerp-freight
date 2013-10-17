@@ -36,8 +36,9 @@ Freight Delivery
 fleet.vehicle model is edited to allow for delivery transport units.
 
 ''',
-    'depends': ['base', 'fleet'],
+    'depends': ['base', 'fleet', 'product'],
     'data': [
+        "data/freight_data.xml",
         "view/freight_delivery_view.xml",
         ],
     'demo': [],
