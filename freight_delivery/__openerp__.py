@@ -24,16 +24,26 @@
 ###############################################################################
 
 {
-    'name': 'Freight Delivery',
+    'name': 'Freight Weight',
     'version': '1.0',
     'author': 'Vauxoo',
     'website': 'http://www.vauxoo.com/',
     'category': 'Freight',
     'description': '''
-Freight Delivery
-================
+Freight Weight
+==============
 
-fleet.vehicle model is edited to allow for delivery transport units.
+Main features
+-------------
+**Product**
+
+Permission is needed to activate the "Allow to define several packaging method" to display
+the fields of volume and volumetric weight in product.
+Volumetric weight is calculated using the formula (volume / 5000)
+
+**Vehicle**
+
+Now you have two fields, volumetric weight capacity and physical weight capacity.
 
 ''',
     'depends': ['base', 'fleet', 'product'],
