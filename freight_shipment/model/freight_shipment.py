@@ -28,6 +28,19 @@ from openerp.tools.translate import _
 from openerp import tools
 import time
 
+
+class stock_picking_out(osv.Model):
+
+    _inherit = "stock.picking.out"
+    _columns = {
+        'freight_shipment_id': fields.many2one(
+            'freight.shipment',
+            string='Freight Shipment',
+            help='Freight Shipment Order'
+        ),
+    }
+
+
 class freight_shipment(osv.Model):
 
     _name = 'freight.shipment'
@@ -228,18 +241,6 @@ class sale_order(osv.Model):
             string='Final Freight Shipments',
             help=('It represent the real final destination Freight Shipment'
                   ' orders where this sale order was send.')
-        ),
-    }
-
-
-class stock_picking_out(osv.Model):
-
-    _inherit = "stock.picking.out"
-    _columns = {
-        'freight_shipment_id': fields.many2one(
-            'freight.shipment',
-            string='Freight Shipment',
-            help='Freight Shipment Order'
         ),
     }
 
