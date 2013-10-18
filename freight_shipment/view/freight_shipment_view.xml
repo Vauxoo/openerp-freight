@@ -139,7 +139,7 @@
                 <xpath expr="//notebook" position="inside">
                     <page string="Freight Shipment">
                         <group>
-                            <field name="freight_shipment_id"/>
+                            <field name="freight_shipment_id" domain="[('type','=','delivery')]"/>
                             <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
                             <field name="delivery"/>
                         </group>
