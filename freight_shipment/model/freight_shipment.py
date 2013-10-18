@@ -258,6 +258,23 @@ class sale_order(osv.Model):
         return res
 
 
+class stock_move(osv.osv):
+    _inherit = 'stock.move'
+
+    def _prepare_chained_picking(self, cr, uid, picking_name, picking,
+                                 picking_type, moves_todo, context=None):
+        """
+        Overwrithe method to add set the freight_shipment_id initial value
+        when creating the dictionary to create the nre chained pickings.
+        """
+        context = context or {}
+        res = super(stock_move, self)._prepare_chained_picking(
+            cr, uid, picking_name, picking, picking_type, moves_todo,
+            context=context)
+        res.update({'freight_shipment_id': picking.freight_shipment_id.id})
+        return res
+
+
 class pos_order(osv.Model):
 
     _inherit = "pos.order"
