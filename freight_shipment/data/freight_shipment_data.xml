@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="mt_fs_new" model="mail.message.subtype">
+            <field name="name">Freight Shipment Order Created</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment Order Created</field>
+        </record>
+
+        <record id="mt_fs_waiting" model="mail.message.subtype">
+            <field name="name">Awaiting Freight Shipment Orde</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment Order is Awaiting State</field>
+        </record>
+
+    </data>
+</openerp>

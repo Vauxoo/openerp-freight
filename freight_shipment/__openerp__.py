@@ -59,6 +59,7 @@ To use this module you need to configure youre OpenERP instance by:
                 'freight_zone'],
     'data': [
         'view/freight_shipment_view.xml',
+        'data/freight_shipment_data.xml',
     ],
     'demo': [],
     'test': [],

@@ -165,6 +165,16 @@ class freight_shipment(osv.Model):
         'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
     }
 
+    _track = {
+        'state': {
+            'freight_shipment.mt_fs_new':
+                lambda self, cr, uid, obj, ctx=None: obj['state'] in ['draft'],
+            'freight_shipment.mt_fs_waiting':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['awaiting'],
+        },
+    }
+
     def action_prepare(self, cr, uid, ids, context=None):
         """
         Change the state of a freight.shipment order from 'draft' to 'awaiting'
