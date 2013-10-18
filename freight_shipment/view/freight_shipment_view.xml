@@ -136,10 +136,14 @@
             <field name="model">pos.order</field>
             <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="delivery"/>
-                    <field name="freight_shipment_id"/>
-                    <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Freight Shipment">
+                        <group>
+                            <field name="freight_shipment_id"/>
+                            <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
+                            <field name="delivery"/>
+                        </group>
+                    </page>
                 </xpath>
             </field>
         </record>
