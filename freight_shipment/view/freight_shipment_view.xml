@@ -162,7 +162,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@string='Other Information']/group" position="inside">
                     <group name="freigh-section" string="Freight Shipment" colspan="4">
-			<field name="prefered_freight_shipment_id"/>
+			<field name="prefered_freight_shipment_id" required="1" domain="[('type', '=', 'fleet')]"/>
 			<label for="freight_shipment_ids"/>
 			<field name="freight_shipment_ids" nolabel="1" colspan="4"/>
 		    </group>
