@@ -51,6 +51,23 @@ class freight_shipment(osv.Model):
     Freight Shipment
     '''
 
+    def _get_sale_order_ids(self, cr, uid, ids, field_name, arg, context=None):
+        """
+        """
+        context = context or {}
+        res = {}.fromkeys(ids, [])
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            for picking_brw in fs_brw.picking_ids:
+                res[fs_brw.id] += [picking_brw.sale_id.id]
+            res[fs_brw.id] = list(set(res[fs_brw.id]))
+
+        return res
+
+            #~ for so_brw in fs_brw.sale_order_ids:
+                #~ for picking_brw in so_brw.picking_ids:
+                    #~ if picking_brw.id in fs_picking_ids:
+                        #~ res[fs_brw.id] += [picking_brw.id]
+
     _columns = {
         'name': fields.char(
             string='Number Reference',
@@ -131,10 +148,12 @@ class freight_shipment(osv.Model):
             string='Delivery Orders (Pickings)',
             help='Delivery Orders (Pickings)'
         ),
-        'sale_order_ids': fields.many2many(
-            'sale.order',
-            'sale_order_freight_shipment_rel',
-            'fs_id', 'sale_order_id',
+        'sale_order_ids': fields.function(
+            fnct=_get_sale_order_ids,
+            #~ 'sale_order_freight_shipment_rel',
+            #~ 'fs_id', 'sale_order_id',
+            type='many2many',
+            relation='sale.order',
             string='Processed Sale Orders',
             help=('Sale Orders real send')
         ),
