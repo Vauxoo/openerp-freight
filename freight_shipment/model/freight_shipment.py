@@ -53,6 +53,9 @@ class freight_shipment(osv.Model):
 
     def _get_sale_order_ids(self, cr, uid, ids, field_name, arg, context=None):
         """
+        Returns a dictonary { freight shipment id : [ sale order ids ] } to
+        reload the really shipped orders (that sale oders how pickings are
+        really into the freight shipment).
         """
         context = context or {}
         res = {}.fromkeys(ids, [])
