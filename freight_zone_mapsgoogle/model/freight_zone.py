@@ -27,7 +27,8 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 from openerp import tools
 import datetime
-    
+import openerp.addons.decimal_precision as dp
+
 class freight_zone_mapsgoogle(osv.Model):
     _name = 'freight.zone.mapsgoogle'
     _description = 'Zone'

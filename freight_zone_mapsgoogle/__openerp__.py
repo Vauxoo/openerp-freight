@@ -38,12 +38,13 @@ Main Features
 -------------
 
 ''',
-    'depends': ['base'],
+    'depends': ['base', 'decimal_precision'],
     'data': [
+        'data/gmaps_data.xml',
         'view/freight_zone_view.xml',
         ],
     'demo': [
-        'demo/gmaps_data.xml',
+        'demo/gmaps_demo.xml',
         ],
     'test': [],
     'active': False,
