@@ -13,8 +13,10 @@
                         <page string="areas">
                             <field name="area_ids" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="latitude"/>
-                                    <field name="longitude"/>
+                                    <field name="latitude"  
+                                        digits="(3, 6)"/>
+                                    <field name="longitude"
+                                        digits="(3, 6)"/>
                                 </tree>
                             </field>
                         </page>
@@ -84,8 +86,10 @@
             <field name="model">freight.area.mapsgoogle</field>
             <field name="arch" type="xml">
                 <tree string="freight area" version="7.0">
-                    <field name="latitude"/>
-                    <field name="longitude"/>
+                    <field name="latitude"
+                            digits="(3, 6)"/>
+                    <field name="longitude"
+                            digits="(3, 6)"/>
                 </tree>
             </field>
         </record>

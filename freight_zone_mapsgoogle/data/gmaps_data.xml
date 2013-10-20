@@ -4,7 +4,7 @@
         
         <record forcecreate="True" id="decimal_gmaps" model="decimal.precision">
             <field name="name">Gmaps</field>
-            <field name="digits">15</field>
+            <field name="digits" eval="6"/>
         </record>
     </data>
 </openerp>
