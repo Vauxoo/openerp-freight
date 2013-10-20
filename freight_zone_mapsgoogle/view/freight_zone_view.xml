@@ -11,11 +11,11 @@
                     </group>    
                     <notebook>
                         <page string="areas">
-                            <field name="area_ids" nolabel="1">
+                            <field name="gmaps_area_ids" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name="latitude"  
+                                    <field name="gmaps_lat"  
                                         digits="(3, 6)"/>
-                                    <field name="longitude"
+                                    <field name="gmaps_lon"
                                         digits="(3, 6)"/>
                                 </tree>
                             </field>
@@ -75,8 +75,8 @@
             <field name="model">freight.area.mapsgoogle</field>
             <field name="arch" type="xml">
                 <form string="freight area" version="7.0">
-                    <field name="latitude"/>
-                    <field name="longitude"/>
+                    <field name="gmaps_lat"/>
+                    <field name="gmaps_lon"/>
                 </form>
             </field>
         </record>
@@ -86,9 +86,9 @@
             <field name="model">freight.area.mapsgoogle</field>
             <field name="arch" type="xml">
                 <tree string="freight area" version="7.0">
-                    <field name="latitude"
+                    <field name="gmaps_lat"
                             digits="(3, 6)"/>
-                    <field name="longitude"
+                    <field name="gmaps_lon"
                             digits="(3, 6)"/>
                 </tree>
             </field>
@@ -100,7 +100,7 @@
             <field name="arch" type="xml">
                 <search string="freight area">
                     <group expand="0" string="Group By...">
-                        <filter string="Zone" icon="terp-folder-orange" domain="" context="{'group_by':'zone_id'}"/>
+                        <filter string="Zone" icon="terp-folder-orange" domain="" context="{'group_by':'gmaps_zone_id'}"/>
                     </group>
                 </search>
             </field>

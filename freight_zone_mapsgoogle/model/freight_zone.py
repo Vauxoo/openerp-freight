@@ -34,7 +34,7 @@ class freight_zone_mapsgoogle(osv.Model):
     _description = 'Zone'
     _columns = {
         'name' : fields.char('Zone Name', 256, required=True, help='Zone Name'),
-        'area_ids' : fields.one2many('freight.area.mapsgoogle', 'zone_id', 'Area', help=''),
+        'gmaps_area_ids' : fields.one2many('freight.area.mapsgoogle', 'gmaps_zone_id', 'Area', help=''),
     }
 
 class freight_area_mapsgoogle(osv.Model):
@@ -43,9 +43,9 @@ class freight_area_mapsgoogle(osv.Model):
     _description = 'Area'
     _columns = {
        # 'name' : fields.char('Area', 256, help='Area'),
-        'zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help=''),
-        'latitude': fields.float('Latitude', required=True, 
+        'gmaps_zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help=''),
+        'gmaps_lat': fields.float('Latitude', required=True, 
             digits_compute=dp.get_precision('Gmaps'), help="Point's Latitude"),   
-        'longitude': fields.float('Longitude', required=True,
+        'gmaps_lon': fields.float('Longitude', required=True,
             digits_compute=dp.get_precision('Gmaps'), help="Point's Longitude"),   
     }

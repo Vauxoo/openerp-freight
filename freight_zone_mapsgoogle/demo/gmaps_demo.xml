@@ -16,55 +16,55 @@
         </record>
 
         <record forcecreate="True" id="point1_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Guacara"/>
-            <field name="latitude">10.232913966113475</field>
-            <field name="longitude">-67.8785991668701</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+            <field name="gmaps_lat">10.232913966113475</field>
+            <field name="gmaps_lon">-67.8785991668701</field>
         </record>
         
         <record forcecreate="True" id="point2_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Guacara"/>
-            <field name="latitude">10.232364940269921</field>
-            <field name="longitude">-67.86332130432129</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+            <field name="gmaps_lat">10.232364940269921</field>
+            <field name="gmaps_lon">-67.86332130432129</field>
         </record>
 
         <record forcecreate="True" id="point3_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Guacara"/>
-            <field name="latitude">10.22155316100559</field>
-            <field name="longitude">-67.8587293624878</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+            <field name="gmaps_lat">10.22155316100559</field>
+            <field name="gmaps_lon">-67.8587293624878</field>
         </record>
 
         <record forcecreate="True" id="point4_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Guacara"/>
-            <field name="latitude">10.213063967098934</field>
-            <field name="longitude">-67.85791397094727</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+            <field name="gmaps_lat">10.213063967098934</field>
+            <field name="gmaps_lon">-67.85791397094727</field>
         </record>
 
         <record forcecreate="True" id="point5_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Guacara"/>
-            <field name="latitude">10.204278891034654</field>
-            <field name="longitude">-67.8695011138916</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+            <field name="gmaps_lat">10.204278891034654</field>
+            <field name="gmaps_lon">-67.8695011138916</field>
         </record>
 
         <record forcecreate="True" id="point6_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Guacara"/>
-            <field name="latitude">10.215851488603166</field>
-            <field name="longitude">-67.89044380187988</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+            <field name="gmaps_lat">10.215851488603166</field>
+            <field name="gmaps_lon">-67.89044380187988</field>
         </record>
 
         <record forcecreate="True" id="point1_zone2" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Caracas"/>
-            <field name="latitude">10.538445795908634</field>
-            <field name="longitude">-66.96990966796875</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Caracas"/>
+            <field name="gmaps_lat">10.538445795908634</field>
+            <field name="gmaps_lon">-66.96990966796875</field>
         </record>
         <record forcecreate="True" id="point2_zone2" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Caracas"/>
-            <field name="latitude">10.470932067817829</field>
-            <field name="longitude">-66.82571411132812</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Caracas"/>
+            <field name="gmaps_lat">10.470932067817829</field>
+            <field name="gmaps_lon">-66.82571411132812</field>
         </record>
         <record forcecreate="True" id="point3_zone2" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="zone_id" ref="Caracas"/>
-            <field name="latitude">10.452700836127205</field>
-            <field name="longitude">-66.94999694824219</field>
+            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Caracas"/>
+            <field name="gmaps_lat">10.452700836127205</field>
+            <field name="gmaps_lon">-66.94999694824219</field>
         </record>
     </data>
 </openerp>
