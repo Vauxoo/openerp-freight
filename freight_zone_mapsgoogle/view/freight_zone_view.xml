@@ -10,16 +10,12 @@
                         <field name="name" class="oe_inline"/>
                     </group>    
                     <notebook>
-                        <page string='Benchmarks'>
-                            <field name='benchmark_ids' nolabel='1'>
-                                <tree>
-                                    <field name="sequence"/>
-                                    <field name="name"/>
+                        <page string="areas">
+                            <field name="area_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="latitude"/>
+                                    <field name="longitude"/>
                                 </tree>
-                                <form>
-                                    <field name="sequence"/>
-                                    <field name="name"/>
-                                </form>
                             </field>
                         </page>
                     </notebook>
@@ -36,12 +32,13 @@
                 </tree>
             </field>
         </record>
-
+        <!--
        <record model="ir.actions.client" id="freight_zone_mapsgoogle_action">                                      
            <field name="name">freight Zone GOOGLE</field>                                          
            <field name="tag">example.action</field>                                                                                                    
-       </record>     
-<!--
+       </record> 
+       -->
+
         <record model="ir.actions.act_window" id="freight_zone_mapsgoogle_action">
             <field name="name">freight Zone</field>
             <field name="res_model">freight.zone.mapsgoogle</field>
@@ -50,7 +47,7 @@
             <field name="view_mode">tree,form</field>
             <field name="help">freight Zone Help</field>
         </record>
-    -->    
+        
         <menuitem 
             id="freight_zone_mapsgoogle_main_menu" 
             name="Zone" 
@@ -59,7 +56,7 @@
 
         <menuitem 
             id="freight_zone_mapsgoogle_title" 
-            name="Zone freight" 
+            name="Zone" 
             parent="freight_zone_mapsgoogle_main_menu" 
             sequence="20" 
             />
@@ -71,34 +68,33 @@
             action="freight_zone_mapsgoogle_action"
             />
         
-        <record id="freight_benchmark_mapsgoogle_form" model="ir.ui.view">
-            <field name="name">freight benchmark</field>
-            <field name="model">freight.benchmark.mapsgoogle</field>
+        <record id="freight_area_mapsgoogle_form" model="ir.ui.view">
+            <field name="name">freight area</field>
+            <field name="model">freight.area.mapsgoogle</field>
             <field name="arch" type="xml">
-                <form string="freight Benchmark" version="7.0">
-                    <field name="sequence"/>
-                    <field name="name"/>
+                <form string="freight area" version="7.0">
+                    <field name="latitude"/>
+                    <field name="longitude"/>
                 </form>
             </field>
         </record>
         
-        <record id="freight_benchmark_mapsgoogle_tree" model="ir.ui.view">
-            <field name="name">freight benchmark</field>
-            <field name="model">freight.benchmark.mapsgoogle</field>
+        <record id="freight_area_mapsgoogle_tree" model="ir.ui.view">
+            <field name="name">freight area</field>
+            <field name="model">freight.area.mapsgoogle</field>
             <field name="arch" type="xml">
-                <tree string="freight Benchmark" version="7.0">
-                    <field name="sequence"/>
-                    <field name="name"/>
-                    <field name="zone_id"/>
+                <tree string="freight area" version="7.0">
+                    <field name="latitude"/>
+                    <field name="longitude"/>
                 </tree>
             </field>
         </record>
 
-        <record id="freight_benchmark_mapsgoogle_search" model="ir.ui.view">
-            <field name="name">freight Benchmark</field>
-            <field name="model">freight.benchmark.mapsgoogle</field>
+        <record id="freight_area_mapsgoogle_search" model="ir.ui.view">
+            <field name="name">freight area</field>
+            <field name="model">freight.area.mapsgoogle</field>
             <field name="arch" type="xml">
-                <search string="freight Benchmark">
+                <search string="freight area">
                     <group expand="0" string="Group By...">
                         <filter string="Zone" icon="terp-folder-orange" domain="" context="{'group_by':'zone_id'}"/>
                     </group>
@@ -106,28 +102,28 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="freight_benchmark_mapsgoogle_action">
-            <field name="name">freight Benchmark</field>
-            <field name="res_model">freight.benchmark.mapsgoogle</field>
+        <record model="ir.actions.act_window" id="freight_area_mapsgoogle_action">
+            <field name="name">freight area</field>
+            <field name="res_model">freight.area.mapsgoogle</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
-            <field name="search_view_id" ref="freight_benchmark_mapsgoogle_search"/>
+            <field name="search_view_id" ref="freight_area_mapsgoogle_search"/>
             <!--<field name="view_id" ref="periodic_inventory_valuation_line_list"/>            -->         
         </record>
 
         <menuitem 
-            id="freight_benchmark_mapsgoogle" 
-            name="Zone Benchmarks" 
+            id="freight_area_mapsgoogle" 
+            name="Areas" 
             parent="freight_zone_mapsgoogle_main_menu" 
             sequence="30" 
             />
 
         <menuitem 
-            id="freight_benchmark_mapsgoogle_menu"
-            name="Benchmark"
-            parent="freight_benchmark_mapsgoogle"
-            action="freight_benchmark_mapsgoogle_action"
+            id="freight_area_mapsgoogle_menu"
+            name="Area"
+            parent="freight_area_mapsgoogle"
+            action="freight_area_mapsgoogle_action"
             />
     
     </data>
