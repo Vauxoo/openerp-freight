@@ -32,16 +32,17 @@ class freight_zone_mapsgoogle(osv.Model):
     _name = 'freight.zone.mapsgoogle'
     _description = 'Zone'
     _columns = {
-        'name' : fields.char('Zone Name', 256, help='Zone Name'),
+        'name' : fields.char('Zone Name', 256, required=True, help='Zone Name'),
         'area_ids' : fields.one2many('freight.area.mapsgoogle', 'zone_id', 'Area', help=''),
     }
 
 class freight_area_mapsgoogle(osv.Model):
     _name = 'freight.area.mapsgoogle'
-    _description = 'Zone Benchmark'
+    _rec_name = 'id'
+    _description = 'Area'
     _columns = {
-        'name' : fields.char('Area', 256, help='Area'),
+       # 'name' : fields.char('Area', 256, help='Area'),
         'zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help=''),
-        'latitude': fields.integer('Latitude', help="Point's Latitude"),   
-        'longitude': fields.integer('Longitude', help="Point's Longitude"),   
+        'latitude': fields.integer('Latitude', required=True, help="Point's Latitude"),   
+        'longitude': fields.integer('Longitude', required=True, help="Point's Longitude"),   
     }
