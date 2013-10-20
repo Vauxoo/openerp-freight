@@ -42,7 +42,9 @@ Main Features
     'data': [
         'view/freight_zone_view.xml',
         ],
-    'demo': [],
+    'demo': [
+        'demo/gmaps_data.xml',
+        ],
     'test': [],
     'active': False,
     'installable': True,
