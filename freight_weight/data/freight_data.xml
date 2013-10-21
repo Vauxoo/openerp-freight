@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        
+        <record forcecreate="True" id="decimal_volumetric_weight" model="decimal.precision">
+            <field name="name">Volumetric Weight</field>
+            <field name="digits">4</field>
+        </record>
+
+    </data>
+</openerp>

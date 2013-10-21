@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        
+        <record forcecreate="True" id="decimal_gmaps" model="decimal.precision">
+            <field name="name">Gmaps</field>
+            <field name="digits" eval="6"/>
+        </record>
+    </data>
+</openerp>
