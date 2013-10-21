@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="freight_zone_mapsgoogle_form" model="ir.ui.view">
+            <field name="name">Zone</field>
+            <field name="model">freight.zone.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <form string="Zone" version="7.0">
+                    <group>
+                        <field name="name" class="oe_inline"/>
+                    </group>    
+                    <notebook>
+                        <page string="areas">
+                            <field name="gmaps_area_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="gmaps_lat"  
+                                        digits="(3, 6)"/>
+                                    <field name="gmaps_lon"
+                                        digits="(3, 6)"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+        
+        <record id="freight_zone_mapsgoogle_tree" model="ir.ui.view">
+            <field name="name">freight Zone</field>
+            <field name="model">freight.zone.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <tree string="freight Zone" version="7.0">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <!--
+       <record model="ir.actions.client" id="freight_zone_mapsgoogle_action">                                      
+           <field name="name">freight Zone GOOGLE</field>                                          
+           <field name="tag">example.action</field>                                                                                                    
+       </record> 
+       -->
+
+        <record model="ir.actions.act_window" id="freight_zone_mapsgoogle_action">
+            <field name="name">freight Zone</field>
+            <field name="res_model">freight.zone.mapsgoogle</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help">freight Zone Help</field>
+        </record>
+        
+        <menuitem 
+            id="freight_zone_mapsgoogle_main_menu" 
+            name="Zone" 
+            sequence="20" 
+            />
+
+        <menuitem 
+            id="freight_zone_mapsgoogle_title" 
+            name="Zone" 
+            parent="freight_zone_mapsgoogle_main_menu" 
+            sequence="20" 
+            />
+
+        <menuitem 
+            id="zone_freight_mapsgoogle_menu"
+            name="Zone"
+            parent="freight_zone_mapsgoogle_title"
+            action="freight_zone_mapsgoogle_action"
+            />
+        
+        <record id="freight_area_mapsgoogle_form" model="ir.ui.view">
+            <field name="name">freight area</field>
+            <field name="model">freight.area.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <form string="freight area" version="7.0">
+                    <field name="gmaps_lat"/>
+                    <field name="gmaps_lon"/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="freight_area_mapsgoogle_tree" model="ir.ui.view">
+            <field name="name">freight area</field>
+            <field name="model">freight.area.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <tree string="freight area" version="7.0">
+                    <field name="gmaps_lat"
+                            digits="(3, 6)"/>
+                    <field name="gmaps_lon"
+                            digits="(3, 6)"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="freight_area_mapsgoogle_search" model="ir.ui.view">
+            <field name="name">freight area</field>
+            <field name="model">freight.area.mapsgoogle</field>
+            <field name="arch" type="xml">
+                <search string="freight area">
+                    <group expand="0" string="Group By...">
+                        <filter string="Zone" icon="terp-folder-orange" domain="" context="{'group_by':'gmaps_zone_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="freight_area_mapsgoogle_action">
+            <field name="name">freight area</field>
+            <field name="res_model">freight.area.mapsgoogle</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="freight_area_mapsgoogle_search"/>
+            <!--<field name="view_id" ref="periodic_inventory_valuation_line_list"/>            -->         
+        </record>
+
+        <menuitem 
+            id="freight_area_mapsgoogle" 
+            name="Areas" 
+            parent="freight_zone_mapsgoogle_main_menu" 
+            sequence="30" 
+            />
+
+        <menuitem 
+            id="freight_area_mapsgoogle_menu"
+            name="Area"
+            parent="freight_area_mapsgoogle"
+            action="freight_area_mapsgoogle_action"
+            />
+    
+    </data>
+</openerp>
