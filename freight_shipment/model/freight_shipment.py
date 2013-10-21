@@ -112,6 +112,16 @@ class freight_shipment(osv.Model):
             string='Volumetric Weight',
             help='Volumetric Weight'
         ),
+        'max_weight': fields.float(
+            string='Max Weight',
+            help=('The Weight Capacity of the vehicle associated to the freight'
+                  ' Shipment')
+        ),
+        'max_volumetric_weight': fields.float(
+            string='Max Volumetric Weight',
+            help=('The Volumetric Weight Capacity of the vehicle associated to'
+                  ' the freight Shipment')
+        ),
         'date': fields.datetime(
             string='Shipment Date',
             required=True,
