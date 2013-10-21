@@ -38,6 +38,15 @@ class freight_zone_mapsgoogle(osv.Model):
             help='set of geographic coordinates that define the zone'),
     }
 
+    def partner_insidepolygon(self, cr, uid, ids, context=None):
+        counter = 0
+        
+        for zone in self.browse(cr, uid, ids, context=context):
+            for p in zone.gmaps_area_ids:
+                print "lat: %s, lon: %s" % (p.gmaps_lat, p.gmaps_lon)
+
+        return True
+
 class freight_area_mapsgoogle(osv.Model):
     _name = 'freight.area.mapsgoogle'
     _rec_name = 'id'
@@ -49,3 +58,5 @@ class freight_area_mapsgoogle(osv.Model):
         'gmaps_lon': fields.float('Longitude', required=True,
             digits_compute=dp.get_precision('Gmaps'), help="Longitude of coordinate"),   
     }
+
+
