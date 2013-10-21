@@ -53,9 +53,9 @@ To use this module you need to configure youre OpenERP instance by:
   products.
 
 .. note:: You can found the dependecies ``freight_zone`` and
-  ``fleet_delivery`` modules at ``lp:openerp-freight``.
+  ``freight_weight`` modules at ``lp:openerp-freight``.
 ''',
-    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'fleet_delivery',
+    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'freight_weight',
                 'freight_zone'],
     'data': [
         'view/freight_shipment_view.xml',
