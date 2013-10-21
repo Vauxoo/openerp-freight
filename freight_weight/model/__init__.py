@@ -23,25 +23,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-{
-    'name': 'Fleet Delivery',
-    'version': '1.0',
-    'author': 'Vauxoo',
-    'website': 'http://www.vauxoo.com/',
-    'category': 'Fleet',
-    'description': '''
-Fleet Delivery
-==============
-
-fleet.vehicle model is edited to allow for delivery transport units.
-
-''',
-    'depends': ['base', 'fleet'],
-    'data': [
-        "view/fleet_delivery_view.xml",
-        ],
-    'demo': [],
-    'test': [],
-    'active': False,
-    'installable': True,
-}
+import freight_delivery

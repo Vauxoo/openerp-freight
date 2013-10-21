@@ -29,16 +29,49 @@ import datetime
 from openerp import tools
 from openerp.osv.orm import except_orm
 from openerp.tools.translate import _
+import openerp.addons.decimal_precision as dp
 
 class fleet_vehicle(osv.Model):
     _inherit = 'fleet.vehicle'
     _description = 'Information on a vehicle'
 
     _columns = {
+            'physical_capacity' : fields.float('Physical Weight Capacity', help='Vehicle Physical Weight Capacity'), 
             'volumetric_capacity' : fields.float('Volumetric Weight Capacity', help='Vehicle Volumetric Weight Capacity'), 
-            'type':fields.selection( [('transport','Transport'),('automobile','Automobile')], string="Vehicle Type", 
+            'type':fields.selection(
+                [('automobile','Automobile'),('freight','Freight'),('delivery', 'Delivery')],string="Vehicle Type", 
                 help='Vehicle Type'), 
      }
 
+    _defaults = {
+            'type': 'automobile',
+            
+            }
 
+class product_product(osv.Model):
+    _inherit = 'product.product'
 
+    def _calculate_weight(self, cr, uid, ids, name, args, context=None):
+        result = dict.fromkeys(ids, False)
+        for obj in self.browse(cr, uid, ids, context=context):
+            result[obj.id] = obj.volume / 5000
+        return result
+    def _set_volumetric_weight(self, cr, uid, id, name, value, args, context=None):
+        return self.write(cr, uid, [id], {'volumetric_weight': value},
+                context=context)
+
+    _columns = {
+            'volumetric_weight':fields.function(
+            fnct=_calculate_weight,
+            fnct_inv=_set_volumetric_weight,
+            string='Volumetric Weight',
+            type="float", 
+            store={
+                'product.product': (lambda self, cr, uid, ids, c={}: ids, ['volume'], 10),
+            },
+            help='Product Volumetric Weight',
+            digits_compute=dp.get_precision('Volumetric Weight'),
+            ), 
+
+            #'divider' : fields.float('Divider', help='Product Volumetric Weight'), 
+     }
