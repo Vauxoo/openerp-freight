@@ -26,12 +26,18 @@
                         <group colspan="4">
                             <field name="name"/>
                             <field name="transport_unit_id" domain="[('type','=','transport')]"/>
-                            <field name="weight"/>
-                            <field name="volumetric_weight"/>
+
                             <field name="date"/>
                             <field name="work_shift"/>
                             <field name="type" invisible="1"/>
                             <field name="zone_id"/>
+
+                            <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
+                                <field name="weight"/>
+                                <field name="volumetric_weight"/>
+                                <field name="max_weight"/>
+                                <field name="max_volumetric_weight"/>
+                            </group>
                         </group>
                         <notebook>
                             <page string="Orders">
