@@ -23,4 +23,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-import res_partner
+from openerp.osv import osv
+from openerp.osv import fields
+from openerp.tools.translate import _
+from openerp import tools
+import openerp.addons.decimal_precision as dp
+
+class res_partner(osv.osv):
+    _inherit = "res.partner"
+    _columns = {
+
+        'gmaps_lat': fields.float('Geo Latitude', 
+            digits_compute=dp.get_precision('Gmaps Partner')),
+        'gmaps_lon': fields.float('Geo Longitude',
+            digits_compute=dp.get_precision('Gmaps Partner')),
+    }

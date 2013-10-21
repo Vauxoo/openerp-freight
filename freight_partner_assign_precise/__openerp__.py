@@ -30,11 +30,20 @@
     'website': 'http://www.vauxoo.com/',
     'category': 'crm',
     'description': '''
+Partner Assign Precise Localization
+===================================
 
+You can geolocalize your opportunities by using this module.
+
+Use geolocalization when assigning opportunities to partners.
+Determine the exact GPS coordinates according to the address of the partner.
 
 ''',
-    'depends': ['base'],
-    'data': [],
+    'depends': ['crm'],
+    'data': [
+        'view/res_partner_view.xml',
+        'data/partner_gmaps_data.xml',
+        ],
     'demo': [],
     'test': [],
     'active': False,
