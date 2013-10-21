@@ -39,7 +39,7 @@ Use geolocalization when assigning opportunities to partners.
 Determine the exact GPS coordinates according to the address of the partner.
 
 ''',
-    'depends': ['crm'],
+    'depends': ['crm', 'decimal_precision'],
     'data': [
         'view/res_partner_view.xml',
         'data/partner_gmaps_data.xml',
