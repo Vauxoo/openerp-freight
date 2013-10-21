@@ -12,12 +12,10 @@
                     <group>
                         <group>
                         <separator string="Precise Geo Localization" colspan="2"/>
-                            <!--
-                            name="precise_geo_localize"
-                            -->
                         <button
                             string="Geo Localize"
                             colspan="2"
+                            name="precise_geo_localize"
                             icon="gtk-apply"
                             type="object"/>
                         <field name="gmaps_lat" digits='(3,6)'/>
