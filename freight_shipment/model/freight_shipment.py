@@ -66,6 +66,32 @@ class freight_shipment(osv.Model):
 
         return res
 
+    def _get_vehicle_weight(self, cr, uid, ids, field_name, arg, context=None):
+        """
+        Update automaticly the max weight for the freight shipment taking into
+        account the max weight capacity of the vehicle associated.
+        """
+        context = context or {}
+        res = {}.fromkeys(ids, 0.0)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            if fs_brw.transport_unit_id.id:
+                res[fs_brw.id] = fs_brw.transport_unit_id.physical_capacity
+        return res
+
+    def _get_vehicle_vol_weight(self, cr, uid, ids, field_name, arg,
+                                context=None):
+        """
+        Update automaticly the max volumetric weight for the freight shipment
+        taking into account the max volumetric weight capacity of the vehicle
+        associated.
+        """
+        context = context or {}
+        res = {}.fromkeys(ids, 0.0)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            if fs_brw.transport_unit_id.id:
+                res[fs_brw.id] = fs_brw.transport_unit_id.volumetric_capacity
+        return res
+
     _columns = {
         'name': fields.char(
             string='Number Reference',
@@ -112,13 +138,17 @@ class freight_shipment(osv.Model):
             string='Volumetric Weight',
             help='Volumetric Weight'
         ),
-        'max_weight': fields.float(
+        'max_weight': fields.function(
+            _get_vehicle_weight,
             string='Max Weight',
+            type='float',
             help=('The Weight Capacity of the vehicle associated to the freight'
                   ' Shipment')
         ),
-        'max_volumetric_weight': fields.float(
+        'max_volumetric_weight': fields.function(
+            _get_vehicle_vol_weight,
             string='Max Volumetric Weight',
+            type='float',
             help=('The Volumetric Weight Capacity of the vehicle associated to'
                   ' the freight Shipment')
         ),
