@@ -56,12 +56,11 @@ class res_partner(osv.osv):
             street2 = partner.street2 and partner.street2 or ''
 
             address = CRM.geo_query_address(
-                street="%s %s" % (street, street2),
-                zip=partner.zip,
+                street="%s, %s" % (street, street2),
+                zip='',
                 city=partner.city,
                 state=partner.state_id.name,
                 country=partner.country_id.name)
-
             #lat, lng = gmaps.address_to_latlng(address)
             result = CRM.geo_find(address)
   
