@@ -31,10 +31,11 @@ import openerp.addons.decimal_precision as dp
 
 class freight_zone_mapsgoogle(osv.Model):
     _name = 'freight.zone.mapsgoogle'
-    _description = 'Zone'
+    _description = 'Geographical Area'
     _columns = {
         'name' : fields.char('Zone Name', 256, required=True, help='Zone Name'),
-        'gmaps_area_ids' : fields.one2many('freight.area.mapsgoogle', 'gmaps_zone_id', 'Area', help=''),
+        'gmaps_area_ids' : fields.one2many('freight.area.mapsgoogle', 'gmaps_zone_id', 'Area',
+            help='set of geographic coordinates that define the zone'),
     }
 
 class freight_area_mapsgoogle(osv.Model):
@@ -42,10 +43,10 @@ class freight_area_mapsgoogle(osv.Model):
     _rec_name = 'id'
     _description = 'Area'
     _columns = {
-       # 'name' : fields.char('Area', 256, help='Area'),
-        'gmaps_zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help=''),
+        'gmaps_zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help='Area to which
+            delimits the current point.'),
         'gmaps_lat': fields.float('Latitude', required=True, 
-            digits_compute=dp.get_precision('Gmaps'), help="Point's Latitude"),   
+            digits_compute=dp.get_precision('Gmaps'), help="Latitude of coordinate"),   
         'gmaps_lon': fields.float('Longitude', required=True,
-            digits_compute=dp.get_precision('Gmaps'), help="Point's Longitude"),   
+            digits_compute=dp.get_precision('Gmaps'), help="Longitude of coordinate"),   
     }

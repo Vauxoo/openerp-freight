@@ -24,18 +24,19 @@
 ###############################################################################
 
 {
-    'name': 'Freight Zone',
+    'name': 'Freight Zone Gmaps',
     'version': '1.0',
     'author': 'Vauxoo',
     'website': 'http://www.vauxoo.com/',
     'category': 'Freight',
     'description': '''
-Freight Zone
-============
+Freight Zone Gmaps
+==================
 
--------------
-Main Features
--------------
+This module is responsible for creating a model area, with a field one2many geographical
+coordinates that limit the area.
+
+
 
 ''',
     'depends': ['base', 'decimal_precision'],
