@@ -233,26 +233,36 @@ class freight_shipment(osv.Model):
 
         In the process it verify some conditions:
 
-          - that the volumetrict weight  of the freight.shipment is less or
-            equal to the fleet vehicle volumetric capacity.
+          - that the accumulated volumetrict weight capacity of the freight is
+            less or equal to max volumetrict weight capacity for this freight.
+          - that the accumulated  weight capacity of the freight is less or
+            equal to max weight capacity for this freight.
 
         @return: True
         """
+        #~ Note: here there is manage the exception message that have not been
+        #~ used or displayed anywhere
         context = context or {}
         exceptions = list()
         exception_msg = str()
 
         for fso_brw in self.browse(cr, uid, ids, context=context):
+
             exceptions.append(
                 not self.check_volumetric_weight(
-                    cr, uid, fso_brw.vehicle_id.id,
-                    fso_brw.volumetric_weight, context=context))
+                    cr, uid, fso_brw.id, context=context))
             if exceptions[-1]:
-                exception_msg += _('The volumetric weight volume you are'
-                    ' entering is greater than the volumetric capacity of'
-                    ' youre transport unit (%s > %s).\n' %
-                    (fso_brw.volumetric_weight,
-                     fso_brw.vehicle_id.volumetric_capacity))
+                exception_msg += _('The volumetric weight of youre orders is'
+                    ' greater than the volumetric capacity of youre transport'
+                    ' unit (%s > %s).\n' % (fso_brw.volumetric_weight,
+                        fso_brw.max_volumetric_weight))
+
+            exceptions.append(
+                not self.check_weight(cr, uid, fso_brw.id, context=context))
+            if exceptions[-1]:
+                exception_msg += _('The weight of youre orders is greater than'
+                    ' the weight capacity of youre transport unit'
+                    ' (%s > %s).\n' % (fso_brw.weight, fso_brw.max_weight))
 
         self.write(
             cr, uid, ids,
@@ -273,22 +283,39 @@ class freight_shipment(osv.Model):
         return True
 
 
-    def check_volumetric_weight(self, cr, uid, vehicle_id, volumetric_weight,
-                                context=None):
+    def check_volumetric_weight(self, cr, uid, ids, context=None):
         """
-        Check if the freight.shipment order volumetric_weight value is
-        less than th vehicle volumetric capacity.
-        @param vehicle_id: fleet vehicle id
-        @param volumetric_weight: freight.shipment order float value.
-        @return: True if the current burdern is less than the vehicle
-            volumetric weight. False if the current burdern is greater than the
-            vehicle volumetric weight
+        Check if the freight accumulated volumetric weight value is less or
+        equal to the max volumetric weight capacity.
+        @return: True if the condition is satisfied or False if is not.
         """
         context = context or {}
-        fv_obj = self.pool.get('fleet.vehicle')
-        fv_brw = fv_obj.browse(cr, uid, vehicle_id, context=context)
-        return volumetric_weight <= fv_brw.volumetric_capacity \
-               and True or False
+        ids = isinstance(ids, (int, long)) and [ids] or ids
+        res = []
+        for freight_brw in self.browse(cr, uid, ids, context=context):
+            res.append(freight_brw.volumetric_weight
+                <= freight_brw.max_volumetric_weight)
+        if len(ids) == 1:
+            return res[0]
+        else:
+            return res
+
+    def check_weight(self, cr, uid, ids, context=None):
+        """
+        Check if the freight accumulated weight value is less or equal to the
+        max weight capacity.
+        @return: True if the condition is satisfied or False if is not.
+        """
+        context = context or {}
+        ids = isinstance(ids, (int, long)) and [ids] or ids
+        res = []
+        for freight_brw in self.browse(cr, uid, ids, context=context):
+            res.append(freight_brw.weight
+                <= freight_brw.max_weight)
+        if len(ids) == 1:
+            return res[0]
+        else:
+            return res
 
 
 class sale_order(osv.Model):
