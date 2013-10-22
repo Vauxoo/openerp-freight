@@ -366,17 +366,17 @@ class vehicle(osv.Model):
     _inherit = 'fleet.vehicle'
 
     _columns = {
-        'fleet': fields.boolean(
-            'Fleet',
+        'is_freight': fields.boolean(
+            'Freight',
             help=('If this checkbox is set then the vehicle can be use like a'
-                  ' fleet transport unit')
+                  ' freight transport unit')
         ),
-        'delivery': fields.boolean(
+        'is_delivery': fields.boolean(
             'Delivery',
             help=('If this checkbox is set then the vehicle can be use like a'
                   ' delivery transport unit')
         ),
-        'automobile': fields.boolean(
+        'is_automobile': fields.boolean(
             'Automobile',
             help=('If this checkbox is set then the vehicle can be use like a'
                   ' automobile transport unit')
