@@ -39,6 +39,9 @@ class freight_zone_mapsgoogle(osv.Model):
     }
 
     def partner_insidepolygon(self, cr, uid, ids, partner_id, context=None):
+        """
+        determines if a partner is inside a zone using geographical coordinates
+        """
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
 
