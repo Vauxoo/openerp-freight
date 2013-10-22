@@ -359,3 +359,22 @@ class pos_order(osv.Model):
             help=('Delivery Address selected in the POS to make the delivery'
                   ' of the customer')),
     }
+
+
+class vehicle(osv.Model):
+
+    _inherit = 'fleet.vehicle'
+
+    _columns = {
+        'fleet': fields.boolean(
+            'Fleet',
+            help=('If this checkbox is set then the vehicle can be use like a'
+                  ' fleet transport unit')
+        ),
+        'delivery': fields.boolean(
+            'Delivery',
+            help=('If this checkbox is set then the vehicle can be use like a'
+                  ' delivery transport unit')
+        ),
+    }
+
