@@ -192,6 +192,24 @@
             </field>
         </record>
 
+        <record id="fleet_vehicle_freight_form_inherit" model="ir.ui.view">
+            <field name="name">Vehicle Freight Form View</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_title']" position="inside">
+                    <div class="oe_inline">
+                        <label for ="is_automobile"/>
+                        <field name="is_automobile"/>
+                        <label for ="is_delivery"/>
+                        <field name="is_delivery"/>
+                        <label for ="is_freight"/>
+                        <field name="is_freight"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 
 </openerp>
