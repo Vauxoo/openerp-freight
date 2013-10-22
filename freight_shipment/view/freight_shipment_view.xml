@@ -195,8 +195,9 @@
         <record id="fleet_vehicle_freight_form_inherit" model="ir.ui.view">
             <field name="name">Vehicle Freight Form View</field>
             <field name="model">fleet.vehicle</field>
-            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="inherit_id" ref="freight_weight.fleet_vehicle_form_inherit"/>
             <field name="arch" type="xml">
+
                 <xpath expr="//div[@class='oe_title']" position="inside">
                     <div class="oe_inline">
                         <label for ="is_automobile"/>
@@ -207,6 +208,19 @@
                         <field name="is_freight"/>
                     </div>
                 </xpath>
+
+                <xpath expr="//field[@name='physical_capacity']" position="attributes">
+                    <attribute name="attrs">{'required': [('is_freight','=',True)], 'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='volumetric_capacity']" position="attributes">
+                    <attribute name="attrs">{'required': [('is_freight','=',True)], 'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
+                </xpath>
+
+                <xpath expr="//group[@string='Vehicle Capacity']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
+                </xpath>
+
             </field>
         </record>
 
