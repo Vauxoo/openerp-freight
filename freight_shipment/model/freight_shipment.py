@@ -152,10 +152,15 @@ class freight_shipment(osv.Model):
             help=('The Volumetric Weight Capacity of the vehicle associated to'
                   ' the freight Shipment')
         ),
-        'date': fields.datetime(
-            string='Shipment Date',
-            required=True,
-            help='Date of the delivery was send'),
+        'date_shipped': fields.datetime(
+            string='Shipped Date',
+            help='The date and time where the freight was send'),
+        'date_delivered': fields.datetime(
+            string='Delivery Date',
+            help='The date and time that the customer receives the freight'),
+        'date_delivery': fields.datetime(
+            string='Estimated Delivery Date',
+            help='The date and time that the freight is supposed to be delivered'),
         'work_shift': fields.selection(
             [('morning', 'Morning'),
              ('afternoon', 'Afternoon'),
@@ -198,7 +203,6 @@ class freight_shipment(osv.Model):
     _defaults = {
         'state': 'draft',
         'work_shift': 'morning',
-        'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
     }
 
     _track = {

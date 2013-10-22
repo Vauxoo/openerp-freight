@@ -26,11 +26,15 @@
                         <group colspan="4">
                             <field name="name"/>
                             <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True)]"/>
-                            <field name="date"/>
                             <field name="work_shift"/>
                             <field name="type" invisible="1"/>
                             <field name="zone_id"/>
 
+                            <group name="dates" string="Dates">
+                                <field name="date_shipped"/>
+                                <field name="date_delivery"/>
+                                <field name="date_delivered"/>
+                            </group>
                             <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
                                 <field name="weight"/>
                                 <field name="volumetric_weight"/>
