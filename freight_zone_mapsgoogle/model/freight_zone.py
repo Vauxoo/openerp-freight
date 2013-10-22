@@ -45,15 +45,14 @@ class freight_zone_mapsgoogle(osv.Model):
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
 
-        #partner_id = 63 ##Prueba de id de partner "Santa Mónica, Caracas, Distrito Metropolitano de Caracas, Venezuela"
-        #(10.476310, -66.893070)
-        #partner_obj = self.pool.get('res.partner')
-        #partner_obj = partner_obj.browse(cr, uid, partner_id, context=context)
+        partner_obj = self.pool.get('res.partner')
+        partner_obj = partner_obj.browse(cr, uid, partner_id, context=context)
 
-        latlng = (10.48409,-66.910408) #Si, prueba
-        latlng = (10.531078,-66.971445) #No, prueba
-        latlng = (10.516437,-66.950099) #Si, prueba
-        #latlng = (partner_obj.gmaps_lat, partner_obj.gmaps_lon)
+        #latlng = (10.48409,-66.910408) #Si, prueba
+        #latlng = (10.531078,-66.971445) #No, prueba
+        #latlng = (10.516437,-66.950099) #Si, prueba
+        #latlng = (10.476310, -66.893070) #Si, "Santa Mónica, Caracas, Distrito Metropolitano de Caracas, Venezuela"
+        latlng = (partner_obj.gmaps_lat, partner_obj.gmaps_lon)
 
         for zone in self.browse(cr, uid, ids, context=context):
             puntos = zone.gmaps_area_ids
