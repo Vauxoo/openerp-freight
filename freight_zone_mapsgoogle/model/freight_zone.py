@@ -38,14 +38,38 @@ class freight_zone_mapsgoogle(osv.Model):
             help='set of geographic coordinates that define the zone'),
     }
 
-    def partner_insidepolygon(self, cr, uid, ids, context=None):
-        counter = 0
-        
-        for zone in self.browse(cr, uid, ids, context=context):
-            for p in zone.gmaps_area_ids:
-                print "lat: %s, lon: %s" % (p.gmaps_lat, p.gmaps_lon)
+    def partner_insidepolygon(self, cr, uid, ids, partner_id, context=None):
+        context = context or {}
+        ids = isinstance(ids, (int, long)) and [ids] or ids
 
-        return True
+        #partner_id = 63 ##Prueba de id de partner "Santa Mónica, Caracas, Distrito Metropolitano de Caracas, Venezuela"
+        #(10.476310, -66.893070)
+        #partner_obj = self.pool.get('res.partner')
+        #partner_obj = partner_obj.browse(cr, uid, partner_id, context=context)
+
+        latlng = (10.48409,-66.910408) #Si, prueba
+        latlng = (10.531078,-66.971445) #No, prueba
+        latlng = (10.516437,-66.950099) #Si, prueba
+        #latlng = (partner_obj.gmaps_lat, partner_obj.gmaps_lon)
+
+        for zone in self.browse(cr, uid, ids, context=context):
+            puntos = zone.gmaps_area_ids
+            inPoly = False
+            j = len(puntos) - 1
+            for i in xrange(0, len(puntos) ):
+                p1 = puntos[i]
+                p2 = puntos[j]
+                
+                if(p1.gmaps_lon < latlng[1] and p2.gmaps_lon >= latlng[1] or p2.gmaps_lon <
+                        latlng[1] and p1.gmaps_lon >= latlng[1]):
+                    if(p1.gmaps_lat + (latlng[1] - p1.gmaps_lon) / (p2.gmaps_lon - p1.gmaps_lon ) *
+                            (p2.gmaps_lat - p1.gmaps_lat) < latlng[0]):
+                        inPoly = not inPoly
+
+                j = i
+
+        print "\nEsta dentro?: %s\n" % inPoly
+        return inPoly
 
 class freight_area_mapsgoogle(osv.Model):
     _name = 'freight.area.mapsgoogle'
