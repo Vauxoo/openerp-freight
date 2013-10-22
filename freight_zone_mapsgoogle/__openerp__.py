@@ -39,7 +39,7 @@ coordinates that limit the area.
 
 
 ''',
-    'depends': ['base', 'decimal_precision'],
+    'depends': ['base', 'decimal_precision', 'freight_partner_assign_precise'],
     'data': [
         'data/gmaps_data.xml',
         'view/freight_zone_view.xml',
