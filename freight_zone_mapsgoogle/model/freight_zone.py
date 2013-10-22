@@ -54,9 +54,9 @@ class freight_area_mapsgoogle(osv.Model):
     _columns = {
         'gmaps_zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help='Area to which delimits the current point.'),
         'gmaps_lat': fields.float('Latitude', required=True, 
-            digits_compute=dp.get_precision('Gmaps'), help="Latitude of coordinate"),   
+             digits=(3,6), help="Latitude of coordinate"),   
         'gmaps_lon': fields.float('Longitude', required=True,
-            digits_compute=dp.get_precision('Gmaps'), help="Longitude of coordinate"),   
+            digits=(3,6), help="Longitude of coordinate"),   
     }
 
 
