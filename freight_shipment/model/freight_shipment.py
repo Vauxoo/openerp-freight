@@ -376,5 +376,10 @@ class vehicle(osv.Model):
             help=('If this checkbox is set then the vehicle can be use like a'
                   ' delivery transport unit')
         ),
+        'automobile': fields.boolean(
+            'Automobile',
+            help=('If this checkbox is set then the vehicle can be use like a'
+                  ' automobile transport unit')
+        ),
     }
 
