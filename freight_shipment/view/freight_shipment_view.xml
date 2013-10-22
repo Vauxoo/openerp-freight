@@ -25,7 +25,7 @@
 
                         <group colspan="4">
                             <field name="name"/>
-                            <field name="transport_unit_id" domain="[('type','=','transport')]"/>
+                            <field name="vehicle_id" domain="[('type','=','transport')]"/>
 
                             <field name="date"/>
                             <field name="work_shift"/>

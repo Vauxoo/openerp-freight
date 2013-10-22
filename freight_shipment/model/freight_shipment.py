@@ -74,8 +74,8 @@ class freight_shipment(osv.Model):
         context = context or {}
         res = {}.fromkeys(ids, 0.0)
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            if fs_brw.transport_unit_id.id:
-                res[fs_brw.id] = fs_brw.transport_unit_id.physical_capacity
+            if fs_brw.vehicle_id.id:
+                res[fs_brw.id] = fs_brw.vehicle_id.physical_capacity
         return res
 
     def _get_vehicle_vol_weight(self, cr, uid, ids, field_name, arg,
@@ -88,8 +88,8 @@ class freight_shipment(osv.Model):
         context = context or {}
         res = {}.fromkeys(ids, 0.0)
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            if fs_brw.transport_unit_id.id:
-                res[fs_brw.id] = fs_brw.transport_unit_id.volumetric_capacity
+            if fs_brw.vehicle_id.id:
+                res[fs_brw.id] = fs_brw.vehicle_id.volumetric_capacity
         return res
 
     _columns = {
@@ -98,7 +98,7 @@ class freight_shipment(osv.Model):
             size=256,
             required=True,
             help='Number Reference'),
-        'transport_unit_id': fields.many2one(
+        'vehicle_id': fields.many2one(
             'fleet.vehicle',
             string='Transport Unit',
             required=True,
@@ -241,14 +241,14 @@ class freight_shipment(osv.Model):
         for fso_brw in self.browse(cr, uid, ids, context=context):
             exceptions.append(
                 not self.check_volumetric_weight(
-                    cr, uid, fso_brw.transport_unit_id.id,
+                    cr, uid, fso_brw.vehicle_id.id,
                     fso_brw.volumetric_weight, context=context))
             if exceptions[-1]:
                 exception_msg += _('The volumetric weight volume you are'
                     ' entering is greater than the volumetric capacity of'
                     ' youre transport unit (%s > %s).\n' %
                     (fso_brw.volumetric_weight,
-                     fso_brw.transport_unit_id.volumetric_capacity))
+                     fso_brw.vehicle_id.volumetric_capacity))
 
         self.write(
             cr, uid, ids,
