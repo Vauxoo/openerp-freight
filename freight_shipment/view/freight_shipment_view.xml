@@ -25,30 +25,30 @@
                     <sheet>
 
                         <group colspan="4">
-                            <field name="name"/>
-                            <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True)]"/>
-                            <field name="work_shift"/>
-                            <field name="type" invisible="1"/>
-                            <field name="zone_id"/>
+                            <field name="name" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="work_shift" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="type" invisible="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="zone_id" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
 
                             <group name="dates" string="Dates">
-                                <field name="date_shipped"/>
-                                <field name="date_delivery"/>
-                                <field name="date_delivered"/>
+                                <field name="date_shipped" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="date_delivery" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="date_delivered" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             </group>
                             <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
-                                <field name="weight"/>
-                                <field name="volumetric_weight"/>
-                                <field name="max_weight"/>
-                                <field name="max_volumetric_weight"/>
+                                <field name="weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="volumetric_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="max_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="max_volumetric_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Orders">
                                 <label for="picking_ids"/>
-                                <field name="picking_ids" nolabel="1"/>
+                                <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                                 <label for="pos_order_ids"/>
-                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft',))]}">
+                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}">
                                     <tree>
                                         <field name="name"/>
                                         <field name="pos_reference"/>
