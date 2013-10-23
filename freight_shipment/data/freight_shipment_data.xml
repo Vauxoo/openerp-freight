@@ -16,5 +16,12 @@
             <field name="description">Freight Shipment Order is Awaiting State</field>
         </record>
 
+        <record id="mt_fs_exception" model="mail.message.subtype">
+            <field name="name">Freight Shipment Order is in Exception State</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Warning: The Freight Shipment is in Exception State</field>
+        </record>
+
     </data>
 </openerp>
