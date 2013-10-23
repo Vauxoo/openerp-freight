@@ -333,6 +333,15 @@ class freight_shipment(osv.Model):
         else:
             return res
 
+    def action_back_to_awaiting(self, cr, uid, ids, context=None):
+        """
+        Return the freight shipment to the awaiting state to make the user the
+        posibility of resolve the expcetions.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'state': 'awaiting'}, context=context)
+        return True
+
 
 class sale_order(osv.Model):
 
