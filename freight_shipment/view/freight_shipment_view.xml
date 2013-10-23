@@ -89,15 +89,15 @@
             </field>
         </record>
 
-        <record id="freight_shipment_fleet_action" model="ir.actions.act_window">
-            <field name="name">Fleet Shipment</field>
+        <record id="freight_shipment_freight_action" model="ir.actions.act_window">
+            <field name="name">Freight Shipment</field>
             <field name="res_model">freight.shipment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'default_type': 'fleet', 'vehicle_type': 'is_freight'}</field>
+            <field name="context">{'default_type': 'freight', 'vehicle_type': 'is_freight'}</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to create an Fleet Shipment. 
+                    Click to create an Freight Shipment. 
                 </p>
             </field>
         </record>
@@ -129,10 +129,10 @@
             />
 
         <menuitem 
-            id="freight_shipment_fleet_menu"
-            name="Fleet"
+            id="freight_shipment_freight_menu"
+            name="Freight"
             parent="freight_shipment_main_menu"
-            action="freight_shipment_fleet_action"
+            action="freight_shipment_freight_action"
             />
 
         <menuitem 
@@ -177,7 +177,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@string='Other Information']/group" position="inside">
                     <group name="freigh-section" string="Freight Shipment" colspan="4">
-			<field name="prefered_freight_shipment_id" required="1" domain="[('type', '=', 'fleet')]"/>
+			<field name="prefered_freight_shipment_id" required="1" domain="[('type', '=', 'freight')]"/>
 			<label for="freight_shipment_ids"/>
 			<field name="freight_shipment_ids" nolabel="1" colspan="4"/>
 		    </group>

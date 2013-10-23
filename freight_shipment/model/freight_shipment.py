@@ -175,7 +175,7 @@ class freight_shipment(osv.Model):
             help='Zone'),
         'type': fields.selection(
             [('delivery', 'Delivery'),
-             ('fleet', 'Fleet')],
+             ('freight', 'Freight')],
             required=True,
             string='Type',
             help='Freight Type',
