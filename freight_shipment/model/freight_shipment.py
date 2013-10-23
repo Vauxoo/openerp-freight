@@ -198,6 +198,11 @@ class freight_shipment(osv.Model):
             string='Processed Sale Orders',
             help=('Sale Orders real send')
         ),
+        'message_exceptions': fields.text(
+            'Exceptions history messages',
+            help=('This field holds de the history of exceptions for the'
+                  ' current freight.')
+        ),
     }
 
     _defaults = {
