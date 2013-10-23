@@ -219,6 +219,15 @@ class freight_shipment(osv.Model):
                     obj['state'] in ['awaiting'],
             'freight_shipment.mt_fs_exception':
                 lambda self, cr, uid, obj, ctx=None: obj['state'] in ['exception'],
+            'freight_shipment.mt_fs_vw_exception':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    not self.check_volumetric_weight(
+                        cr, uid, obj['id'], context=ctx),
+            'freight_shipment.mt_fs_w_exception':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    not self.check_weight(cr, uid, obj['id'], context=ctx),
         },
     }
 
