@@ -342,6 +342,16 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'awaiting'}, context=context)
         return True
 
+    # Note: this method is only a dummy method for now.
+    def action_pending(self, cr, uid, ids, context=None):
+        """
+        This method is used by the xxx button to pass the freight shipment
+        from Confirmed state to Pending to Dispatch.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'state': 'pending'}, context=context)
+        return True
+
 
 class sale_order(osv.Model):
 
