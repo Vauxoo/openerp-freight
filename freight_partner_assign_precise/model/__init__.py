@@ -23,31 +23,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###############################################################################
 
-{
-    'name': 'Freight Zone Gmaps',
-    'version': '1.0',
-    'author': 'Vauxoo',
-    'website': 'http://www.vauxoo.com/',
-    'category': 'Freight',
-    'description': '''
-Freight Zone Gmaps
-==================
-
-This module is responsible for creating a model area, with a field one2many geographical
-coordinates that limit the area.
-
-
-
-''',
-    'depends': ['base', 'decimal_precision', 'freight_partner_assign_precise'],
-    'data': [
-        'data/gmaps_data.xml',
-        'view/freight_zone_view.xml',
-        ],
-    'demo': [
-        'demo/gmaps_demo.xml',
-        ],
-    'test': [],
-    'active': False,
-    'installable': True,
-}
+import res_partner

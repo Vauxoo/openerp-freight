@@ -24,29 +24,27 @@
 ###############################################################################
 
 {
-    'name': 'Freight Zone Gmaps',
+    'name': 'Partner Assign Precise Localization',
     'version': '1.0',
     'author': 'Vauxoo',
     'website': 'http://www.vauxoo.com/',
-    'category': 'Freight',
+    'category': 'crm',
     'description': '''
-Freight Zone Gmaps
-==================
+Partner Assign Precise Localization
+===================================
 
-This module is responsible for creating a model area, with a field one2many geographical
-coordinates that limit the area.
+You can geolocalize your opportunities by using this module.
 
-
+Use geolocalization when assigning opportunities to partners.
+Determine the exact GPS coordinates according to the address of the partner.
 
 ''',
-    'depends': ['base', 'decimal_precision', 'freight_partner_assign_precise'],
+    'depends': ['crm', 'decimal_precision'],
     'data': [
-        'data/gmaps_data.xml',
-        'view/freight_zone_view.xml',
+        'view/res_partner_view.xml',
+        'data/partner_gmaps_data.xml',
         ],
-    'demo': [
-        'demo/gmaps_demo.xml',
-        ],
+    'demo': [],
     'test': [],
     'active': False,
     'installable': True,

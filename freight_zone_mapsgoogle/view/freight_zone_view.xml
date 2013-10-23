@@ -8,6 +8,12 @@
                 <form string="Zone" version="7.0">
                     <group>
                         <field name="name" class="oe_inline"/>
+                        <!--  
+                        <button string="InsidePolygon" 
+                            colspan="2" 
+                            name="partner_insidepolygon" 
+                            icon="gtk-apply" type="object"/>
+                            -->
                     </group>    
                     <notebook>
                         <page string="areas">
