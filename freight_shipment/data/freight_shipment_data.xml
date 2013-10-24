@@ -51,11 +51,11 @@
             <field name="description">Freight Shipment is in Process to be charged</field>
         </record>
 
-        <record id="mt_fs_pending" model="mail.message.subtype">
-            <field name="name">Freight Shipment change to Pending state</field>
+        <record id="mt_fs_loaded" model="mail.message.subtype">
+            <field name="name">Freight Shipment change to loaded state</field>
             <field name="res_model">freight.shipment</field>
             <field name="default" eval="False"/>
-            <field name="description">Freight Shipment is pending to be dispatch</field>
+            <field name="description">Freight shipment is ready to go</field>
         </record>
 
     </data>

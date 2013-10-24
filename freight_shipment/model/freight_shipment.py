@@ -112,7 +112,7 @@ class freight_shipment(osv.Model):
              ('awaiting','Waiting for Assignment'),
              ('exception','Exception'),
              ('confirm','Confirmed'),
-             ('pending','Pending Dispatch'),
+             ('loaded','Loaded'),
              ('in_transit','In Transit'),
              ('return','Return')],
             string='State',
@@ -233,9 +233,9 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_to_load':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['confirm'],
-            'freight_shipment.mt_fs_pending':
+            'freight_shipment.mt_fs_loaded':
                 lambda self, cr, uid, obj, ctx=None:
-                    obj['state'] in ['pending'],
+                    obj['state'] in ['loaded'],
         },
     }
 
@@ -351,13 +351,13 @@ class freight_shipment(osv.Model):
         return True
 
     # Note: this method is only a dummy method for now.
-    def action_pending(self, cr, uid, ids, context=None):
+    def action_loaded(self, cr, uid, ids, context=None):
         """
         This method is used by the xxx button to pass the freight shipment
-        from Confirmed state to Pending to Dispatch.
+        from Confirmed state to Loaded state.
         """
         context = context or {}
-        self.write(cr, uid, ids, {'state': 'pending'}, context=context)
+        self.write(cr, uid, ids, {'state': 'loaded'}, context=context)
         return True
 
 
