@@ -123,9 +123,10 @@ class freight_shipment(osv.Model):
                   ' that need to be corroborated\n'
                   '\t- Exception: The freight.shipment order is totally set.\n'
                   '\t- Confirmed: The delivery have been cheked and assigned.\n'
-                  '\t- Pending Dispatch: Waiting for be delivery.\n'
-                  '\t- Overdue: The freight.shipment is late.\n'
-                  '\t- In Transit: Is already send to delivery.\n'
+                  '\t- Loaded: The orders are already in the vehicle and is'
+                  ' waiting for be delivery.\n'
+                  '\t- Shipped: Is already send to destination. The shipment'
+                  ' is in transit.\n'
             )),
         'weight': fields.float(
             string='Weight',
