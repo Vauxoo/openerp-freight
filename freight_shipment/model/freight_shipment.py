@@ -362,6 +362,15 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'loaded'}, context=context)
         return True
 
+    def action_shipped(self, cr, uid, ids, context=None):
+        """
+        This method will chage the freight shipment from Loaded estate to
+        Shipped state. It represent the order to make the unit go out and do
+        the shipment.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'state': 'shipped'}, context=context)
+        return True
 
 class sale_order(osv.Model):
 

@@ -18,6 +18,7 @@
                         <button name="action_back_to_awaiting" string="Resolve Exceptions" type="object" states="exception" help="Click this to resolve the exeption" class="oe_highlight"/>
                         <button name="action_force" string="Force Dispatch" type="object" states="exception" help="Click this to force the confirmation of the shipment"/>
                         <button name="action_loaded" string="Ready" type="object" states="confirm" help="Click this button to make the freisht shipment execute" class="oe_highlight"/>
+                        <button name="action_shipped" string="Dispatch" type="object" states="loaded" help="Click this button to set the order to vehicle can go out" class="oe_highlight"/>
                         <field name="state"
                             widget="statusbar"
                             statusbar_visible="draft,awaiting,confirm,loaded,shipped,delivered"
