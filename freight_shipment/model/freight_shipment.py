@@ -113,7 +113,6 @@ class freight_shipment(osv.Model):
              ('exception','Exception'),
              ('confirm','Confirmed'),
              ('pending','Pending Dispatch'),
-             ('overdue','Overdue'),
              ('in_transit','In Transit'),
              ('return','Return')],
             string='State',
