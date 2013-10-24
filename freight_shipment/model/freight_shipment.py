@@ -228,6 +228,9 @@ class freight_shipment(osv.Model):
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
                     not self.check_weight(cr, uid, obj['id'], context=ctx),
+            'freight_shipment.mt_fs_confirm':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['confirm'],
         },
     }
 

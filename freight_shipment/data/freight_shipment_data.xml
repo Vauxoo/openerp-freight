@@ -37,5 +37,12 @@
             <field name="description">Weight Capacity Exceeded</field>
         </record>
 
+        <record id="mt_fs_confirm" model="mail.message.subtype">
+            <field name="name">Freight Shipment Confirmed</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment Confirmed</field>
+        </record>
+
     </data>
 </openerp>
