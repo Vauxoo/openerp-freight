@@ -113,7 +113,8 @@ class freight_shipment(osv.Model):
              ('exception','Exception'),
              ('confirm','Confirmed'),
              ('loaded','Loaded'),
-             ('shipped','Shipped')],
+             ('shipped','Shipped'),
+             ('delivered', 'Delivered')],
             string='State',
             required=True,
             help=('Indicate Freight Shipment Order State. The possible states'
@@ -127,6 +128,8 @@ class freight_shipment(osv.Model):
                   ' waiting for be delivery.\n'
                   '\t- Shipped: Is already send to destination. The shipment'
                   ' is in transit.\n'
+                  '\t- Delivered: The shipment arrived to the destinationn'
+
             )),
         'weight': fields.float(
             string='Weight',
