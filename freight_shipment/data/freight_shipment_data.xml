@@ -44,5 +44,12 @@
             <field name="description">Freight Shipment Confirmed</field>
         </record>
 
+        <record id="mt_fs_to_load" model="mail.message.subtype">
+            <field name="name">Freight Shipment is in Process to be charged</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment is in Process to be charged</field>
+        </record>
+
     </data>
 </openerp>

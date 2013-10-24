@@ -231,6 +231,9 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_confirm':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['confirm'],
+            'freight_shipment.mt_fs_to_load':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['confirm'],
         },
     }
 
