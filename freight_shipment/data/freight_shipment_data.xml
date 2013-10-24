@@ -51,5 +51,12 @@
             <field name="description">Freight Shipment is in Process to be charged</field>
         </record>
 
+        <record id="mt_fs_pending" model="mail.message.subtype">
+            <field name="name">Freight Shipment change to Pending state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment is pending to be dispatch</field>
+        </record>
+
     </data>
 </openerp>
