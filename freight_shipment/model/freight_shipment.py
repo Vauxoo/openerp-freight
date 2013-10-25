@@ -114,6 +114,7 @@ class freight_shipment(osv.Model):
              ('confirm','Confirmed'),
              ('loaded','Loaded'),
              ('shipped','Shipped'),
+             ('shipment_exception', 'Shipment Exception'),
              ('delivered', 'Delivered')],
             string='State',
             required=True,
