@@ -206,6 +206,18 @@ class freight_shipment(osv.Model):
             help=('This field holds de the history of exceptions for the'
                   ' current freight.')
         ),
+        'is_overdue': fields.boolean(
+            'Overdue',
+            help=('This field set if the freight shipment have any overdue')),
+
+        # Note: This field is only a dummy, and it does not show in any place, 
+        # Openerp _track attribute make some notifications (mail.messages)
+        # when one of the models fields changes. But we are trying to create
+        # notifications when a date is compared and no model field change only
+        # this notification need to be raise. For that we craete this dummy
+        # boolean field 'is_overdue' to let us make a brigde to create the
+        # _track notifications. This 'is_overdue' field will be set when runing
+        # a wizard that check the state of the freight shipments.
     }
 
     _defaults = {
