@@ -375,6 +375,16 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'shipped'}, context=context)
         return True
 
+    def action_delivered(self, cr, uid, ids, context=None):
+        """
+        This method will change the freight shipment from Shipped state to
+        Delivered state.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'state': 'delivered'}, context=context)
+        return True
+
+
 class sale_order(osv.Model):
 
     _inherit = "sale.order"
