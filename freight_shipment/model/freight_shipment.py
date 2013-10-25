@@ -372,7 +372,11 @@ class freight_shipment(osv.Model):
         the shipment.
         """
         context = context or {}
-        self.write(cr, uid, ids, {'state': 'shipped'}, context=context)
+        self.write(
+            cr, uid, ids,
+            {'state': 'shipped',
+             'date_shipped': time.strftime('%Y-%m-%d %H:%M:%S')},
+            context=context)
         return True
 
     def action_delivered(self, cr, uid, ids, context=None):
