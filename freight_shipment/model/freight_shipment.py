@@ -381,7 +381,11 @@ class freight_shipment(osv.Model):
         Delivered state.
         """
         context = context or {}
-        self.write(cr, uid, ids, {'state': 'delivered'}, context=context)
+        self.write(
+            cr, uid, ids, {
+                'state': 'delivered',
+                'date_delivered': time.strftime('%Y-%m-%d %H:%M:%S')
+            }, context=context)
         return True
 
 
