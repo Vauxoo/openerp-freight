@@ -129,8 +129,9 @@ class freight_shipment(osv.Model):
                   ' waiting for be delivery.\n'
                   '\t- Shipped: Is already send to destination. The shipment'
                   ' is in transit.\n'
-                  '\t- Delivered: The shipment arrived to the destinationn'
-
+                  '\t- Shipment Exception: there was a problem in the'
+                  ' shipment.\n'
+                  '\t- Delivered: The shipment arrived to the destination\n'
             )),
         'weight': fields.float(
             string='Weight',
