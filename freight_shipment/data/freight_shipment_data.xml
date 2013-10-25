@@ -58,5 +58,12 @@
             <field name="description">Freight shipment is ready to go</field>
         </record>
 
+        <record id="mt_fs_shipped" model="mail.message.subtype">
+            <field name="name">Freight shipment is in 'shipped' state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have left of our facilities</field>
+        </record>
+
     </data>
 </openerp>

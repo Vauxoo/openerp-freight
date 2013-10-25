@@ -238,6 +238,9 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_loaded':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['loaded'],
+            'freight_shipment.mt_fs_shipped':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['shipped'],
         },
     }
 
