@@ -36,7 +36,7 @@
 
                             <group name="dates" string="Dates">
                                 <field name="date_shipped" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
-                                <field name="date_delivery" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="date_delivery" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" required="True"/>
                                 <field name="date_delivered" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             </group>
                             <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
