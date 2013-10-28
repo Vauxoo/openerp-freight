@@ -66,7 +66,7 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Sale Orders">
+                            <page string="Sale Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
                                 <group name="sale-order-group" colspan="4">
                                     <group string="Prefered" colspan="4">
                                         <field name="prefered_sale_order_ids" nolabel="1"/>
