@@ -565,6 +565,16 @@ class pos_order(osv.Model):
         'delivery_state': 'undelivered',
     }
 
+    def action_pos_delivered(self, cr, uid, ids, context=None):
+        """
+        Button method. It set a pos order delivery state field to the
+        'delivered' state.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'delivery_state': 'delivered'},
+                   context=context)
+        return True
+
 
 class vehicle(osv.Model):
 
