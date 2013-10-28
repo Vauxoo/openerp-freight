@@ -109,6 +109,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{'default_type': 'freight', 'vehicle_type': 'is_freight'}</field>
+            <field name="domain">[('type','=','freight')]</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click to create an Freight Shipment. 
@@ -122,6 +123,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{'default_type': 'delivery', 'vehicle_type': 'is_delivery'}</field>
+            <field name="domain">[('type','=','delivery')]</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click to create an Shipment Delivery 
