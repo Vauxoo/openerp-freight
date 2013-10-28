@@ -60,6 +60,7 @@ To use this module you need to configure youre OpenERP instance by:
     'data': [
         'view/freight_shipment_view.xml',
         'data/freight_shipment_data.xml',
+        'wizard/freight_shipment_overdue_view.xml',
     ],
     'demo': [],
     'test': [],

@@ -406,6 +406,53 @@ class freight_shipment(osv.Model):
             }, context=context)
         return True
 
+    def _check_shipment_overdue(self, cr, uid, ids, context=None):
+        """
+        When an freight shipment have already been shipped but its late to be
+        delivered. This method compare the Estimated Delivery Date
+        (date_delivery) with the current date. If the current date and time is
+        greater than the estimated delivery date then it means that there is a
+        shipment overdue.
+        @return: True if there is overdue, False if its not.
+        """
+        context = context or {}
+        ids = isinstance(ids, (int, long)) and [ids] or ids
+        res = {}.fromkeys(ids)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            res[fs_brw.id] = \
+                time.strftime('%Y-%m-%d %H:%M:%S') > fs_brw.date_delivery \
+                and True or False
+            #print 'FS(%s|%s) Shipped overdue is %s' % (
+            #    fs_brw.id, fs_brw.name, res[fs_brw.id])
+        if len(res.keys()) == 1:
+            return res.values()[0]
+        else:
+            return res
+
+    def _check_prepare_overdue(self, cr, uid, ids, context=None): 
+        """
+        When an freight shipment have been planned to be shipped in a specific
+        day but the current day is is greater than that date is tell that is
+        a prepare overdue because needs to be send and it have not yet.
+        This method compare the current date and time with the Shipped Date
+        (date_shipped). If the 'date_shipeed' is greater than the current date
+        and timw then we have a prepare overdue.
+        @return: True if there is overdue, False if its not.
+        """
+        context = context or {}
+        ids = isinstance(ids, (int, long)) and [ids] or ids
+        res = {}.fromkeys(ids)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            res[fs_brw.id] = (fs_brw.date_shipped and 
+                time.strftime('%Y-%m-%d %H:%M:%S') > fs_brw.date_shipped ) \
+                and True or False
+            #print 'FS(%s|%s) Prepare overdue is %s' % (
+            #    fs_brw.id, fs_brw.name, res[fs_brw.id])
+        if len(res.keys()) == 1:
+            return res.values()[0]
+        else:
+            return res
+
 
 class sale_order(osv.Model):
 

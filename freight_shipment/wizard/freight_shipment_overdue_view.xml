@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="fregith_shipment_overdue_view" model="ir.ui.view">
+            <field name="name">freight.shipment.overdue.form</field>
+            <field name="model">freight.shipment.overdue</field>
+            <field name="arch" type="xml">
+                <form string="Check Overdues" version="7.0">
+                    <footer>
+                        <button string="Check" name="check_overdue" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_freight_shipment_overdue" model="ir.actions.act_window">
+            <field name="name">Check Overdues</field>
+            <field name="res_model">freight.shipment.overdue</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="fregith_shipment_overdue_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="action_check_freight_shipment_overdue" model="ir.values">
+            <field name="model_id" ref="model_freight_shipment"/>
+            <field name="name">Check Overdues</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_freight_shipment_overdue'))"/>
+            <field name="key">action</field>
+            <field name="model">freight.shipment</field>
+        </record>
+
+    </data>
+</openerp>
