@@ -50,9 +50,14 @@
                         <notebook>
                             <page string="Orders">
                                 <label for="picking_ids"/>
-                                <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}">
-                                    <field name="name"/>
-                                    <field name="delivery_state"/>
+                                <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="origin"/>
+                                        <field name="min_date"/>
+                                        <field name="state"/>
+                                        <field name="delivery_state"/>
+                                    </tree>
                                 </field>
                                 <label for="pos_order_ids"/>
                                 <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}">
