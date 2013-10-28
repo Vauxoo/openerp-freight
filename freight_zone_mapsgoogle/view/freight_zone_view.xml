@@ -3,14 +3,14 @@
     <data>
         <record id="freight_zone_mapsgoogle_form" model="ir.ui.view">
             <field name="name">Zone</field>
-            <field name="model">freight.zone.mapsgoogle</field>
+            <field name="model">freight.zone</field>
             <field name="arch" type="xml">
                 <form string="Zone" version="7.0">
                     <field name="id"/>
                     <field name="name"/>
                     <button name="maps" type="object" string="google" /> 
                     
-                    <field name="gmaps_point_ids" context="{'default_model': 'freight.zone.mapsgoogle', 'default_res_id': id}"
+                    <field name="gmaps_point_ids" context="{'default_model': 'freight.zone', 'default_res_id': id}"
                         widget="gmaps_sector"/>
                 </form>
             </field>
@@ -18,7 +18,7 @@
         
         <record id="freight_zone_mapsgoogle_tree" model="ir.ui.view">
             <field name="name">freight Zone</field>
-            <field name="model">freight.zone.mapsgoogle</field>
+            <field name="model">freight.zone</field>
             <field name="arch" type="xml">
                 <tree string="freight Zone" version="7.0">
                     <field name="name"/>
@@ -28,7 +28,7 @@
 
         <record model="ir.actions.act_window" id="freight_zone_mapsgoogle_action">
             <field name="name">freight Zone</field>
-            <field name="res_model">freight.zone.mapsgoogle</field>
+            <field name="res_model">freight.zone</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

@@ -29,8 +29,8 @@ from openerp import tools
 import datetime
 import openerp.addons.decimal_precision as dp
 
-class freight_zone_mapsgoogle(osv.Model):
-    _name = 'freight.zone.mapsgoogle'
+class freight_zone(osv.Model):
+    _name = 'freight.zone'
     _inherit = ['gmaps.group']
     _columns = {
             'name':fields.char('Name', 264, help='Name'), 
