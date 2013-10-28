@@ -426,15 +426,55 @@ class freight_shipment(osv.Model):
     def action_delivered(self, cr, uid, ids, context=None):
         """
         This method will change the freight shipment from Shipped state to
-        Delivered state.
+        Delivered state. Used for the Delivered button in the freight shipment
+        order.
         """
         context = context or {}
-        self.write(
-            cr, uid, ids, {
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        fs_ids = {'delivered': [], 'shipment_exception': []}
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            if self._successfully_delivery_state(cr, uid, fs_brw.id,
+                                                 context=context):
+                fs_ids['delivered'] += [fs_brw.id]
+            else:
+                fs_ids['shipment_exception'] += [fs_brw.id]
+        fs_ids['delivered'] and self.write(
+            cr, uid, fs_ids['delivered'], {
                 'state': 'delivered',
                 'date_delivered': time.strftime('%Y-%m-%d %H:%M:%S')
             }, context=context)
+        fs_ids['shipment_exception'] and self.write(
+            cr, uid, fs_ids['shipment_exception'], {
+                'state': 'shipment_exception',
+                'date_delivered': time.strftime('%Y-%m-%d %H:%M:%S')
+            }, context=context)
+        #print '---- fs_ids', fs_ids
         return True
+
+    def _successfully_delivery_state(self, cr, uid, ids, context=None):
+        """
+        Checks if all the pickings and pos orders in the freight shipment are
+        succesfully delivered. Check every element delivery state field. 
+        @return True if all the pos.orders and stock.pickings associated to the
+        given fregith shipment have been succesfully shipped. False otherwise.
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        res = {}.fromkeys(ids)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            pending_items = []
+            for pos_brw in fs_brw.pos_order_ids:
+                if pos_brw.delivery_state != 'delivered':
+                    pending_items.append(pos_brw.id)
+            for picking_brw in fs_brw.picking_ids:
+                if picking_brw.delivery_state != 'delivered':
+                    pending_items.append(picking_brw.id)
+            res[fs_brw.id] = not pending_items and True or False
+            #print '---- fs %s pending_items %s' % (fs_brw.id, pending_items)
+        if len(res.keys()) == 1:
+            return res.values()[0]
+        else:
+            return res
 
     def _check_shipment_overdue(self, cr, uid, ids, context=None):
         """
