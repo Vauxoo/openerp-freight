@@ -31,58 +31,24 @@ import openerp.addons.decimal_precision as dp
 
 class freight_zone_mapsgoogle(osv.Model):
     _name = 'freight.zone.mapsgoogle'
-    _description = 'Geographical Area'
+    _inherit = ['gmaps.group']
     _columns = {
-        'name' : fields.char('Zone Name', 256, required=True, help='Zone Name'),
-        'gmaps_area_ids' : fields.one2many('freight.area.mapsgoogle', 'gmaps_zone_id', 'Area',
-            help='set of geographic coordinates that define the zone'),
-    }
-
-    def partner_insidepolygon(self, cr, uid, ids, partner_id, context=None):
-        """
-        determines if a partner is inside a zone using geographical coordinates
-        """
-        context = context or {}
-        ids = isinstance(ids, (int, long)) and [ids] or ids
-
-        partner_obj = self.pool.get('res.partner')
-        partner_obj = partner_obj.browse(cr, uid, partner_id, context=context)
-
-        #latlng = (10.48409,-66.910408) #Si, prueba
-        #latlng = (10.531078,-66.971445) #No, prueba
-        #latlng = (10.516437,-66.950099) #Si, prueba
-        #latlng = (10.476310, -66.893070) #Si, "Santa Mónica, Caracas, Distrito Metropolitano de Caracas, Venezuela"
-        latlng = (partner_obj.gmaps_lat, partner_obj.gmaps_lon)
-
-        for zone in self.browse(cr, uid, ids, context=context):
-            puntos = zone.gmaps_area_ids
-            inPoly = False
-            j = len(puntos) - 1
-            for i in xrange(0, len(puntos) ):
-                p1 = puntos[i]
-                p2 = puntos[j]
-                
-                if(p1.gmaps_lon < latlng[1] and p2.gmaps_lon >= latlng[1] or p2.gmaps_lon <
-                        latlng[1] and p1.gmaps_lon >= latlng[1]):
-                    if(p1.gmaps_lat + (latlng[1] - p1.gmaps_lon) / (p2.gmaps_lon - p1.gmaps_lon ) *
-                            (p2.gmaps_lat - p1.gmaps_lat) < latlng[0]):
-                        inPoly = not inPoly
-
-                j = i
-
-        print "\nEsta dentro?: %s\n" % inPoly
-        return inPoly
-
-class freight_area_mapsgoogle(osv.Model):
-    _name = 'freight.area.mapsgoogle'
-    _rec_name = 'id'
-    _description = 'Area'
-    _columns = {
-        'gmaps_zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help='Area to which delimits the current point.'),
-        'gmaps_lat': fields.float('Latitude', required=True, 
-             digits=(3,6), help="Latitude of coordinate"),   
-        'gmaps_lon': fields.float('Longitude', required=True,
-            digits=(3,6), help="Longitude of coordinate"),   
-    }
-
-
+            'name':fields.char('Name', 264, help='Name'), 
+            
+            }
+    def maps(self, cr, uid, ids, context = None):
+        context = context and context or {}
+        ids = isinstance(ids, (int, long)) and ids or ids[0]
+        print "******** %s " % (ids)
+        return {
+            'name': _('Gmaps Zone'),
+            'res_model': 'freight.zone.mapsgoogle',
+            'res_id': ids,
+            'type': 'ir.actions.client',
+            'tag' : 'gmaps.example',
+            'params' : {
+                'domain':[
+                    ('res_id','=',ids),
+                ],
+            },
+        }                                   
