@@ -91,9 +91,10 @@
             <field name="name">Freight Shipment Tree</field>
             <field name="model">freight.shipment</field>
             <field name="arch" type="xml">
-                <tree string="Freight Shipments" version="7.0">
+                <tree string="Freight Shipments" version="7.0" colors="black:is_overdue == False;red: is_overdue == True">
                     <field name="name"/>
                     <field name="state"/>
+                    <field name="is_overdue" invisible="1"/>
                 </tree>
             </field>
         </record>
