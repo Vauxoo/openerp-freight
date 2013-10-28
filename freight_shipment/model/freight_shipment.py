@@ -28,6 +28,17 @@ from openerp.tools.translate import _
 from openerp import tools
 import time
 
+def get_delivery_states(self, cr, uid, context=None):
+    """
+    This method create the dictionary of tuples used to set the selection
+    options in pos.order and stock.piking delivery_state selection field.
+    """
+    return [
+        ('undelivered', 'Undelivered'),
+        ('in_transit', 'In Transit'),
+        ('delivered', 'Delivered'),
+        ('returned', 'Returned')]
+
 
 class stock_picking(osv.Model):
 
@@ -38,6 +49,14 @@ class stock_picking(osv.Model):
             string='Freight Shipment',
             help='Freight Shipment Order'
         ),
+        'delivery_state': fields.selection(
+            get_delivery_states,
+            'Delivery State',
+            help='Indicates the delivery state of the order'),
+    }
+
+    _defaults = {
+        'delivery_state': 'undelivered',
     }
 
 
@@ -535,6 +554,14 @@ class pos_order(osv.Model):
             'Delivery Address',
             help=('Delivery Address selected in the POS to make the delivery'
                   ' of the customer')),
+        'delivery_state': fields.selection(
+            get_delivery_states,
+            'Delivery State',
+            help='Indicates the delivery state of the order'),
+    }
+
+    _defaults = {
+        'delivery_state': 'undelivered',
     }
 
 
