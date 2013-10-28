@@ -79,5 +79,12 @@
             <field name="description">Freight shipment have prepare overdue</field>
         </record>
  
+        <record id="mt_fs_shipment_exception" model="mail.message.subtype">
+            <field name="name">Freight shipment in shipment exception state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Some order in the Freight shipment have not been successfully delivered</field>
+        </record>
+
     </data>
 </openerp>

@@ -275,6 +275,9 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_shipped':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['shipped'],
+            'freight_shipment.mt_fs_shipment_exception':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['shipment_exception'],
         },
         'is_overdue': {
             'freight_shipment.mt_fs_shipment_overdue':
