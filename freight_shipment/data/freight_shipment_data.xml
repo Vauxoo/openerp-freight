@@ -86,5 +86,12 @@
             <field name="description">Some order in the Freight shipment have not been successfully delivered</field>
         </record>
 
+        <record id="mt_fs_delivered" model="mail.message.subtype">
+            <field name="name">Freight shipment is in delivered state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have been delivered</field>
+        </record>
+
     </data>
 </openerp>
