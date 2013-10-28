@@ -65,5 +65,19 @@
             <field name="description">Freight shipment have left of our facilities</field>
         </record>
 
+        <record id="mt_fs_shipment_overdue" model="mail.message.subtype">
+            <field name="name">Freight shipment shipment overdue</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have shipment overdue</field>
+        </record>
+
+        <record id="mt_fs_prepare_overdue" model="mail.message.subtype">
+            <field name="name">Freight shipment prepare ovedue</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have prepare overdue</field>
+        </record>
+ 
     </data>
 </openerp>

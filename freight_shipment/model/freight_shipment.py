@@ -256,6 +256,16 @@ class freight_shipment(osv.Model):
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['shipped'],
         },
+        'is_overdue': {
+            'freight_shipment.mt_fs_shipment_overdue':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['is_overdue'] == True and self._check_shipment_overdue(
+                        cr, uid, obj['id'], context=ctx),
+            'freight_shipment.mt_fs_prepare_overdue':
+                lambda self, cr, uid, obj, ctx=None:
+                   obj['is_overdue'] == True and self._check_prepare_overdue(
+                        cr, uid, obj['id'], context=ctx)
+        },
     }
 
     def action_prepare(self, cr, uid, ids, context=None):
