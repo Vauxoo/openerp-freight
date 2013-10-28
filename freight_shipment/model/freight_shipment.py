@@ -523,6 +523,34 @@ class freight_shipment(osv.Model):
         else:
             return res
 
+    def action_dumping(self, cr, uid, ids, context=None):
+        """
+        This method is used in the "Release Undelivered Orders" button. Will
+        release the pos orders and picking orders that was unsuccessfully
+        delivered to be later assing to another freight shipment and be re-
+        send.
+        """
+        context = context or {}
+        ids = isinstance(ids, (int, long)) and [ids] or ids
+        pos_obj = self.pool.get('pos.order')
+        picking_obj = self.pool.get('stock.picking')
+        new_values = {
+            'freight_shipment_id': False, 'delivery_state': 'undelivered'}
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            pos_ids = \
+                [pos_brw.id
+                 for pos_brw in fs_brw.pos_order_ids
+                 if pos_brw.delivery_state != 'delivered']
+            picking_ids = \
+                [picking_brw.id
+                 for picking_brw in fs_brw.picking_ids
+                 if picking_brw.delivery_state != 'delivered']
+            pos_obj.write(cr, uid, pos_ids, new_values, context=context)
+            pos_obj.write(cr, uid, picking_ids, new_values, context=context) 
+        self.write(cr, uid, ids, {'state': 'delivered'}, context=context)
+        #print '---- pos_ids', pos_ids
+        #print '---- picking_ids', picking_ids
+        return True
 
 class sale_order(osv.Model):
 
