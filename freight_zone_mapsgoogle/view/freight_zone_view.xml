@@ -6,12 +6,26 @@
             <field name="model">freight.zone</field>
             <field name="arch" type="xml">
                 <form string="Zone" version="7.0">
-                    <field name="id"/>
-                    <field name="name"/>
-                    <button name="maps" type="object" string="google" /> 
-                    
-                    <field name="gmaps_point_ids" context="{'default_model': 'freight.zone', 'default_res_id': id}"
-                        widget="gmaps_sector"/>
+                    <header>
+                        <button name="maps" 
+                                type="object"
+                                string="Zone GoogleMaps"
+                                icon="gtk-execute"
+                                class="oe_highlight"
+                                /> 
+                    </header>
+                    <group>
+                        <group>
+                            <label for="name" string="Zone Name"/>
+                            <field name="name" nolabel="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Points">
+                                <field name="gmaps_point_ids" context="{'default_model': 'freight.zone', 'default_res_id': id}"
+                                    widget="gmaps_sector" nolabel="1"/>
+                        </page>
+                    </notebook>
                 </form>
             </field>
         </record>
