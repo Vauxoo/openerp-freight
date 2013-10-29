@@ -45,10 +45,10 @@
         </record>
 
         <record id="mt_fs_to_load" model="mail.message.subtype">
-            <field name="name">Freight Shipment is in Process to be charged</field>
+            <field name="name">Freight Shipment is in Process to be loaded</field>
             <field name="res_model">freight.shipment</field>
             <field name="default" eval="False"/>
-            <field name="description">Freight Shipment is in Process to be charged</field>
+            <field name="description">Freight Shipment is in Process to be loaded</field>
         </record>
 
         <record id="mt_fs_loaded" model="mail.message.subtype">
@@ -62,7 +62,7 @@
             <field name="name">Freight shipment is in 'shipped' state</field>
             <field name="res_model">freight.shipment</field>
             <field name="default" eval="False"/>
-            <field name="description">Freight shipment have left of our facilities</field>
+            <field name="description">Freight shipment have left our facilities</field>
         </record>
 
         <record id="mt_fs_shipment_overdue" model="mail.message.subtype">
@@ -83,7 +83,7 @@
             <field name="name">Freight shipment in shipment exception state</field>
             <field name="res_model">freight.shipment</field>
             <field name="default" eval="False"/>
-            <field name="description">Some order in the Freight shipment have not been successfully delivered</field>
+            <field name="description">Some orders in the Freight shipment have not been successfully delivered</field>
         </record>
 
         <record id="mt_fs_delivered" model="mail.message.subtype">
