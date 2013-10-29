@@ -81,7 +81,7 @@ class freight_zone(osv.Model):
         print "******** %s " % (ids)
         return {
             'name': _('Gmaps Zone'),
-            'res_model': 'freight.zone.mapsgoogle',
+            'res_model': 'freight.zone',
             'res_id': ids,
             'type': 'ir.actions.client',
             'tag' : 'gmaps.example',
