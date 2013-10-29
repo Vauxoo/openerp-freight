@@ -93,5 +93,12 @@
             <field name="description">Freight shipment have been delivered</field>
         </record>
 
+        <record id="mt_fs_complete_delivered" model="mail.message.subtype">
+            <field name="name">Freight shipment have undelivered orders</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment undelivered orders have been release</field>
+        </record>
+
     </data>
 </openerp>

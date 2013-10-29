@@ -254,6 +254,7 @@ class freight_shipment(osv.Model):
     _defaults = {
         'state': 'draft',
         'work_shift': 'morning',
+        'is_complete_delivered': True,
     }
 
     _track = {
@@ -302,6 +303,11 @@ class freight_shipment(osv.Model):
                 lambda self, cr, uid, obj, ctx=None:
                    obj['is_overdue'] == True and self._check_prepare_overdue(
                         cr, uid, obj['id'], context=ctx)
+        },
+        'is_complete_delivered': {
+            'freight_shipment.mt_fs_complete_delivered':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['is_complete_delivered'] == False,
         },
     }
 
@@ -564,7 +570,10 @@ class freight_shipment(osv.Model):
                  if picking_brw.delivery_state != 'delivered']
             pos_obj.write(cr, uid, pos_ids, new_values, context=context)
             pos_obj.write(cr, uid, picking_ids, new_values, context=context) 
-        self.write(cr, uid, ids, {'state': 'delivered'}, context=context)
+        self.write(
+            cr, uid, ids, {
+                'state': 'delivered',
+                'is_complete_delivered': False}, context=context)
         #print '---- pos_ids', pos_ids
         #print '---- picking_ids', picking_ids
         return True
