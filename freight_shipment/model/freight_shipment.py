@@ -238,6 +238,17 @@ class freight_shipment(osv.Model):
         # boolean field 'is_overdue' to let us make a brigde to create the
         # _track notifications. This 'is_overdue' field will be set when runing
         # a wizard that check the state of the freight shipments.
+
+        'is_complete_delivered': fields.boolean(
+            'This Freight Shipment was Complete Delivered',
+            help=('This field is a flag that permit to know if the shipment'
+                  ' was complete delivered all its orders to be delivery. Is'
+                  ' it set then all the planned orders were delivered, if it'
+                  ' not, this field will be waiting to be')
+        )
+        # Note: This field is use like a flag that trigger the message log
+        # notifications about the realase of undelivered pos orders and
+        # pickings
     }
 
     _defaults = {
