@@ -36,6 +36,45 @@ class freight_zone(osv.Model):
             'name':fields.char('Name', 264, help='Name'), 
             
             }
+
+    def insidezone(self, cr, uid, ids, gmaps_lat, gmaps_lon, zone_id=None, context=None):
+        """
+        determines if a point is inside a zone using geographical coordinates
+        """
+        context = context or {}
+        ids = isinstance(ids, (int, long)) and [ids] or ids
+
+        if zone_id:
+            list_zone = self.browse(cr, uid, [zone_id], context=context)
+        else:
+            list_zone = self.browse(cr, uid, ids, context=context)
+
+        latlng = (gmaps_lat, gmaps_lon)
+        
+        #latlng = (10.48409,-66.910408) #Si, prueba
+        #latlng = (10.531078,-66.971445) #No, prueba
+        #latlng = (10.516437,-66.950099) #Si, prueba
+        #latlng = (10.476310, -66.893070) #Si, "Santa Mónica, Caracas, Distrito Metropolitano de Caracas, Venezuela"
+
+        for zone in list_zone: 
+            puntos = zone.gmaps_point_ids
+            inPoly = False
+            j = len(puntos) - 1
+            for i in xrange(0, len(puntos) ):
+                p1 = puntos[i]
+                p2 = puntos[j]
+                
+                if(p1.gmaps_lon < latlng[1] and p2.gmaps_lon >= latlng[1] or p2.gmaps_lon <
+                        latlng[1] and p1.gmaps_lon >= latlng[1]):
+                    if(p1.gmaps_lat + (latlng[1] - p1.gmaps_lon) / (p2.gmaps_lon - p1.gmaps_lon ) *
+                            (p2.gmaps_lat - p1.gmaps_lat) < latlng[0]):
+                        inPoly = not inPoly
+
+                j = i
+
+        return inPoly
+
+
     def maps(self, cr, uid, ids, context = None):
         context = context and context or {}
         ids = isinstance(ids, (int, long)) and ids or ids[0]
