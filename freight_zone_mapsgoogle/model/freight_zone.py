@@ -37,17 +37,14 @@ class freight_zone(osv.Model):
             
             }
 
-    def insidezone(self, cr, uid, ids, gmaps_lat, gmaps_lon, zone_id=None, context=None):
+    def insidezone(self, cr, uid, ids, gmaps_lat, gmaps_lon, context=None):
         """
         determines if a point is inside a zone using geographical coordinates
         """
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
 
-        if zone_id:
-            list_zone = self.browse(cr, uid, [zone_id], context=context)
-        else:
-            list_zone = self.browse(cr, uid, ids, context=context)
+        list_zone = self.browse(cr, uid, ids, context=context)
 
         latlng = (gmaps_lat, gmaps_lon)
         
