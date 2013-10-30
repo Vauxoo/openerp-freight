@@ -367,6 +367,28 @@ class freight_shipment(osv.Model):
 
         return True
 
+    def check_zone(self, cr, uid, ids, context=None):
+        """
+        @return: True if the pos orders asociated to the freight shipment are
+        in the same zone of the freight shipment. False otherwise.
+        """
+        # TODO: add the sale order check.
+        context = context or {}
+        zone_obj = self.pool.get('freight.zone')
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        res = {}.fromkeys(ids)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            for pos_brw in fs_brw.pos_order_ids:
+                lat, lon = \
+                    (pos_brw.delivery_address.gmaps_lat,
+                     pos_brw.delivery_address.gmaps_lon)
+                res[fs_brw.id] = zone_obj.insidezone(
+                    cr, uid, fs_brw.zone_id.id, lat, lon, context=context)
+        if len(res.keys()) == 1:
+            return res.values()[0]
+        else:
+            return res
+
     def action_force(self, cr, uid, ids, context=None):
         """
         This method force the freight.shipment to be confirm even if the
