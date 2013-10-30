@@ -24,25 +24,43 @@
 ###############################################################################
 
 {
-    'name': 'Fleet Shipment',
+    'name': 'Freight Shipment',
     'version': '1.0',
     'author': 'Vauxoo',
     'website': 'http://www.vauxoo.com/',
     'category': '',
     'description': '''
-Fleet Shipment
-==============
+Freight Shipment
+================
 
 This module add a new model for shipment process that manage the shipment of
 the orders of delivery generate for the POS and relate it to the transport
 units.
 
-.. note:: You can found the dependecies ``freight_shipment`` and
-  ``fleet_delivery`` modules in ``lp:vauxoo-private/fleet``.
+Minimal Configurations
+----------------------
+
+To use this module you need to configure youre OpenERP instance by:
+
+- Set True the ``Manage multiple locations and warehouses`` option at
+  ``Settings Menu > Configuring Sidebar Section > Warehouse Menu > Logistic &
+  Warehouse Section``.
+- Set youre Output Location with ``Manual Operation`` type. Go to ``Warehouse
+  Menu > Configuration Sidebar Section > Locations Menu > Select the Output
+  Location > Chained Location Section > Chaining Type Field``.
+- Be sure that you have available quantity of the product you are selling. For
+  this make a purchase for that product and then receive the corresponding
+  products.
+
+.. note:: You can found the dependecies ``freight_zone`` and
+  ``freight_weight`` modules at ``lp:openerp-freight``.
 ''',
-    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'fleet_delivery'],
+    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'freight_weight',
+                'freight_zone'],
     'data': [
         'view/freight_shipment_view.xml',
+        'data/freight_shipment_data.xml',
+        'wizard/freight_shipment_overdue_view.xml',
     ],
     'demo': [],
     'test': [],

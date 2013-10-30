@@ -3,10 +3,10 @@
     <data>
 
         <record id="freight_shipment_form" model="ir.ui.view">
-            <field name="name">Fleet Shipment Form</field>
+            <field name="name">Freight Shipment Form</field>
             <field name="model">freight.shipment</field>
             <field name="arch" type="xml">
-                <form string="Fleet Shipment" version="7.0">
+                <form string="Freight Shipment" version="7.0">
                     <header>
                         <button 
                             name="action_prepare"
@@ -15,25 +15,52 @@
                             states="draft"
                             class="oe_highlight"/>
                         <button name="action_assign" type="object" string="Assign" states="awaiting" class="oe_highlight"/>
-                        <button name="action_force" string="Force" type="object" states="exception" help="Click this to force the confirmation of the shipment"/>
+                        <button name="action_back_to_awaiting" string="Resolve Exceptions" type="object" states="exception" help="Click this to resolve the exeption" class="oe_highlight"/>
+                        <button name="action_force" string="Force Dispatch" type="object" states="exception" help="Click this to force the confirmation of the shipment"/>
+                        <button name="action_loaded" string="Ready" type="object" states="confirm" help="Click this button to make the freisht shipment execute" class="oe_highlight"/>
+                        <button name="action_shipped" string="Dispatch" type="object" states="loaded" help="Click this button to set the order to vehicle can go out" class="oe_highlight"/>
+                        <button name="action_delivered" string="Delivered" type="object" states="shipped" help="Click this button to set the order to vehicle can go out" class="oe_highlight"/>
+                        <button name="action_dumping" string="Release Undelivered Orders" type="object" states="shipment_exception" help="Click this button to liberate the unsuccessfull delivery lines" class="oe_highlight"/>
                         <field name="state"
                             widget="statusbar"
-                            statusbar_visible="draft,awaiting,pending,overdue,in_transit,return"
-                            statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;in_transit&quot;:&quot;green&quot;,&quot;return&quot;:&quot;red&quot;}"/>
+                            statusbar_visible="draft,awaiting,confirm,loaded,shipped,delivered"
+                            statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;shipped&quot;:&quot;green&quot;}"/>
                     </header>
                     <sheet>
 
                         <group colspan="4">
-                            <field name="name"/>
-                            <field name="transport_unit_id" domain="[('type','=','transport')]"/>
-                            <field name="current_burden"/>
-                            <field name="date"/>
-                            <field name="work_shift"/>
-                            <field name="zone"/>
+                            <field name="name" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="work_shift" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="type" invisible="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="zone_id" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+
+                            <group name="dates" string="Dates">
+                                <field name="date_shipped" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="date_delivery" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" required="True"/>
+                                <field name="date_delivered" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            </group>
+                            <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
+                                <field name="weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="volumetric_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="max_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="max_volumetric_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            </group>
                         </group>
                         <notebook>
-                            <page string="POS Orders">
-                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True)]" attrs="{'readonly':[('state','not in',('draft',))]}">
+                            <page string="Orders">
+                                <label for="picking_ids"/>
+                                <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="origin"/>
+                                        <field name="min_date"/>
+                                        <field name="state"/>
+                                        <field name="delivery_state"/>
+                                    </tree>
+                                </field>
+                                <label for="pos_order_ids"/>
+                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}">
                                     <tree>
                                         <field name="name"/>
                                         <field name="pos_reference"/>
@@ -41,53 +68,101 @@
                                         <field name="partner_id"/>
                                         <field name="user_id"/>
                                         <field name="state"/>
+                                        <field name="delivery_state"/>
+                                        <button name="action_pos_delivered" string="Delivered" type="object" help="Click this button to indicate if the order have been delivered" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="Sale Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
+                                <group name="sale-order-group" colspan="4">
+                                    <group string="Prefered" colspan="4">
+                                        <field name="prefered_sale_order_ids" nolabel="1"/>
+                                    </group>
+			            <group string="Shipped" colspan="4">
+				         <field name="sale_order_ids" nolabel="1"/>
+                                    </group> 
+                                </group>
+                            </page>
+                            <page string="Exceptions" attrs="{'invisible': [('state', 'not in', ('exception'))]}">
+                                <group>
+                                    <field name="message_exceptions" readonly="1" nolabel="1"/>
+                                </group>
                             </page>
                         </notebook>
 
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
 
         <record id="freight_shipment_tree" model="ir.ui.view">
-            <field name="name">Fleet Shipment Tree</field>
+            <field name="name">Freight Shipment Tree</field>
             <field name="model">freight.shipment</field>
             <field name="arch" type="xml">
-                <tree string="Fleet Shipments" version="7.0">
+                <tree string="Freight Shipments" version="7.0" colors="black:is_overdue == False;red: is_overdue == True">
                     <field name="name"/>
                     <field name="state"/>
+                    <field name="is_overdue" invisible="1"/>
                 </tree>
             </field>
         </record>
 
-        <record id="freight_shipment_action" model="ir.actions.act_window">
-            <field name="name">Fleet Shipment Action</field>
+        <record id="freight_shipment_freight_action" model="ir.actions.act_window">
+            <field name="name">Freight Shipment</field>
             <field name="res_model">freight.shipment</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="help">Fleet Shipment Action Help</field>
+            <field name="context">{'default_type': 'freight', 'vehicle_type': 'is_freight'}</field>
+            <field name="domain">[('type','=','freight')]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create an Freight Shipment. 
+                </p>
+            </field>
+        </record>
+
+        <record id="freight_shipment_delivery_action" model="ir.actions.act_window">
+            <field name="name">Delivery Shipment</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_type': 'delivery', 'vehicle_type': 'is_delivery'}</field>
+            <field name="domain">[('type','=','delivery')]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create an Shipment Delivery 
+                </p>
+            </field>
         </record>
 
         <menuitem 
             id="delivery_main_menu"
-            name="Delivery"
+            name="Freight"
             sequence="20"
             />
 
         <menuitem 
             id="freight_shipment_main_menu"
-            name="Fleet Shipment"
+            name="Freight Shipment"
             parent="delivery_main_menu"
             sequence="20" 
             />
 
         <menuitem 
-            id="freight_shipment_menu"
-            name="Fleet Shipment"
+            id="freight_shipment_freight_menu"
+            name="Freight"
             parent="freight_shipment_main_menu"
-            action="freight_shipment_action"
+            action="freight_shipment_freight_action"
+            />
+
+        <menuitem 
+            id="freight_shipment_delivery_menu"
+            name="Delivery"
+            parent="freight_shipment_main_menu"
+            action="freight_shipment_delivery_action"
             />
 
         <record id="pos_order_form_w_delivery" model="ir.ui.view">
@@ -95,10 +170,14 @@
             <field name="model">pos.order</field>
             <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="delivery"/>
-                    <field name="freight_shipment_id"/>
-                    <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Freight Shipment">
+                        <group>
+                            <field name="freight_shipment_id" domain="[('type','=','delivery')]"/>
+                            <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
+                            <field name="delivery"/>
+                        </group>
+                    </page>
                 </xpath>
             </field>
         </record>
@@ -114,5 +193,64 @@
             </field>
         </record>
 
+        <record id="freight_shipment_sale_order_form_view" model="ir.ui.view">
+            <field name="name">Freight Shipment Sale Order Form View</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Other Information']/group" position="inside">
+                    <group name="freigh-section" string="Freight Shipment" colspan="4">
+                        <field name="prefered_freight_shipment_id" required="1" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]"/>
+                        <label for="freight_shipment_ids"/>
+                        <field name="freight_shipment_ids" nolabel="1" colspan="4"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="freight_shipment_picking_form_view" model="ir.ui.view">
+            <field name="name">Freight Shipment Picking Form View</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <field name="freight_shipment_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="fleet_vehicle_freight_form_inherit" model="ir.ui.view">
+            <field name="name">Vehicle Freight Form View</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="freight_weight.fleet_vehicle_form_inherit"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//div[@class='oe_title']" position="inside">
+                    <div class="oe_inline">
+                        <label for ="is_automobile"/>
+                        <field name="is_automobile"/>
+                        <label for ="is_delivery"/>
+                        <field name="is_delivery"/>
+                        <label for ="is_freight"/>
+                        <field name="is_freight"/>
+                    </div>
+                </xpath>
+
+                <xpath expr="//field[@name='physical_capacity']" position="attributes">
+                    <attribute name="attrs">{'required': [('is_freight','=',True)], 'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='volumetric_capacity']" position="attributes">
+                    <attribute name="attrs">{'required': [('is_freight','=',True)], 'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
+                </xpath>
+
+                <xpath expr="//group[@string='Vehicle Capacity']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
     </data>
+
 </openerp>

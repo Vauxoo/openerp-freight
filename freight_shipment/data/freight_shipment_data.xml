@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="mt_fs_new" model="mail.message.subtype">
+            <field name="name">Freight Shipment Order Created</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment Order Created</field>
+        </record>
+
+        <record id="mt_fs_waiting" model="mail.message.subtype">
+            <field name="name">Awaiting Freight Shipment Orde</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment Order is Awaiting State</field>
+        </record>
+
+        <record id="mt_fs_exception" model="mail.message.subtype">
+            <field name="name">Freight Shipment Order is in Exception State</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Warning: The Freight Shipment is in Exception State</field>
+        </record>
+
+        <record id="mt_fs_vw_exception" model="mail.message.subtype">
+            <field name="name">Freight Shipment Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Volumetric Weight Capacity Exceeded</field>
+        </record>
+
+        <record id="mt_fs_w_exception" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight Capacity Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Weight Capacity Exceeded</field>
+        </record>
+
+        <record id="mt_fs_confirm" model="mail.message.subtype">
+            <field name="name">Freight Shipment Confirmed</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment Confirmed</field>
+        </record>
+
+        <record id="mt_fs_to_load" model="mail.message.subtype">
+            <field name="name">Freight Shipment is in Process to be loaded</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight Shipment is in Process to be loaded</field>
+        </record>
+
+        <record id="mt_fs_loaded" model="mail.message.subtype">
+            <field name="name">Freight Shipment change to loaded state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment is ready to go</field>
+        </record>
+
+        <record id="mt_fs_shipped" model="mail.message.subtype">
+            <field name="name">Freight shipment is in 'shipped' state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have left our facilities</field>
+        </record>
+
+        <record id="mt_fs_shipment_overdue" model="mail.message.subtype">
+            <field name="name">Freight shipment shipment overdue</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have shipment overdue</field>
+        </record>
+
+        <record id="mt_fs_prepare_overdue" model="mail.message.subtype">
+            <field name="name">Freight shipment prepare ovedue</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have prepare overdue</field>
+        </record>
+ 
+        <record id="mt_fs_shipment_exception" model="mail.message.subtype">
+            <field name="name">Freight shipment in shipment exception state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Some orders in the Freight shipment have not been successfully delivered</field>
+        </record>
+
+        <record id="mt_fs_delivered" model="mail.message.subtype">
+            <field name="name">Freight shipment is in delivered state</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment have been delivered</field>
+        </record>
+
+        <record id="mt_fs_complete_delivered" model="mail.message.subtype">
+            <field name="name">Freight shipment have undelivered orders</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Freight shipment undelivered orders have been release</field>
+        </record>
+
+    </data>
+</openerp>
