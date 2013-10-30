@@ -29,33 +29,35 @@ from openerp import tools
 import datetime
 import openerp.addons.decimal_precision as dp
 
-class freight_zone_mapsgoogle(osv.Model):
-    _name = 'freight.zone.mapsgoogle'
-    _description = 'Geographical Area'
+class freight_zone(osv.Model):
+    _name = 'freight.zone'
+    _inherit = ['gmaps.group']
     _columns = {
-        'name' : fields.char('Zone Name', 256, required=True, help='Zone Name'),
-        'gmaps_area_ids' : fields.one2many('freight.area.mapsgoogle', 'gmaps_zone_id', 'Area',
-            help='set of geographic coordinates that define the zone'),
-    }
+            'name':fields.char('Name', 264, help='Name'), 
+            
+            }
 
-    def partner_insidepolygon(self, cr, uid, ids, partner_id, context=None):
+    def insidezone(self, cr, uid, ids, gmaps_lat, gmaps_lon, zone_id=None, context=None):
         """
-        determines if a partner is inside a zone using geographical coordinates
+        determines if a point is inside a zone using geographical coordinates
         """
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
 
-        partner_obj = self.pool.get('res.partner')
-        partner_obj = partner_obj.browse(cr, uid, partner_id, context=context)
+        if zone_id:
+            list_zone = self.browse(cr, uid, [zone_id], context=context)
+        else:
+            list_zone = self.browse(cr, uid, ids, context=context)
 
+        latlng = (gmaps_lat, gmaps_lon)
+        
         #latlng = (10.48409,-66.910408) #Si, prueba
         #latlng = (10.531078,-66.971445) #No, prueba
         #latlng = (10.516437,-66.950099) #Si, prueba
         #latlng = (10.476310, -66.893070) #Si, "Santa Mónica, Caracas, Distrito Metropolitano de Caracas, Venezuela"
-        latlng = (partner_obj.gmaps_lat, partner_obj.gmaps_lon)
 
-        for zone in self.browse(cr, uid, ids, context=context):
-            puntos = zone.gmaps_area_ids
+        for zone in list_zone: 
+            puntos = zone.gmaps_point_ids
             inPoly = False
             j = len(puntos) - 1
             for i in xrange(0, len(puntos) ):
@@ -70,19 +72,22 @@ class freight_zone_mapsgoogle(osv.Model):
 
                 j = i
 
-        print "\nEsta dentro?: %s\n" % inPoly
         return inPoly
 
-class freight_area_mapsgoogle(osv.Model):
-    _name = 'freight.area.mapsgoogle'
-    _rec_name = 'id'
-    _description = 'Area'
-    _columns = {
-        'gmaps_zone_id' : fields.many2one('freight.zone.mapsgoogle', 'Zone', help='Area to which delimits the current point.'),
-        'gmaps_lat': fields.float('Latitude', required=True, 
-             digits=(3,6), help="Latitude of coordinate"),   
-        'gmaps_lon': fields.float('Longitude', required=True,
-            digits=(3,6), help="Longitude of coordinate"),   
-    }
 
-
+    def maps(self, cr, uid, ids, context = None):
+        context = context and context or {}
+        ids = isinstance(ids, (int, long)) and ids or ids[0]
+        print "******** %s " % (ids)
+        return {
+            'name': _('Gmaps Zone'),
+            'res_model': 'freight.zone',
+            'res_id': ids,
+            'type': 'ir.actions.client',
+            'tag' : 'gmaps.example',
+            'params' : {
+                'domain':[
+                    ('res_id','=',ids),
+                ],
+            },
+        }                                   

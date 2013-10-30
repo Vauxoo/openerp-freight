@@ -2,64 +2,83 @@
 <openerp>
     <data noupdate="1">
         
-        <record forcecreate="True" id="Guacara" model="freight.zone.mapsgoogle">
+        <record forcecreate="True" id="Guacara" model="freight.zone">
             <field name="name">Zone 1 - Guacara</field>
         </record>
         
-        <record forcecreate="True" id="Caracas" model="freight.zone.mapsgoogle">
+        <record forcecreate="True" id="Caracas" model="freight.zone">
             <field name="name">Zone 2 - Caracas</field>
         </record>
 
-        <record forcecreate="True" id="point1_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+        <record forcecreate="True" id="point1_zone1" model="gmaps.point">
             <field name="gmaps_lat">10.232913966113475</field>
             <field name="gmaps_lon">-67.8785991668701</field>
+            <field name="sequence">1</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Guacara"/>
         </record>
         
-        <record forcecreate="True" id="point2_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+        <record forcecreate="True" id="point2_zone1" model="gmaps.point">
             <field name="gmaps_lat">10.232364940269921</field>
             <field name="gmaps_lon">-67.86332130432129</field>
+            <field name="sequence">2</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Guacara"/>
         </record>
 
-        <record forcecreate="True" id="point3_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+        <record forcecreate="True" id="point3_zone1" model="gmaps.point">
             <field name="gmaps_lat">10.22155316100559</field>
             <field name="gmaps_lon">-67.8587293624878</field>
+            <field name="sequence">3</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Guacara"/>
         </record>
 
-        <record forcecreate="True" id="point4_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+        <record forcecreate="True" id="point4_zone1" model="gmaps.point">
             <field name="gmaps_lat">10.213063967098934</field>
             <field name="gmaps_lon">-67.85791397094727</field>
+            <field name="sequence">4</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Guacara"/>
         </record>
 
-        <record forcecreate="True" id="point5_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+        <record forcecreate="True" id="point5_zone1" model="gmaps.point">
             <field name="gmaps_lat">10.204278891034654</field>
             <field name="gmaps_lon">-67.8695011138916</field>
+            <field name="sequence">5</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Guacara"/>
         </record>
 
-        <record forcecreate="True" id="point6_zone1" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Guacara"/>
+        <record forcecreate="True" id="point6_zone1" model="gmaps.point">
             <field name="gmaps_lat">10.215851488603166</field>
             <field name="gmaps_lon">-67.89044380187988</field>
+            <field name="sequence">6</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Guacara"/>
         </record>
 
-        <record forcecreate="True" id="point1_zone2" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Caracas"/>
+        <record forcecreate="True" id="point1_zone2" model="gmaps.point">
             <field name="gmaps_lat">10.538445795908634</field>
             <field name="gmaps_lon">-66.96990966796875</field>
+            <field name="sequence">1</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Caracas"/>
         </record>
-        <record forcecreate="True" id="point2_zone2" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Caracas"/>
+        <record forcecreate="True" id="point2_zone2" model="gmaps.point">
             <field name="gmaps_lat">10.470932067817829</field>
             <field name="gmaps_lon">-66.82571411132812</field>
+            <field name="sequence">2</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Caracas"/>
         </record>
-        <record forcecreate="True" id="point3_zone2" model="freight.area.mapsgoogle">
-            <field model="freight.zone.mapsgoogle" name="gmaps_zone_id" ref="Caracas"/>
+        <record forcecreate="True" id="point3_zone2" model="gmaps.point">
             <field name="gmaps_lat">10.452700836127205</field>
             <field name="gmaps_lon">-66.94999694824219</field>
+            <field name="sequence">3</field>
+            <field name="model">freight.zone</field>
+            <field model="freight.zone" name="res_id" ref="Caracas"/>
         </record>
+        
     </data>
 </openerp>
