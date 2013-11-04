@@ -630,6 +630,9 @@ class sale_order(osv.Model):
             help=('It represent the real final destination Freight Shipment'
                   ' orders where this sale order was send.')
         ),
+        'delivery_date': fields.datetime(
+            'Estimated Delivery Date',
+            help='The date that this sale order need to be delivered'),
     }
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
