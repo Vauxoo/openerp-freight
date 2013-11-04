@@ -56,7 +56,7 @@ To use this module you need to configure youre OpenERP instance by:
   ``freight_weight`` modules at ``lp:openerp-freight``.
 ''',
     'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock',
-                'freight_weight', 'freight_zone_mapsgoogle'],
+                'freight_weight', 'freight_zone_mapsgoogle', 'incoterm_ext'],
     'data': [
         'view/freight_shipment_view.xml',
         'data/freight_shipment_data.xml',
