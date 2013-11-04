@@ -52,8 +52,10 @@ To use this module you need to configure youre OpenERP instance by:
   this make a purchase for that product and then receive the corresponding
   products.
 
-.. note:: You can found the dependecies ``freight_zone`` and
-  ``freight_weight`` modules at ``lp:openerp-freight``.
+.. note:: You can found the dependecies:
+   
+   - ``freight_zone`` and ``freight_weight`` modules at ``lp:openerp-freight``.
+   - ``incoterm_ext`` module at ``lp:addons-vauxoo/7.0``.
 ''',
     'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock',
                 'freight_weight', 'freight_zone_mapsgoogle', 'incoterm_ext'],
