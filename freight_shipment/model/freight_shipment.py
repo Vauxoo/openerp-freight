@@ -36,7 +36,7 @@ def get_delivery_states(self, cr, uid, context=None):
     return [
         ('undelivered', 'Undelivered'),
         ('delivered', 'Delivered'),
-        ('expcetion', 'Unsuccefully Delivery')]
+        ('exception', 'Unsuccefully Delivery')]
 
 
 class stock_picking(osv.Model):
@@ -446,7 +446,7 @@ class freight_shipment(osv.Model):
     def action_back_to_awaiting(self, cr, uid, ids, context=None):
         """
         Return the freight shipment to the awaiting state to make the user the
-        posibility of resolve the expcetions.
+        posibility of resolve the exceptions.
         """
         context = context or {}
         self.write(cr, uid, ids, {'state': 'awaiting'}, context=context)
@@ -588,7 +588,7 @@ class freight_shipment(osv.Model):
         pos_obj = self.pool.get('pos.order')
         picking_obj = self.pool.get('stock.picking')
         new_values = {
-            'freight_shipment_id': False, 'delivery_state': 'expcetion'}
+            'freight_shipment_id': False, 'delivery_state': 'exception'}
         for fs_brw in self.browse(cr, uid, ids, context=context):
             pos_ids = \
                 [pos_brw.id
