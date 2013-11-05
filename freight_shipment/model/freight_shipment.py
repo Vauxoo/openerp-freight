@@ -796,6 +796,16 @@ class vehicle(osv.Model):
             'Recommended Volumetric Weight Capacity',
             help=('This is the maxime volumetric weight quantity recommended'
                  ' for save use of the vehicle')),
+        'shipment_state': fields.selection(
+            [('free', 'Free'),
+             ('dutty', 'Dutty'),
+             ('mtto', 'Maintenance')],
+             'Shipment State',
+             help=('The state for shipment use of the vehicle:'
+                   '  - Free: Avaible for use.\n'
+                   '  - Dutty: The vehicle is in use.\n'
+                   '  - Maintenance: The vehicle is in maintenance and can not'
+                   '    be use.\n')),
     }
 
 
