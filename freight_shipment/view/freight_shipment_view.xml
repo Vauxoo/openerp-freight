@@ -250,6 +250,11 @@
                     <attribute name="attrs">{'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
                 </xpath>
 
+                <xpath expr="//group[@string='Vehicle Capacity']/group" position="inside">
+                    <field name="recommended_physical_capacity"/>
+                    <field name="recommended_volumetric_capacity"/>
+                </xpath>
+
             </field>
         </record>
 
