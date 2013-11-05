@@ -633,6 +633,12 @@ class sale_order(osv.Model):
         'delivery_date': fields.datetime(
             'Estimated Delivery Date',
             help='The date that this sale order need to be delivered'),
+        'work_shift': fields.selection(
+            [('morning', 'Morning'),
+             ('afternoon', 'Afternoon'),
+             ('night', 'Night')],
+            string='Work Shift',
+            help='Work Shift'),
     }
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
