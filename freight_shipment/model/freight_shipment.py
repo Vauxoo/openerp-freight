@@ -791,6 +791,14 @@ class vehicle(osv.Model):
             help=('If this checkbox is set then the vehicle can be use like a'
                   ' automobile transport unit')
         ),
+        'recommended_physical_capacity' : fields.float(
+            'Recommended Physical Weight Capacity',
+            help=('This is the maxime physical weight quantity recommended for'
+                  ' save use of the vehicle')),
+        'recommended_volumetric_capacity' : fields.float(
+            'Recommended Volumetric Weight Capacity',
+            help=('This is the maxime volumetric weight quantity recommended'
+                 ' for save use of the vehicle')),
     }
 
 
