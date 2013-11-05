@@ -110,6 +110,34 @@ class freight_shipment(osv.Model):
                 res[fs_brw.id] = fs_brw.vehicle_id.volumetric_capacity
         return res
 
+    # TODO: check this method behavior: is not taking into account the
+    # product_uom in the stock.pickings and may needed
+    def _get_freight_current_weight(self, cr, uid, ids, field_name, arg,
+                                    context=None):
+        """
+        This a functional field method that returns the sumatory of all the
+        pickings and pos order products gross weights to calculate the freight
+        shipment current weight by crossing the stock.move associated to this
+        orders lines.
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        res = {}.fromkeys(ids, 0.0)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            picking_move_brws = \
+                [move_brw
+                 for picking_brw in fs_brw.picking_ids
+                 for move_brw in picking_brw.move_lines]
+            pos_move_brws = \
+                [move_brw
+                 for pos_brw in fs_brw.pos_order_ids
+                 for move_brw in pos_brw.picking_id.move_lines]
+            for move_brw in picking_move_brws + pos_move_brws:
+                res[fs_brw.id] += \
+                    (move_brw.product_qty *
+                     move_brw.product_id.product_tmpl_id.weight)
+        return res
+
     _columns = {
         'name': fields.char(
             string='Number Reference',
@@ -151,7 +179,9 @@ class freight_shipment(osv.Model):
                   ' shipment.\n'
                   '\t- Delivered: The shipment arrived to the destination\n'
             )),
-        'weight': fields.float(
+        'weight': fields.function(
+            _get_freight_current_weight,
+            type='float',
             string='Weight',
             help='Weight'
         ),
