@@ -808,6 +808,10 @@ class vehicle(osv.Model):
                    '    be use.\n')),
     }
 
+    _defaults = {
+        'shipment_state': 'free',
+    }
+
 
 class res_partner(osv.Model):
 
