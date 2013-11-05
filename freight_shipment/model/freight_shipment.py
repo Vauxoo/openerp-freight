@@ -610,6 +610,34 @@ class freight_shipment(osv.Model):
         #print '---- picking_ids', picking_ids
         return True
 
+    def _search(self, cr, uid, args, offset=0, limit=None, order=None,
+                context=None, count=False, access_rights_uid=None):
+        """
+        Overwrite the _search() method to filter the freight shipments in the
+        sale order form taking into account the partner shipment zone (with
+        the partnet shipment address), the work_shift and the delivery date. 
+        """
+        context = context or {}
+        partner_obj = self.pool.get('res.partner')
+        if (context.get('filter_freight_shipment_ids', False)):
+            partner_shipping_id = context.get('partner_shipping_id', False)
+            work_shift = context.get('work_shift', False)
+            delivery_date = context.get('delivery_date', False)
+            
+            if partner_shipping_id:
+                zone_ids = partner_obj.get_zone_ids(
+                    cr, uid, partner_shipping_id, context=context)
+                if zone_ids:
+                    args.append(['zone_id', 'in', zone_ids])
+            if work_shift:
+                args.append(['work_shift','=', work_shift])
+            if delivery_date:
+                args.append(['date_delivery', '=', delivery_date])
+        return super(freight_shipment, self)._search(cr, uid, args,
+                     offset=offset, limit=limit, order=order, context=context,
+                     count=count, access_rights_uid=access_rights_uid)
+
+
 class sale_order(osv.Model):
 
     _inherit = "sale.order"
@@ -653,6 +681,38 @@ class sale_order(osv.Model):
         res.update(
             {'freight_shipment_id': order.prefered_freight_shipment_id.id})
         return res
+
+    # Note: This method is not used yet. Is not of utility in the next
+    # iteration then delete it.
+    def matching_freight_shipment_ids(self, cr, uid, ids, context=None):
+        """
+        This method return the ids of the matiching freight shipments that
+        match with the sale order configuration:
+            - match at zone
+            - match at estimated delivery date.
+        @return If there is only one sale order id then return the list of
+                freight shipments ids matching. If there is more than one
+                sale order id then return a dictionary of the form
+                (key: sale_order_id, value: corresponding freight shioment ids)
+        """
+        context = context or {}
+        fs_obj = self.pool.get('freight.shipment')
+        partner_obj = self.pool.get('res.partner')
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        res = {}.fromkeys(ids)
+        for sale_brw in self.browse(cr, uid, ids, context=context):
+            # check the zones of the delivery address.
+            zone_ids = partner_obj.get_zone_ids(
+                cr, uid, sale_brw.partner_shipping_id.id, context=context)
+            search_criteria = [
+                ('zone_id', 'in', zone_ids),
+                ('date_delivery', '>=', sale_brw.delivery_date)]
+            res[sale_brw.id] = self.search(
+                cr, uid, search_criteria, context = context)
+        if len(res.keys()) == 1:
+            return res.values()[0]
+        else:
+            return res
 
 
 class stock_move(osv.osv):
@@ -733,3 +793,29 @@ class vehicle(osv.Model):
         ),
     }
 
+
+class res_partner(osv.Model):
+
+    _inherit = 'res.partner'
+    
+    def get_zone_ids(self, cr, uid, ids, context=None):
+        """
+        Check on every zone defined.
+        @return: a list of zone ids where the partner given belongs. 
+        """
+        context = context or {}
+        zone_obj = self.pool.get('freight.zone')
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        res = {}.fromkeys(ids)
+        zone_ids = zone_obj.search(cr, uid, [], context=context)
+        for partner_brw in self.browse(cr, uid, ids, context=context):
+            res[partner_brw.id] = \
+                [zone_id
+                 for zone_id in zone_ids
+                 if zone_obj.insidezone(
+                    cr, uid, zone_id, partner_brw.gmaps_lat,
+                    partner_brw.gmaps_lon, context=context)]
+        if len(res.keys()) == 1:
+            return res.values()[0]
+        else:
+            return res

@@ -202,7 +202,7 @@
                     <group name="freigh-section" string="Freight Shipment" colspan="4">
                         <field name="delivery_date"/>
                         <field name="work_shift"/>
-                        <field name="prefered_freight_shipment_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]"/>
+                        <field name="prefered_freight_shipment_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]" context="{'filter_freight_shipment_ids': True, 'partner_shipping_id': partner_shipping_id, 'delivery_date': delivery_date, 'work_shift': work_shift}"/>
                         <label for="freight_shipment_ids"/>
                         <field name="freight_shipment_ids" nolabel="1" colspan="4"/>
                     </group>
