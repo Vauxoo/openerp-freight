@@ -400,14 +400,13 @@ class freight_shipment(osv.Model):
     def action_force(self, cr, uid, ids, context=None):
         """
         This method force the freight.shipment to be confirm even if the
-        valuation conditions of zone and burden are not fulfilled.
+        valuation conditions of zone and burden are not fulfilled. This method
+        is use by the 'Force Dispatch' button in the freight shipment form at
+        the Exception state.
         """
         context = context or {}
-        raise osv.except_osv(
-            _('Warning'),
-            _('This functionality is still in development'))
+        self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
         return True
-
 
     def check_volumetric_weight(self, cr, uid, ids, context=None):
         """
