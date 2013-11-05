@@ -588,7 +588,7 @@ class freight_shipment(osv.Model):
         pos_obj = self.pool.get('pos.order')
         picking_obj = self.pool.get('stock.picking')
         new_values = {
-            'freight_shipment_id': False, 'delivery_state': 'undelivered'}
+            'freight_shipment_id': False, 'delivery_state': 'expcetion'}
         for fs_brw in self.browse(cr, uid, ids, context=context):
             pos_ids = \
                 [pos_brw.id
