@@ -255,6 +255,12 @@
                     <field name="recommended_volumetric_capacity"/>
                 </xpath>
 
+                <xpath expr="//sheet" piosition="inside">
+                    <group string="Shipment Information" attrs="{'invisible': [('is_delivery','=',False),('is_freight','=',False)]}">
+                        <field name="shipment_state"/>
+                    </group>
+                </xpath>
+
             </field>
         </record>
 
