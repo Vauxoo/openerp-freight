@@ -35,10 +35,8 @@ def get_delivery_states(self, cr, uid, context=None):
     """
     return [
         ('undelivered', 'Undelivered'),
-        ('in_transit', 'In Transit'),
         ('delivered', 'Delivered'),
-        ('expcetion', 'Unsuccefully Delivery'),
-        ('returned', 'Returned')]
+        ('expcetion', 'Unsuccefully Delivery')]
 
 
 class stock_picking(osv.Model):
