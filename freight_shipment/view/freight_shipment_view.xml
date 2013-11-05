@@ -201,6 +201,7 @@
                 <xpath expr="//page[@string='Other Information']/group" position="inside">
                     <group name="freigh-section" string="Freight Shipment" colspan="4">
                         <field name="delivery_date"/>
+                        <field name="work_shift"/>
                         <field name="prefered_freight_shipment_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]"/>
                         <label for="freight_shipment_ids"/>
                         <field name="freight_shipment_ids" nolabel="1" colspan="4"/>
