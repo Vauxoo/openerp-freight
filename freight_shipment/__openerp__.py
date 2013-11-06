@@ -54,7 +54,9 @@ To use this module you need to configure youre OpenERP instance by:
 - You need to set to True the
   `Allow a different address for delivery and invoicing` option in the
   `Settings Menu > Configuration SideBar Title > Sales Menu >
-  Quotations and Sales Orders Section > Customer Features Section`.
+  Quotations and Sales Orders Section > Customer Features Section`. This way
+  you will capable of see the delivery address of the partner in the sale
+  order.
 
 .. note:: You can found the dependecies:
    
