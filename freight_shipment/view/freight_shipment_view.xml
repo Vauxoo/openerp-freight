@@ -27,9 +27,12 @@
                             statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;shipped&quot;:&quot;green&quot;}"/>
                     </header>
                     <sheet>
-
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="True"/>
+                            </h1>
+                        </div>
                         <group colspan="4">
-                            <field name="name" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="work_shift" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="type" invisible="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>

@@ -171,11 +171,11 @@ class freight_shipment(osv.Model):
     _columns = {
         'name': fields.function(
             _update_freight_shipment_name,
-            string='Number Reference',
+            string='Name',
             type='char',
             size=256,
             store={'freight.shipment': (lambda s, c, u, ids, cxt: ids, ['date_shipped', 'zone_id', 'vehicle_id'], 16)},
-            help='Number Reference'),
+            help='Freight Shipment Reference Name'),
         'vehicle_id': fields.many2one(
             'fleet.vehicle',
             string='Transport Unit',
