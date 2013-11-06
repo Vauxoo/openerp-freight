@@ -531,6 +531,7 @@ class freight_shipment(osv.Model):
                 cr, uid, fs_brw.id,
                 {'state': 'shipped',
                  'initial_shipped_weight': fs_brw.weight, 
+                 'initial_shipped_volumetric_weight': fs_brw.volumetric_weight, 
                  'date_shipped': time.strftime('%Y-%m-%d %H:%M:%S')},
                 context=context)
         return True
