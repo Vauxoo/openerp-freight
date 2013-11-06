@@ -509,16 +509,21 @@ class freight_shipment(osv.Model):
 
     def action_shipped(self, cr, uid, ids, context=None):
         """
-        This method will chage the freight shipment from Loaded estate to
+        This method will change the freight shipment from 'Loaded' state to
         Shipped state. It represent the order to make the unit go out and do
-        the shipment.
+        the shipment. It also set the initial_shipped_weight field for log
+        history of the freight shipment.
+        @return True
         """
         context = context or {}
-        self.write(
-            cr, uid, ids,
-            {'state': 'shipped',
-             'date_shipped': time.strftime('%Y-%m-%d %H:%M:%S')},
-            context=context)
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            self.write(
+                cr, uid, fs_brw.id,
+                {'state': 'shipped',
+                 'initial_shipped_weight': fs_brw.weight, 
+                 'date_shipped': time.strftime('%Y-%m-%d %H:%M:%S')},
+                context=context)
         return True
 
     def action_delivered(self, cr, uid, ids, context=None):
