@@ -144,11 +144,37 @@ class freight_shipment(osv.Model):
                 res[fs_brw.id] += (move_brw.product_qty * eval(weight_field))
         return res
 
+    def _update_freight_shipment_name(self, cr, uid, ids, field_name, arg,
+                                      context=None):
+        """
+        This is a functional field method that change the freight shipment name
+        taking into account the shipped date, the zone and the vehicle name of
+        the freight.
+        @return: for avery given freight shipment id returns the new name of
+                 the freight shipment baising on the last mentioned attributes.
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        res = {}.fromkeys(ids, '')
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            shipment_type = context.get('default_type', False) == 'freight' \
+                and 'FREIGHT' or \
+                context.get('default_type', False) == 'delivery' \
+                and 'DELIVERY' or 'SHIPMENT'
+            res[fs_brw.id] = '%s -  %s - %s - %s' % (
+                shipment_type,
+                fs_brw.date_delivery or 'NO DELIVERY DATE',
+                fs_brw.zone_id.name or 'NOT ZONE DEFINED',
+                fs_brw.vehicle_id.name or 'NOT VEHICLE DEFINED')
+        return res
+
     _columns = {
-        'name': fields.char(
+        'name': fields.function(
+            _update_freight_shipment_name,
             string='Number Reference',
+            type='char',
             size=256,
-            required=True,
+            store={'freight.shipment': (lambda s, c, u, ids, cxt: ids, ['date_shipped', 'zone_id', 'vehicle_id'], 16)},
             help='Number Reference'),
         'vehicle_id': fields.many2one(
             'fleet.vehicle',
