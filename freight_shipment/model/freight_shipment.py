@@ -191,6 +191,14 @@ class freight_shipment(osv.Model):
             string='Weight',
             help='Weight'
         ),
+        'initial_shipped_weight': fields.float(
+            string='Initial Shipped Weight',
+            help=('This is the weight of the freight shipment when it\'s'
+                 ' confirmed. The weight when the freigh shipment is shipped.'
+                 ' If the freight shipment is not complete delivered (some of'
+                 ' their orders can not be delivered for some shipment'
+                 ' exception the this weight will be difference from the'
+                 ' Weight.')),
         'volumetric_weight': fields.function(
             _get_freight_current_weight,
             type='float',
