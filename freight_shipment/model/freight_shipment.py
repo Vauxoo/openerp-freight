@@ -205,6 +205,15 @@ class freight_shipment(osv.Model):
             string='Volumetric Weight',
             help='Volumetric Weight'
         ),
+        'initial_shipped_volumetric_weight': fields.float(
+            string='Initial Shipped Volumetric Weight',
+            help=('This is the volumetric weight of the freight shipment when'
+                  ' it\'s confirmed. The volumetric weight when the freigh'
+                  ' shipment is shipped. If the freight shipment is not'
+                  ' complete delivered (some of their confirmed orders can not'
+                  ' be delivered for some shipment exception then this'
+                  ' volumetric weight will be different from the Volumetric'
+                  ' Weight field.')),
         'max_weight': fields.function(
             _get_vehicle_weight,
             string='Max Weight',
