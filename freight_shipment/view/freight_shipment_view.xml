@@ -46,6 +46,7 @@
                                 <field name="max_weight" readonly="True"/>
                                 <field name="max_volumetric_weight" readonly="True"/>
                                 <field name="initial_shipped_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
+                                <field name="initial_shipped_volumetric_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
                             </group>
                         </group>
                         <notebook>
