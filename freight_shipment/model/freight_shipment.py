@@ -116,13 +116,21 @@ class freight_shipment(osv.Model):
                                     context=None):
         """
         This a functional field method that returns the sumatory of all the
-        pickings and pos order products gross weights to calculate the freight
-        shipment current weight by crossing the stock.move associated to this
+        pickings and pos order products weights to calculate the freight
+        shipment weights by crossing the stock.move associated to this
         orders lines.
+        @param field_name: ['weight', 'volumetric_weight']
+        @return:
+            - If field_name == weight: sumatory of products gross weights.
+            - If field_name == volumetric_weight: sumatory of products
+              volumetric weights.
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
         res = {}.fromkeys(ids, 0.0)
+        weight_field = 'move_brw.product_id.' + \
+            (field_name == 'weight' and 'product_tmpl_id.weight' or
+             field_name == 'volumetric_weight' and 'volumetric_weight' or 0.0)
         for fs_brw in self.browse(cr, uid, ids, context=context):
             picking_move_brws = \
                 [move_brw
@@ -133,9 +141,7 @@ class freight_shipment(osv.Model):
                  for pos_brw in fs_brw.pos_order_ids
                  for move_brw in pos_brw.picking_id.move_lines]
             for move_brw in picking_move_brws + pos_move_brws:
-                res[fs_brw.id] += \
-                    (move_brw.product_qty *
-                     move_brw.product_id.product_tmpl_id.weight)
+                res[fs_brw.id] += (move_brw.product_qty * eval(weight_field))
         return res
 
     _columns = {
@@ -185,7 +191,9 @@ class freight_shipment(osv.Model):
             string='Weight',
             help='Weight'
         ),
-        'volumetric_weight': fields.float(
+        'volumetric_weight': fields.function(
+            _get_freight_current_weight,
+            type='float',
             string='Volumetric Weight',
             help='Volumetric Weight'
         ),
