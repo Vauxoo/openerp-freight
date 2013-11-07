@@ -920,7 +920,7 @@ class pos_order(osv.Model):
                     cr, uid, [('delivery', '=', True)], context=context)
                 fs_zone_pos_ids = []
                 for pos_brw in pos_obj.browse(cr, uid, pos_ids, context=context):
-                    if (pos_brw.delivery_address.id and
+                    if (pos_brw.delivery_address and
                         zone_id in partner_obj.get_zone_ids(
                             cr, uid, pos_brw.delivery_address.id,
                             context=context)):
