@@ -368,10 +368,15 @@ class freight_shipment(osv.Model):
                   ' was complete delivered all its orders to be delivery. Is'
                   ' it set then all the planned orders were delivered, if it'
                   ' not, this field will be waiting to be')
-        )
+        ),
         # Note: This field is use like a flag that trigger the message log
         # notifications about the realase of undelivered pos orders and
         # pickings
+        'company_id': fields.many2one(
+            'res.company',
+            string='Company',
+            help=('This fields it only matters when there is a multi company'
+                 ' enviroment')),
     }
 
     _defaults = {
@@ -379,6 +384,7 @@ class freight_shipment(osv.Model):
         'work_shift': 'morning',
         'is_complete_delivered': True,
         'sequence': '/',
+        'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id 
     }
 
     _track = {
