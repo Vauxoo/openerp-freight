@@ -65,7 +65,7 @@
                                     </tree>
                                 </field>
                                 <label for="pos_order_ids"/>
-                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}">
+                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" context="{'filter_pos_order_by_zone': True, 'filter_zone_id': zone_id}">
                                     <tree>
                                         <field name="name"/>
                                         <field name="pos_reference"/>

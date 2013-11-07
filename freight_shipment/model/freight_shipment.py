@@ -854,6 +854,41 @@ class pos_order(osv.Model):
                    context=context)
         return True
 
+    def _search(self, cr, uid, args, offset=0, limit=None, order=None,
+                context=None, count=False, access_rights_uid=None):
+        """
+        Overwrite the _search() method to filter the pos order items in the
+        freight shipment form taking into account the delivery address zone
+        of the freight shipment with the ones in de delivery address of the
+        pos orders.
+        """
+        context = context or {}
+        partner_obj = self.pool.get('res.partner')
+        pos_obj = self.pool.get('pos.order')
+        if (context.get('filter_pos_order_by_zone', False)):
+            zone_id = context.get('filter_zone_id', False)
+            if not zone_id:
+                raise osv.except_osv(
+                    _('Error!'),
+                    _('Please you need to define the freight shipment zone'
+                      ' first to filter the possible POS orders to be add.'))
+            else:
+                context.pop('filter_pos_order_by_zone')
+                context.pop('filter_zone_id')
+                pos_ids = pos_obj.search(
+                    cr, uid, [('delivery', '=', True)], context=context)
+                fs_zone_pos_ids = []
+                for pos_brw in pos_obj.browse(cr, uid, pos_ids, context=context):
+                    if (pos_brw.delivery_address.id and
+                        zone_id in partner_obj.get_zone_ids(
+                            cr, uid, pos_brw.delivery_address.id,
+                            context=context)):
+                        fs_zone_pos_ids.append(pos_brw.id)
+                fs_zone_pos_ids and args.append(['id', 'in', fs_zone_pos_ids])
+        return super(pos_order, self)._search(
+            cr, uid, args, offset=offset, limit=limit, order=order,
+            context=context, count=count, access_rights_uid=access_rights_uid)
+
 
 class vehicle(osv.Model):
 
