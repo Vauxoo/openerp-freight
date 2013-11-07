@@ -81,7 +81,7 @@ class stock_picking(osv.Model):
                 context.pop('filter_zone_id')
                 picking_ids = picking_obj.search(
                     cr, uid, [], context=context)
-                print ' ---- picling_ids', picking_ids
+                #print ' ---- picling_ids', picking_ids
                 fs_zone_picking_ids = []
                 for picking_brw in picking_obj.browse(
                         cr, uid, picking_ids, context=context):
@@ -93,8 +93,8 @@ class stock_picking(osv.Model):
                         fs_zone_picking_ids.append(picking_brw.id)
                 fs_zone_picking_ids and args.append(
                     ['id', 'in', fs_zone_picking_ids])
-                print ' ---- fs_zone_picking_ids', fs_zone_picking_ids
-        print ' ---- args', args
+                #print ' ---- fs_zone_picking_ids', fs_zone_picking_ids
+        #print ' ---- args', args
         return super(stock_picking, self)._search(
             cr, uid, args, offset=offset, limit=limit, order=order,
             context=context, count=count, access_rights_uid=access_rights_uid)
