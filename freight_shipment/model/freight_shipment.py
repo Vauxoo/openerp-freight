@@ -58,6 +58,47 @@ class stock_picking(osv.Model):
         'delivery_state': 'undelivered',
     }
 
+    def _search(self, cr, uid, args, offset=0, limit=None, order=None,
+                context=None, count=False, access_rights_uid=None):
+        """
+        Overwrite the _search() method to filter the stock pikings items in
+        the freight shipment form taking into account the shipment zone of the
+        freight shipment with the shipment address zone
+        (picking.sale_order.partnet_shipment_id) of the pickings.
+        """
+        context = context or {}
+        partner_obj = self.pool.get('res.partner')
+        picking_obj = self.pool.get('stock.picking')
+        if (context.get('filter_pickings_by_zone', False)):
+            zone_id = context.get('filter_zone_id', False)
+            if not zone_id:
+                raise osv.except_osv(
+                    _('Error!'),
+                    _('Please you need to define the freight shipment zone'
+                      ' first to filter the possible pickings to be add.'))
+            else:
+                context.pop('filter_pickings_by_zone')
+                context.pop('filter_zone_id')
+                picking_ids = picking_obj.search(
+                    cr, uid, [], context=context)
+                print ' ---- picling_ids', picking_ids
+                fs_zone_picking_ids = []
+                for picking_brw in picking_obj.browse(
+                        cr, uid, picking_ids, context=context):
+                    if (picking_brw.sale_id.partner_shipping_id and
+                        zone_id in partner_obj.get_zone_ids(
+                            cr, uid,
+                            picking_brw.sale_id.partner_shipping_id.id,
+                            context=context)):
+                        fs_zone_picking_ids.append(picking_brw.id)
+                fs_zone_picking_ids and args.append(
+                    ['id', 'in', fs_zone_picking_ids])
+                print ' ---- fs_zone_picking_ids', fs_zone_picking_ids
+        print ' ---- args', args
+        return super(stock_picking, self)._search(
+            cr, uid, args, offset=offset, limit=limit, order=order,
+            context=context, count=count, access_rights_uid=access_rights_uid)
+
 
 class freight_shipment(osv.Model):
 
