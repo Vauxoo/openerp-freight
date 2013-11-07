@@ -217,6 +217,9 @@ class freight_shipment(osv.Model):
             size=256,
             store={'freight.shipment': (lambda s, c, u, ids, cxt: ids, ['date_shipped', 'zone_id', 'vehicle_id'], 16)},
             help='Freight Shipment Reference Name'),
+        'sequence': fields.char(
+            string='Sequence',
+            size=256),
         'vehicle_id': fields.many2one(
             'fleet.vehicle',
             string='Transport Unit',
@@ -375,6 +378,7 @@ class freight_shipment(osv.Model):
         'state': 'draft',
         'work_shift': 'morning',
         'is_complete_delivered': True,
+        'sequence': '/',
     }
 
     _track = {
