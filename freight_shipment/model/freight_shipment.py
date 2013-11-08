@@ -509,6 +509,8 @@ class freight_shipment(osv.Model):
             cr, uid, seq_type_id, context=context).code
         #print ' ---- sequence code', (seq_type_id, seq_type_code)
         for fs_brw in self.browse(cr, uid, ids, context=context):
+            if fs_brw.sequence != '/':
+                continue
             seq_ids = seq_obj.search(
                 cr, uid, [
                     ('company_id', '=', fs_brw.company_id.id),
