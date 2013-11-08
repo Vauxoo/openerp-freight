@@ -451,6 +451,93 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'awaiting'}, context=context)
         return True
 
+    def _get_seq_type(self, cr, uid, context=None):
+        """
+        Search in the sequence codes (sequence.type model) for those sequences
+        correspoding to the freight shipment object.
+        @return: the id of the sequence type (sequence code)
+        """
+        context = context or {}
+        seq_type_obj = self.pool.get('ir.sequence.type')
+        seq_type_ids = seq_type_obj.search(
+            cr, uid, [
+                ('code', 'like', '%freight.shipment%'),
+                ('name', 'like', '%Freight%')],
+            context=context)
+        #print ' ---- sequence code existentes', seq_type_ids
+        return seq_type_ids and len(seq_type_ids) == 1 and seq_type_ids[0] \
+               or seq_type_ids
+
+    def _create_seq_type(self, cr, uid, context=None):
+        """
+        Create a new sequence type for freight shipment model 
+        @return the id of the new sequence type
+        """
+        context = context or {}
+        seq_type_obj = self.pool.get('ir.sequence.type')
+        seq_type_id = seq_type_obj.create(
+            cr, uid, {
+                'name': 'Freight Shipment',
+                'code': 'freight.shipment'},
+            context=context)
+        #print ' ---- creado nuevo sequence code', seq_type_id
+        return seq_type_id
+
+    def assign_sequence(self, cr, uid, ids, context=None):
+        """
+        This method calculate the sequence for a freight shipment and write
+        the corresponding value over the sequence field.
+        @return True
+        """
+        context = context or {}
+        seq_obj = self.pool.get('ir.sequence')
+        seq_type_obj = self.pool.get('ir.sequence.type')
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        error_msg_for_multi_seq_type = \
+            _('This procedure can not continue because there is more than one'
+              ' Sequence Code for the model freight shipment. Please select'
+              ' one Sequence Code and delete the rest.\n\n Go to Settings >'
+              ' Technical > Sequence & Identifiers > Sequence Codes.')
+        freight_type = context.get('default_type', 'shipment').upper() + '/'
+        seq_type_id = \
+            self._get_seq_type(cr, uid, context=context) or \
+            self._create_seq_type(cr, uid, context=context)
+        # TODO: what really do when there is more than one seq code? 
+        if isinstance(seq_type_id, (list)):
+            raise osv.except_osv(_('Warning!!'), error_msg_for_multi_seq_type)
+        seq_type_code = seq_type_obj.browse(
+            cr, uid, seq_type_id, context=context).code
+        #print ' ---- sequence code', (seq_type_id, seq_type_code)
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            seq_ids = seq_obj.search(
+                cr, uid, [
+                    ('company_id', '=', fs_brw.company_id.id),
+                    ('code', '=', seq_type_code)],
+                context=context)
+            #print ' ---- seq_ids', seq_ids
+            if not seq_ids:
+                values = {
+                    'name': 'Freight Shipment - ' + fs_brw.company_id.name,
+                    'code': seq_type_code,
+                    'prefix': freight_type,
+                    'padding': 6,
+                    'number_increment': 1,
+                    'company_id': fs_brw.company_id.id 
+                }
+                seq_ids = [seq_obj.create(cr, uid, values, context=context)]
+                #print ' ---- create new sequence', seq_ids
+            #for seq_brw in seq_obj.browse(cr, uid, seq_ids, context=context):
+                #print ' ---- seq', (
+                #   seq_brw.id, seq_brw.name, seq_brw.code,
+                #   seq_brw.company_id.name, seq_brw.prefix,
+                #   seq_brw.implementation)
+            sequence = seq_obj.next_by_id(cr, uid, seq_ids[0], context=context)
+            self.write(
+                cr, uid, fs_brw.id, {'sequence': sequence}, context=context)
+            #print ' ---- sequence', sequence 
+            #print ' ---- context', context
+        return True
+
     def action_assign(self, cr, uid, ids, context=None):
         """
         Change the state of a freight.shipment order from 'awaiting' to
