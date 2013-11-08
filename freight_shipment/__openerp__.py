@@ -66,6 +66,8 @@ To use this module you need to configure youre OpenERP instance by:
     'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock',
                 'freight_weight', 'freight_zone_mapsgoogle', 'incoterm_ext'],
     'data': [
+        'security/freight_shipment_security.xml',
+        'security/ir.model.access.csv',
         'view/freight_shipment_view.xml',
         'data/freight_shipment_data.xml',
         'wizard/freight_shipment_overdue_view.xml',
