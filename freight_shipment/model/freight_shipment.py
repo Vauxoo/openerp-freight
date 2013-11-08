@@ -538,13 +538,57 @@ class freight_shipment(osv.Model):
             #print ' ---- context', context
         return True
 
+    def _set_exception_msg(self, cr, uid, ids, etype, context=None):
+        """
+        It set the exception log messages in the correspoding freight
+        shipments.
+        @param etype: the exception type. could be:
+                      - 'volmetric_weight'
+                      - 'weight
+        @return: True
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        exception = {
+            'volmetric_weight': {
+                'error_msg':
+                _(' - Volumetric Weight Exceeded: The volumetric weight of'
+                  ' the  %s freigth shipment is greater than the volumetrici'
+                  ' weight capacity of the freight shipment transport unit'
+                  ' (%s > %s).\n'),
+                'values':
+                ['name', 'volumetric_weight', 'max_volumetric_weight'],
+            },
+            'weight': {
+                'error_msg':
+                _(' - Weight Exceeded: The weight of the %s freigth shipment'
+                  ' is greater than the physical weight capacity of the'
+                  ' freight shipment transport unit (%s > %s).\n'),
+                'values':
+                ['name', 'weight', 'max_weight'],
+            }
+        }
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            string_param = tuple(
+                 [getattr(fs_brw, val) for val in exception[etype]['values']])
+            print ' ---- string_param len()', len(string_param), string_param
+            print ' ---- formated string', exception[etype]['error_msg']
+            values = {'message_exceptions':
+                fs_brw.message_exceptions or ''
+                + (exception[etype]['error_msg'] % string_param)}
+            self.write(cr, uid, fs_brw.id, values, context=context)
+        return True
+
     def action_assign(self, cr, uid, ids, context=None):
         """
-        Change the state of a freight.shipment order from 'awaiting' to
-        'exception' (if there is a problem with the freight.shipment order) or
-        'confirm' is all the values were successfully valuated. 
-
-        In the process it verify some conditions:
+        Change the state of a freight shipment order from 'awaiting' to
+        'exception' or to 'confirm' state and also set a sequence number
+        to the freight shipment because is confirmed with or with no
+        exceptions.
+        The freight shipment change to 'confirm' state is the freight shipment
+        values fulfill some conditions, otherwise the freight shipment will
+        change to 'expception' state.
+        The evaluated conditions are:
 
           - that the accumulated volumetrict weight capacity of the freight is
             less or equal to max volumetrict weight capacity for this freight.
@@ -553,35 +597,25 @@ class freight_shipment(osv.Model):
 
         @return: True
         """
-        #~ Note: here there is manage the exception message that have not been
-        #~ used or displayed anywhere
         context = context or {}
-        exceptions = list()
-        exception_msg = str()
-
+        ids = isinstance(ids, (long, int)) and [ids] or ids
         for fso_brw in self.browse(cr, uid, ids, context=context):
+            exceptions = []
+            exceptions.append(not self.check_volumetric_weight(
+                cr, uid, fso_brw.id, context=context))
+            exceptions[-1] and self._set_exception_msg(
+                cr, uid, fso_brw.id, 'volumetric_weight', context=context)
 
-            exceptions.append(
-                not self.check_volumetric_weight(
-                    cr, uid, fso_brw.id, context=context))
-            if exceptions[-1]:
-                exception_msg += _('The volumetric weight of youre orders is'
-                    ' greater than the volumetric capacity of youre transport'
-                    ' unit (%s > %s).\n' % (fso_brw.volumetric_weight,
-                        fso_brw.max_volumetric_weight))
+            exceptions.append(not self.check_weight(
+                cr, uid, fso_brw.id, context=context))
+            exceptions[-1] and self._set_exception_msg(
+                cr, uid, fso_brw.id, 'weight', context=context)
 
-            exceptions.append(
-                not self.check_weight(cr, uid, fso_brw.id, context=context))
-            if exceptions[-1]:
-                exception_msg += _('The weight of youre orders is greater than'
-                    ' the weight capacity of youre transport unit'
-                    ' (%s > %s).\n' % (fso_brw.weight, fso_brw.max_weight))
-
-        self.write(
-            cr, uid, ids,
-            {'state': any(exceptions) and 'exception' or 'confirm'},
-            context=context)
-
+            self.assign_sequence(cr, uid, fso_brw.id, context=context)
+            self.write(
+                cr, uid, fso_brw.id,
+                {'state': any(exceptions) and 'exception' or 'confirm'},
+                context=context)
         return True
 
     def check_zone(self, cr, uid, ids, context=None):
