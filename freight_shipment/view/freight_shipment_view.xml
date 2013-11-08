@@ -38,7 +38,7 @@
                             <field name="work_shift" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="type" invisible="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="zone_id" attrs="{'readonly':[('state','not in',('draft'))]}"/>
-                            <field name="company_id" attrs="{'readonly':[('state','not in',('draft'))]}"/>
+                            <field name="company_id" attrs="{'readonly':[('state','not in',('draft'))]}" groups="base.group_multi_company"/>
 
                             <group name="dates" string="Dates">
                                 <field name="date_shipped" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
