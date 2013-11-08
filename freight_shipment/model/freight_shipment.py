@@ -125,6 +125,26 @@ class freight_shipment(osv.Model):
 
         return res
 
+    def _get_vehicle_weight_field(self, cr, uid, ids, field_name, arg,
+                                  context=None):
+        """
+        This is a functional field method that extract from the vehicle of the
+        freigh shipment the weight data. For this it use a dictonary of
+        corresponding fields equals between freight shipment and fleet.vehicle.
+        """
+        context = context or {}
+        res = {}.fromkeys(ids)
+        vehicle_field = {
+            'max_weight': 'physical_capacity',
+            'max_volumetric_weight': 'volumetric_capacity',
+            'recommended_weight': 'recommended_physical_capacity',
+            'recommended_volumetric_weight': 'recommended_volumetric_capacity',
+        }
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            res[fs_brw.id] = \
+                getattr(fs_brw.vehicle_id, vehicle_field[field_name])
+        return res
+
     def _get_vehicle_weight(self, cr, uid, ids, field_name, arg, context=None):
         """
         Update automaticly the max weight for the freight shipment taking into
@@ -300,6 +320,18 @@ class freight_shipment(osv.Model):
             help=('The Volumetric Weight Capacity of the vehicle associated to'
                   ' the freight Shipment')
         ),
+        'recommended_weight': fields.function(
+            _get_vehicle_weight_field,
+            string='Recommended Vehicle Max Weight',
+            type='float',
+            help=('This is the maxime physical weight quantity recommended for'
+                  ' save use of the vehicle')),
+        'recommended_volumetric_weight': fields.function(
+            _get_vehicle_weight_field,
+            string='Recommended Volumetric Weight',
+            type='float',
+            help=('This is the maxime volumetric weight quantity recommended'
+                  ' for save use of the vehicle')),
         'date_shipped': fields.datetime(
             string='Shipped Date',
             help='The date and time where the freight was send'),
