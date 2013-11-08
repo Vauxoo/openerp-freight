@@ -199,11 +199,11 @@ class freight_shipment(osv.Model):
         res = {}.fromkeys(ids, '')
         for fs_brw in self.browse(cr, uid, ids, context=context):
             shipment_type = context.get('default_type', False) == 'freight' \
-                and 'FREIGHT' or \
+                and 'FREIGHT/' or \
                 context.get('default_type', False) == 'delivery' \
-                and 'DELIVERY' or 'SHIPMENT'
+                and 'DELIVERY/' or 'SHIPMENT/'
             res[fs_brw.id] = '%s -  %s - %s - %s' % (
-                shipment_type,
+                fs_brw.sequence == '/' and shipment_type or fs_brw.sequence,
                 fs_brw.date_delivery or 'NO DELIVERY DATE',
                 fs_brw.zone_id.name or 'NOT ZONE DEFINED',
                 fs_brw.vehicle_id.name or 'NOT VEHICLE DEFINED')
@@ -215,7 +215,9 @@ class freight_shipment(osv.Model):
             string='Name',
             type='char',
             size=256,
-            store={'freight.shipment': (lambda s, c, u, ids, cxt: ids, ['date_shipped', 'zone_id', 'vehicle_id'], 16)},
+            store={'freight.shipment': (lambda s, c, u, ids, cxt:
+                ids, ['date_shipped', 'zone_id', 'vehicle_id', 'sequence'], 16)
+            },
             help='Freight Shipment Reference Name'),
         'sequence': fields.char(
             string='Sequence',
