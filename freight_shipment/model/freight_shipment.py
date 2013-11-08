@@ -145,32 +145,6 @@ class freight_shipment(osv.Model):
                 getattr(fs_brw.vehicle_id, vehicle_field[field_name])
         return res
 
-    def _get_vehicle_weight(self, cr, uid, ids, field_name, arg, context=None):
-        """
-        Update automaticly the max weight for the freight shipment taking into
-        account the max weight capacity of the vehicle associated.
-        """
-        context = context or {}
-        res = {}.fromkeys(ids, 0.0)
-        for fs_brw in self.browse(cr, uid, ids, context=context):
-            if fs_brw.vehicle_id.id:
-                res[fs_brw.id] = fs_brw.vehicle_id.physical_capacity
-        return res
-
-    def _get_vehicle_vol_weight(self, cr, uid, ids, field_name, arg,
-                                context=None):
-        """
-        Update automaticly the max volumetric weight for the freight shipment
-        taking into account the max volumetric weight capacity of the vehicle
-        associated.
-        """
-        context = context or {}
-        res = {}.fromkeys(ids, 0.0)
-        for fs_brw in self.browse(cr, uid, ids, context=context):
-            if fs_brw.vehicle_id.id:
-                res[fs_brw.id] = fs_brw.vehicle_id.volumetric_capacity
-        return res
-
     # TODO: check this method behavior: is not taking into account the
     # product_uom in the stock.pickings and may needed
     def _get_freight_current_weight(self, cr, uid, ids, field_name, arg,
@@ -307,14 +281,14 @@ class freight_shipment(osv.Model):
                   ' volumetric weight will be different from the Volumetric'
                   ' Weight field.')),
         'max_weight': fields.function(
-            _get_vehicle_weight,
+            _get_vehicle_weight_field,
             string='Max Weight',
             type='float',
             help=('The Weight Capacity of the vehicle associated to the freight'
                   ' Shipment')
         ),
         'max_volumetric_weight': fields.function(
-            _get_vehicle_vol_weight,
+            _get_vehicle_weight_field,
             string='Max Volumetric Weight',
             type='float',
             help=('The Volumetric Weight Capacity of the vehicle associated to'
