@@ -576,7 +576,7 @@ class freight_shipment(osv.Model):
             print ' ---- string_param len()', len(string_param), string_param
             print ' ---- formated string', exception[etype]['error_msg']
             values = {'message_exceptions':
-                fs_brw.message_exceptions or ''
+                (fs_brw.message_exceptions or '')
                 + (exception[etype]['error_msg'] % string_param)}
             self.write(cr, uid, fs_brw.id, values, context=context)
         return True
