@@ -34,7 +34,7 @@
                             </h1>
                         </div>
                         <group colspan="4">
-                            <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True),('shipment_state', '=', 'free')]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="work_shift" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="type" invisible="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="zone_id" attrs="{'readonly':[('state','not in',('draft'))]}"/>
