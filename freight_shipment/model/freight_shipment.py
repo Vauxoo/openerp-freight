@@ -1085,6 +1085,15 @@ class pos_order(osv.Model):
             cr, uid, args, offset=offset, limit=limit, order=order,
             context=context, count=count, access_rights_uid=access_rights_uid)
 
+    def onchange_delivery_address(self, cr, uid, ids, context=None):
+        """
+        This is an onchange method over the delivery_address field in the pos
+        order form view, that clears the freight_shipment_id field every time
+        the delivery_address field change or its be clear.
+        """
+        context = context  or {}
+        res = {'value': {'freight_shipment_id': False}}
+        return res
 
 class vehicle(osv.Model):
 
