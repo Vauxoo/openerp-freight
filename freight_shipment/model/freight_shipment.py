@@ -752,9 +752,11 @@ class freight_shipment(osv.Model):
         """
         This method will change the freight shipment from Shipped state to
         Delivered state. Used for the Delivered button in the freight shipment
-        order.
+        order. It also set the vehicle state to free to indicate that the
+        vehicle returns and it can be use for another freight shipment.
         """
         context = context or {}
+        vehicle_obj = self.pool.get('fleet.vehicle')
         ids = isinstance(ids, (long, int)) and [ids] or ids
         fs_ids = {'delivered': [], 'shipment_exception': []}
         for fs_brw in self.browse(cr, uid, ids, context=context):
@@ -774,6 +776,11 @@ class freight_shipment(osv.Model):
                 'date_delivered': time.strftime('%Y-%m-%d %H:%M:%S')
             }, context=context)
         #print '---- fs_ids', fs_ids
+        vehicle_ids = list(set(
+            [fs_brw.vehicle_id.id
+             for fs_brw in self.browse(cr, uid, ids,  context=context)]))
+        vehicle_obj.write(
+            cr, uid, vehicle_ids, {'shipment_state': 'free'}, context=context)
         return True
 
     def _successfully_delivery_state(self, cr, uid, ids, context=None):
