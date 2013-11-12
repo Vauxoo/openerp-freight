@@ -216,6 +216,11 @@
                         <field name="freight_shipment_ids" nolabel="1" colspan="4"/>
                     </group>
                 </xpath>
+
+                <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="on_change">onchange_partner_shipping_id()</attribute> 
+                </xpath>
+
             </field>
         </record>
 

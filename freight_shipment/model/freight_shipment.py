@@ -938,6 +938,17 @@ class sale_order(osv.Model):
             help='Work Shift'),
     }
 
+    def onchange_partner_shipping_id(self, cr, uid, ids, context=None):
+        """
+        This is an onchange method used in the sale order form view at the
+        partner_shipping_id field. When this field change whatever another
+        partner or clear value then the prefered_freigh_shipment_id field
+        will be clear, always.
+        """
+        context = context or {}
+        res = {'value': {'prefered_freight_shipment_id': False}}
+        return res
+
     def _prepare_order_picking(self, cr, uid, order, context=None):
         """
         Overwrite the _prepare_order_picking method to add the prefered fregiht
