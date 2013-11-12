@@ -896,7 +896,7 @@ class freight_shipment(osv.Model):
             if work_shift:
                 args.append(['work_shift','=', work_shift])
             if delivery_date:
-                args.append(['date_delivery', '=', delivery_date])
+                args.append(['date_delivery', '<=', delivery_date])
         return super(freight_shipment, self)._search(cr, uid, args,
                      offset=offset, limit=limit, order=order, context=context,
                      count=count, access_rights_uid=access_rights_uid)
