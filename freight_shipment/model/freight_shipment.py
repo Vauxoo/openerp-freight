@@ -669,6 +669,31 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
         return True
 
+    def check_fs_weight_field(self, cr, uid, ids, weight_field, context=None):
+        """
+        Check if the freight accumulated weight value is less or equal to
+        a freight max or recommended weight capacity.
+        @param weight_field: the name of the weight capacity in the freight
+            shipment. the posible values are:
+                - max_volumetric_weight
+                - max_weight
+                - recommended_weight
+                - recommended_volumetric_weight
+        @return: True if the condition is satisfied or False if is not.
+        """
+        context = context or {}
+        ids = isinstance(ids, (int, long)) and [ids] or ids
+        res = []
+        acc_weight = 'volumetric_weight' in weight_field \
+            and 'volumetric_weight' or 'weight'
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            res.append(
+                getattr(fs_brw, acc_weight) <= getattr(fs_brw, weight_field))
+        if len(ids) == 1:
+            return res[0]
+        else:
+            return res
+
     def check_volumetric_weight(self, cr, uid, ids, context=None):
         """
         Check if the freight accumulated volumetric weight value is less or
