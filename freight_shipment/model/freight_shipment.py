@@ -883,20 +883,25 @@ class freight_shipment(osv.Model):
         """
         context = context or {}
         partner_obj = self.pool.get('res.partner')
+        incoterm_obj = self.pool.get('stock.incoterms')
         if (context.get('filter_freight_shipment_ids', False)):
+            incoterm_id = context.get('incoterm', False)
+            is_delivery = incoterm_id and incoterm_obj.browse(
+                cr, uid, incoterm_id, context=context).is_delivery or False
             partner_shipping_id = context.get('partner_shipping_id', False)
             work_shift = context.get('work_shift', False)
             delivery_date = context.get('delivery_date', False)
-            
-            if partner_shipping_id:
-                zone_ids = partner_obj.get_zone_ids(
-                    cr, uid, partner_shipping_id, context=context)
-                if zone_ids:
-                    args.append(['zone_id', 'in', zone_ids])
-            if work_shift:
-                args.append(['work_shift','=', work_shift])
-            if delivery_date:
-                args.append(['date_delivery', '<=', delivery_date])
+
+            if is_delivery:
+                if partner_shipping_id:
+                    zone_ids = partner_obj.get_zone_ids(
+                        cr, uid, partner_shipping_id, context=context)
+                    if zone_ids:
+                        args.append(['zone_id', 'in', zone_ids])
+                if work_shift:
+                    args.append(['work_shift','=', work_shift])
+                if delivery_date:
+                    args.append(['date_delivery', '<=', delivery_date])
         return super(freight_shipment, self)._search(cr, uid, args,
                      offset=offset, limit=limit, order=order, context=context,
                      count=count, access_rights_uid=access_rights_uid)
