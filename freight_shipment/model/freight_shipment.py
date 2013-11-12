@@ -727,10 +727,13 @@ class freight_shipment(osv.Model):
         This method will change the freight shipment from 'Loaded' state to
         Shipped state. It represent the order to make the unit go out and do
         the shipment. It also set the initial_shipped_weight field for log
-        history of the freight shipment.
+        history of the freight shipment. It also set the shipment_state of the
+        vehicle to busy state indicating that the vehicle is in use because is
+        out shippinh a freight shipment.
         @return True
         """
         context = context or {}
+        vehicle_obj = self.pool.get('fleet.vehicle')
         ids = isinstance(ids, (long, int)) and [ids] or ids
         for fs_brw in self.browse(cr, uid, ids, context=context):
             self.write(
@@ -739,6 +742,9 @@ class freight_shipment(osv.Model):
                  'initial_shipped_weight': fs_brw.weight, 
                  'initial_shipped_volumetric_weight': fs_brw.volumetric_weight, 
                  'date_shipped': time.strftime('%Y-%m-%d %H:%M:%S')},
+                context=context)
+            vehicle_obj.write(
+                cr, uid, [fs_brw.vehicle_id.id], {'shipment_state': 'busy'},
                 context=context)
         return True
 
