@@ -1125,12 +1125,12 @@ class vehicle(osv.Model):
                  ' for save use of the vehicle')),
         'shipment_state': fields.selection(
             [('free', 'Free'),
-             ('dutty', 'Dutty'),
+             ('busy', 'Busy'),
              ('mtto', 'Maintenance')],
              'Shipment State',
              help=('The state for shipment use of the vehicle:'
                    '  - Free: Avaible for use.\n'
-                   '  - Dutty: The vehicle is in use.\n'
+                   '  - Busy: The vehicle is in use.\n'
                    '  - Maintenance: The vehicle is in maintenance and can not'
                    '    be use.\n')),
     }
