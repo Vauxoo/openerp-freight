@@ -255,57 +255,64 @@ class freight_shipment(osv.Model):
             _get_freight_current_weight,
             type='float',
             string='Weight',
-            help='Weight'
-        ),
+            help=('The accumulated weight of the shipment. It is a calculated'
+                  ' field that sums the weights of all orders belonging to'
+                  ' this shipment. The user can not manually change this'
+                  ' field is automatically calculated')),
         'initial_shipped_weight': fields.float(
-            string='Initial Shipped Weight',
-            help=('This is the weight of the freight shipment when it\'s'
-                 ' confirmed. The weight when the freigh shipment is shipped.'
-                 ' If the freight shipment is not complete delivered (some of'
-                 ' their orders can not be delivered for some shipment'
-                 ' exception the this weight will be difference from the'
-                 ' Weight.')),
+            string='Shipped Weight',
+            help=('This is the accumultad weight when the shipment is'
+                  ' confirmed and therefore when is shipped. If the shipment'
+                  ' is not complete delivered (Some shipment orders could not'
+                  ' be delivered) then the value of this field will be'
+                  ' different of the Weight field.')),
         'volumetric_weight': fields.function(
             _get_freight_current_weight,
             type='float',
             string='Volumetric Weight',
-            help='Volumetric Weight'
-        ),
+            help=('The accumulated weight of the shipment. It is a calculated'
+                  ' field that sums the volumetric weights of all orders'
+                  ' belonging to this shipment. The user can not manually'
+                  ' change this field is automatically calculated')),
         'initial_shipped_volumetric_weight': fields.float(
-            string='Initial Shipped Volumetric Weight',
-            help=('This is the volumetric weight of the freight shipment when'
-                  ' it\'s confirmed. The volumetric weight when the freigh'
-                  ' shipment is shipped. If the freight shipment is not'
-                  ' complete delivered (some of their confirmed orders can not'
-                  ' be delivered for some shipment exception then this'
-                  ' volumetric weight will be different from the Volumetric'
-                  ' Weight field.')),
+            string='Shipped Volumetric Weight',
+            help=('This is the accumultad volumetric weight when the shipment'
+                  ' is confirmed and therefore when is shipped. If the'
+                  ' shipment is not complete delivered (Some shipment orders'
+                  ' could not be delivered) then the value of this field will'
+                  ' be different of the Volumetric Weight field.')),
         'max_weight': fields.function(
             _get_vehicle_weight_field,
-            string='Max Weight',
+            string='Maximum Weight Capacity',
             type='float',
-            help=('The Weight Capacity of the vehicle associated to the freight'
-                  ' Shipment')
-        ),
+            help=('The Maximum Weight Capacity of the transport unit'
+                  ' associated to the current shipment. The user can not'
+                  ' manually change this field its value is automatically'
+                  ' import from the transport unit specs.')),
         'max_volumetric_weight': fields.function(
             _get_vehicle_weight_field,
-            string='Max Volumetric Weight',
+            string='Maximum Volumetric Weight Capacity',
             type='float',
-            help=('The Volumetric Weight Capacity of the vehicle associated to'
-                  ' the freight Shipment')
-        ),
+            help=('The Maximum Volumetric Weight Capacity of the transport'
+                  ' unit associated to the current shipment. The user can not'
+                  ' manually change this field its value is automatically'
+                  ' import from the transport unit specs.')),
         'recommended_weight': fields.function(
             _get_vehicle_weight_field,
-            string='Recommended Vehicle Max Weight',
+            string='Recommended Maximum Weight',
             type='float',
-            help=('This is the maxime physical weight quantity recommended for'
-                  ' save use of the vehicle')),
+            help=('The recommended top weight for save use of the transport'
+                  ' unit. The user can not manually change this field its'
+                  ' value is automatically import from the transport unit'
+                  ' specs.')),
         'recommended_volumetric_weight': fields.function(
             _get_vehicle_weight_field,
             string='Recommended Volumetric Weight',
             type='float',
-            help=('This is the maxime volumetric weight quantity recommended'
-                  ' for save use of the vehicle')),
+            help=('The recommended top volumetric weight for save use of the'
+                  ' transport unit. The user can not manually change this'
+                  ' field its value is automatically import from the'
+                  ' transport unit  specs.')),
         'date_shipped': fields.datetime(
             string='Shipped Date',
             help='The date and time where the freight was send'),
