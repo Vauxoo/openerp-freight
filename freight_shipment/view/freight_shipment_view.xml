@@ -275,7 +275,7 @@
 
                 <xpath expr="//sheet" piosition="inside">
                     <group string="Shipment Information" attrs="{'invisible': [('is_delivery','=',False),('is_freight','=',False)]}">
-                        <field name="shipment_state"/>
+                        <field name="shipment_state" readonly="1"/>
                     </group>
                 </xpath>
 
