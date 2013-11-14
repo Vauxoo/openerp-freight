@@ -413,7 +413,9 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_w_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
-                    not self.check_weight(cr, uid, obj['id'], context=ctx),
+                    not self.check_fs_weight_field(
+                        cr, uid, obj['id'], 'max_weight',
+                        context=ctx),
             'freight_shipment.mt_fs_confirm':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['confirm'],
@@ -615,8 +617,8 @@ class freight_shipment(osv.Model):
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'volumetric_weight', context=context)
 
-            exceptions.append(not self.check_weight(
-                cr, uid, fso_brw.id, context=context))
+            exceptions.append(not self.check_fs_weight_field(
+                cr, uid, fso_brw.id, 'max_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'weight', context=context)
 
@@ -690,23 +692,6 @@ class freight_shipment(osv.Model):
         for fs_brw in self.browse(cr, uid, ids, context=context):
             res.append(
                 getattr(fs_brw, acc_weight) <= getattr(fs_brw, weight_field))
-        if len(ids) == 1:
-            return res[0]
-        else:
-            return res
-
-    def check_weight(self, cr, uid, ids, context=None):
-        """
-        Check if the freight accumulated weight value is less or equal to the
-        max weight capacity.
-        @return: True if the condition is satisfied or False if is not.
-        """
-        context = context or {}
-        ids = isinstance(ids, (int, long)) and [ids] or ids
-        res = []
-        for freight_brw in self.browse(cr, uid, ids, context=context):
-            res.append(freight_brw.weight
-                <= freight_brw.max_weight)
         if len(ids) == 1:
             return res[0]
         else:
