@@ -405,28 +405,28 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_vw_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and
-                    not self.check_fs_weight_field(
+                    not self.is_weight_fulfill(
                         cr, uid, obj['id'], 'recommended_volumetric_weight',
                         context=ctx) and
-                    self.check_fs_weight_field(
+                    self.is_weight_fulfill(
                         cr, uid, obj['id'], 'recommended_weight',
                         context=ctx),
             'freight_shipment.mt_fs_w_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
-                    not self.check_fs_weight_field(
+                    not self.is_weight_fulfill(
                         cr, uid, obj['id'], 'recommended_weight',
                         context=ctx) and 
-                    self.check_fs_weight_field(
+                    self.is_weight_fulfill(
                         cr, uid, obj['id'], 'recommended_volumetric_weight',
                         context=ctx),
             'freight_shipment.mt_fs_w_and_vw_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
-                    not self.check_fs_weight_field(
+                    not self.is_weight_fulfill(
                         cr, uid, obj['id'], 'recommended_weight',
                         context=ctx) and 
-                    not self.check_fs_weight_field(
+                    not self.is_weight_fulfill(
                         cr, uid, obj['id'], 'recommended_volumetric_weight',
                         context=ctx),
             'freight_shipment.mt_fs_confirm':
@@ -629,19 +629,19 @@ class freight_shipment(osv.Model):
               ' Please remove some orders items to continue.')
         for fso_brw in self.browse(cr, uid, ids, context=context):
             for max_field in  ['max_volumetric_weight', 'max_weight']:
-                if not self.check_fs_weight_field(
+                if not self.is_weight_fulfill(
                     cr, uid, fso_brw.id, max_field, context=context):
                     raise osv.except_osv(
                         _('Invalid Procedure!!!'), error_msg % (
                             max_field[4:].replace('_', ' ')))
 
             exceptions = []
-            exceptions.append(not self.check_fs_weight_field(
+            exceptions.append(not self.is_weight_fulfill(
                 cr, uid, fso_brw.id, 'recommended_volumetric_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'volumetric_weight', context=context)
 
-            exceptions.append(not self.check_fs_weight_field(
+            exceptions.append(not self.is_weight_fulfill(
                 cr, uid, fso_brw.id, 'recommended_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'weight', context=context)
@@ -696,7 +696,7 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
         return True
 
-    def check_fs_weight_field(self, cr, uid, ids, weight_field, context=None):
+    def is_weight_fulfill(self, cr, uid, ids, weight_field, context=None):
         """
         Check if the freight accumulated weight value is less or equal to
         a freight max or recommended weight capacity.
