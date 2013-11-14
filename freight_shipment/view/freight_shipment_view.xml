@@ -58,29 +58,33 @@
                         </group>
                         <notebook>
                             <page string="Orders">
-                                <label for="picking_ids"/>
-                                <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id}">
-                                    <tree>
-                                        <field name="name"/>
-                                        <field name="origin"/>
-                                        <field name="min_date"/>
-                                        <field name="state"/>
-                                        <field name="delivery_state"/>
-                                    </tree>
-                                </field>
-                                <label for="pos_order_ids"/>
-                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" context="{'filter_pos_order_by_zone': True, 'filter_zone_id': zone_id}">
-                                    <tree>
-                                        <field name="name"/>
-                                        <field name="pos_reference"/>
-                                        <field name="date_order"/>
-                                        <field name="partner_id"/>
-                                        <field name="user_id"/>
-                                        <field name="state"/>
-                                        <field name="delivery_state"/>
-                                        <button name="action_pos_delivered" string="Delivered" type="object" help="Click this button to indicate if the order have been delivered" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
-                                    </tree>
-                                </field>
+                                <group attrs="{'invisible': [('type', '=', 'delivery')]}">
+                                    <label for="picking_ids"/><newline/>
+                                    <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id}">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="origin"/>
+                                            <field name="min_date"/>
+                                            <field name="state"/>
+                                            <field name="delivery_state"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group attrs="{'invisible': [('type', '=', 'freight')]}">
+                                    <label for="pos_order_ids"/><newline/>
+                                    <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" context="{'filter_pos_order_by_zone': True, 'filter_zone_id': zone_id}">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="pos_reference"/>
+                                            <field name="date_order"/>
+                                            <field name="partner_id"/>
+                                            <field name="user_id"/>
+                                            <field name="state"/>
+                                            <field name="delivery_state"/>
+                                            <button name="action_pos_delivered" string="Delivered" type="object" help="Click this button to indicate if the order have been delivered" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
+                                        </tree>
+                                    </field>
+                                </group>
                             </page>
                             <page string="Sale Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
                                 <group name="sale-order-group" colspan="4">
