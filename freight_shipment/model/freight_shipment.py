@@ -408,13 +408,13 @@ class freight_shipment(osv.Model):
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
                     not self.check_fs_weight_field(
-                        cr, uid, obj['id'], 'max_volumetric_weight',
+                        cr, uid, obj['id'], 'recommended_volumetric_weight',
                         context=ctx),
             'freight_shipment.mt_fs_w_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
                     not self.check_fs_weight_field(
-                        cr, uid, obj['id'], 'max_weight',
+                        cr, uid, obj['id'], 'recommended_weight',
                         context=ctx),
             'freight_shipment.mt_fs_confirm':
                 lambda self, cr, uid, obj, ctx=None:
@@ -610,15 +610,26 @@ class freight_shipment(osv.Model):
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
+        error_msg = \
+            _('Your current burden exceeds the maximum transport unit'
+              ' %s capacity. This freight shipment Assing can not be done.'
+              ' Please remove some orders items to continue.')
         for fso_brw in self.browse(cr, uid, ids, context=context):
+            for max_field in  ['max_volumetric_weight', 'max_weight']:
+                if not self.check_fs_weight_field(
+                    cr, uid, fso_brw.id, max_field, context=context):
+                    raise osv.except_osv(
+                        _('Invalid Procedure!!!'), error_msg % (
+                            max_field[4:].replace('_', ' ')))
+
             exceptions = []
             exceptions.append(not self.check_fs_weight_field(
-                cr, uid, fso_brw.id, 'max_volumetric_weight', context=context))
+                cr, uid, fso_brw.id, 'recommended_volumetric_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'volumetric_weight', context=context)
 
             exceptions.append(not self.check_fs_weight_field(
-                cr, uid, fso_brw.id, 'max_weight', context=context))
+                cr, uid, fso_brw.id, 'recommended_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'weight', context=context)
 
