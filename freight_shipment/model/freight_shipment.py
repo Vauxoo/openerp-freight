@@ -553,14 +553,14 @@ class freight_shipment(osv.Model):
         It set the exception log messages in the correspoding freight
         shipments.
         @param etype: the exception type. could be:
-                      - 'volmetric_weight'
+                      - 'volumetric_weight'
                       - 'weight
         @return: True
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
         exception = {
-            'volmetric_weight': {
+            'volumetric_weight': {
                 'error_msg':
                 _(' - Volumetric Weight Exceeded: The volumetric weight of'
                   ' the  %s freigth shipment is greater than the volumetrici'
