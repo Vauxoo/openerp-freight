@@ -407,8 +407,9 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_vw_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
-                    not self.check_volumetric_weight(
-                        cr, uid, obj['id'], context=ctx),
+                    not self.check_fs_weight_field(
+                        cr, uid, obj['id'], 'max_volumetric_weight',
+                        context=ctx),
             'freight_shipment.mt_fs_w_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
@@ -609,8 +610,8 @@ class freight_shipment(osv.Model):
         ids = isinstance(ids, (long, int)) and [ids] or ids
         for fso_brw in self.browse(cr, uid, ids, context=context):
             exceptions = []
-            exceptions.append(not self.check_volumetric_weight(
-                cr, uid, fso_brw.id, context=context))
+            exceptions.append(not self.check_fs_weight_field(
+                cr, uid, fso_brw.id, 'max_volumetric_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'volumetric_weight', context=context)
 
@@ -689,23 +690,6 @@ class freight_shipment(osv.Model):
         for fs_brw in self.browse(cr, uid, ids, context=context):
             res.append(
                 getattr(fs_brw, acc_weight) <= getattr(fs_brw, weight_field))
-        if len(ids) == 1:
-            return res[0]
-        else:
-            return res
-
-    def check_volumetric_weight(self, cr, uid, ids, context=None):
-        """
-        Check if the freight accumulated volumetric weight value is less or
-        equal to the max volumetric weight capacity.
-        @return: True if the condition is satisfied or False if is not.
-        """
-        context = context or {}
-        ids = isinstance(ids, (int, long)) and [ids] or ids
-        res = []
-        for freight_brw in self.browse(cr, uid, ids, context=context):
-            res.append(freight_brw.volumetric_weight
-                <= freight_brw.max_volumetric_weight)
         if len(ids) == 1:
             return res[0]
         else:
