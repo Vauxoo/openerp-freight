@@ -1171,6 +1171,20 @@ class pos_order(osv.Model):
         res = {'value': {'freight_shipment_id': False}}
         return res
 
+    def onchange_partner_id(self, cr, uid, ids, part=False, context=None):
+        """
+        This is an onchange method used in the pos order form view at the
+        partner_id field. When this field change whatever another
+        partner or clear value then the delivery_address field will be clear,
+        always.
+        """
+        context = context or {}
+        res = super(pos_order, self).onchange_partner_id(
+            cr, uid, ids, part, context=context)
+        res['value']['delivery_address'] = False
+        return res
+
+
 class vehicle(osv.Model):
 
     _inherit = 'fleet.vehicle'
