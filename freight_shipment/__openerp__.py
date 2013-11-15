@@ -65,8 +65,8 @@ To use this module you need to configure youre OpenERP instance by:
      ``lp:addons-vauxoo/7.0``.
 ''',
     'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock', 'sale',
-                'freight_weight', 'freight_zone_mapsgoogle', 'incoterm_ext',
-                'incoterm_delivery_type'],
+                'purchase', 'freight_weight', 'freight_zone_mapsgoogle',
+                'incoterm_ext', 'incoterm_delivery_type'],
     'data': [
         'security/freight_shipment_security.xml',
         'security/ir.model.access.csv',
