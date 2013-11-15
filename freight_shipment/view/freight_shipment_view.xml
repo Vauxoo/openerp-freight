@@ -187,7 +187,7 @@
                     <page string="Freight Shipment">
                         <group>
                             <field name="freight_shipment_id" domain="[('type','=','delivery')]"/>
-                            <field name="delivery_address" domain="[('parent_id','=',partner_id)]" on_change="onchange_delivery_address()"/>
+                            <field name="delivery_address" domain="[('parent_id','=',partner_id)]" on_change="onchange_delivery_address()" attrs="{'required':[('delivery','=',True)]}"/>
                             <field name="delivery"/>
                         </group>
                     </page>
