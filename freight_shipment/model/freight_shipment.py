@@ -1070,6 +1070,30 @@ class sale_order(osv.Model):
         else:
             return res
 
+    def action_button_confirm(self, cr, uid, ids, context=None):
+        """
+        This method overwrite the original action_button_confirm method at the
+        sale module to add a verification before launch the action.
+        This verification consist on check if the incoterm delivery type is
+        for delivery (the sale order have to be delivered using a freight
+        shipment) and restict the user to confirm a sale order until the
+        prefered freight shipment field is set.
+        @return: ir.actions.act_window defined in the original method.
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        assert len(ids) == 1, 'This option should only be used for a single id at a time.'
+        so_brw = self.browse(cr, uid, ids[0], context=context)
+        if (so_brw.incoterm and so_brw.incoterm.is_delivery
+            and not so_brw.prefered_freight_shipment_id):
+            raise osv.except_osv(
+                _('Invalid Procedure!!!'),
+                _('Sale Order use a incoterm of type delivery, please you need'
+                  ' to set the Prefered Freight Shipment field to continue.'
+                  ' Or, you can change the incoterm used to one that is not'
+                  ' for delivery.'))
+        return super(sale_order, self).action_button_confirm()
+
 
 class stock_move(osv.osv):
     _inherit = 'stock.move'
