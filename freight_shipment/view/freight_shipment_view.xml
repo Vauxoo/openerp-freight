@@ -276,7 +276,8 @@
                 <xpath expr="//sheet" piosition="inside">
                     <group string="Shipment Information" attrs="{'invisible': [('is_delivery','=',False),('is_freight','=',False)]}">
                         <field name="shipment_state" readonly="1"/>
-                        <button name="action_maintenance" string="Set to Maintenance" type="object" help="Click this button to sent the transport unit to maintenance"/>
+                        <button name="action_maintenance" string="Set to Maintenance" type="object" help="Click this button to sent the transport unit to maintenance" attrs="{'invisible': [('shipment_state','=','mtto')]}"/>
+                        <button name="action_free" string="Back to Free" type="object" help="Click this button to indicate that the maintenance of the transport unit have been end" attrs="{'invisible': [('shipment_state','!=','mtto')]}"/>
                     </group>
                 </xpath>
 

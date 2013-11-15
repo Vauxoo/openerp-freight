@@ -1236,6 +1236,21 @@ class vehicle(osv.Model):
             {'shipment_state': 'mtto'}, context=context)
         return True
 
+    def action_free(self, cr, uid, ids, context=None):
+        """
+        This method is a object type button at the vehicle form view that make
+        the change of the vehicle from maintenance shipment state to free.
+        @return True
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        vehicle_ids = \
+            [v.id
+             for v in self.browse(cr, uid, ids, context=context)
+             if v.shipment_state == 'mtto']
+        self.write(
+            cr, uid, vehicle_ids, {'shipment_state': 'free'}, context=context)
+        return True
 
 class res_partner(osv.Model):
 
