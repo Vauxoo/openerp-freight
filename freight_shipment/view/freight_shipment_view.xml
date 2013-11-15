@@ -91,8 +91,8 @@
                                     <group string="Prefered" colspan="4">
                                         <field name="prefered_sale_order_ids" nolabel="1"/>
                                     </group>
-			            <group string="Shipped" colspan="4">
-				         <field name="sale_order_ids" nolabel="1"/>
+                                    <group string="Shipped" colspan="4">
+                                        <field name="sale_order_ids" nolabel="1"/>
                                     </group> 
                                 </group>
                             </page>
