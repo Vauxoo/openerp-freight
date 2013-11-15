@@ -359,6 +359,13 @@ class freight_shipment(osv.Model):
             string='Processed Sale Orders',
             help=('Sale Orders real send')
         ),
+        'purchase_order_ids': fields.many2many(
+            'purchase.order',
+            'freight_shipment_purchase_order_rel',
+            'fs_id', 'purchase_order_id',
+            string='Purchase Orders',
+            help=('It represent the purchase orders added to this shipment.'
+                  ' The orders that will be collected by this shipment.')),
         'message_exceptions': fields.text(
             'Exceptions history messages',
             help=('This field holds de the history of exceptions for the'
