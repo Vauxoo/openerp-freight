@@ -96,6 +96,11 @@
                                     </group> 
                                 </group>
                             </page>
+                            <page string="Purchase Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
+                                <group name="purchase-order-group" colspan="4">
+                                    <field name="purchase_order_ids" nolabel="1"/>
+                                </group>
+                            </page>
                             <page string="Exceptions" attrs="{'invisible': [('state', 'not in', ('exception'))]}">
                                 <group>
                                     <field name="message_exceptions" readonly="1" nolabel="1"/>
