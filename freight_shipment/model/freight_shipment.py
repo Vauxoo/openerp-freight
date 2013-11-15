@@ -1177,6 +1177,65 @@ class vehicle(osv.Model):
         'shipment_state': 'free',
     }
 
+    def action_maintenance(self, cr, uid, ids, context=None):
+        """
+        This method is used in a button at the vehicle form view that set the
+        vehicle shipment state to Maintenance. This method it verify the
+        current vehicle state first and then it update the state taking this
+        criteria:
+            - If vehicle is free then it can change to maintenance.
+            - If vehicle is busy then it can not change to maintenance.
+            - If vehicle is maintenance then it is pointless to change state.
+
+        Note: this method works with 3 vehicle shipment state defined at the
+              time this method was designed: 'free', 'busy' and 'maintenance'
+              shipment states. If any other programmer add a new shipment state
+              then will raise an exception indicating that this method need to
+              be redefine by that shipment state too.
+
+        @return True
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        error_msg = str()
+        valid_shipment_states = ['free', 'busy', 'mtto']
+        vehicles =  {}.fromkeys(valid_shipment_states)
+        for key in vehicles:
+            vehicles[key] = []
+
+        for vehicle_brw in self.browse(cr, uid, ids, context=context):
+            if vehicle_brw.shipment_state in vehicles.keys():
+                vehicles[vehicle_brw.shipment_state].append(vehicle_brw)
+            else:
+                vehicles[vehicle_brw.shipment_state] = [vehicle_brw]
+      
+        new_states = set(vehicles.keys()) - set(valid_shipment_states) 
+        if new_states:
+            raise osv.except_osv (
+                _('Programming Error!!!'),
+                _('The action_maintenance() method at the freight shipment'
+                  ' module must be re-write. Only manage the [\'free\','
+                  ' \'busy\', \'maintenance\'] shipment state but there are'
+                  ' anothers states defined that need to be process.\n\n'
+                  ' New shipment states:\n%s' % (list(new_states), )))
+
+        if vehicles['busy']:
+            error_msg += \
+                _('The next transport units are busy so they can not be sent'
+                  ' to maintenance.\n\n %s' % (
+                    [v.name for v in vehicles['busy']]))
+        elif vehicles['mtto']:
+            error_msg += \
+                _('The next transport units are already in maintenance.\n\n %s'
+                  % ([v.name for v in vehicles['mtto']]))
+        if error_msg:
+            raise osv.except_osv(_('Warning!!!'), error_msg)
+
+        self.write(
+            cr, uid, [v.id for v in vehicles['free']],
+            {'shipment_state': 'mtto'}, context=context)
+        return True
+
 
 class res_partner(osv.Model):
 
