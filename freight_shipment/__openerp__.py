@@ -64,7 +64,7 @@ To use this module you need to configure youre OpenERP instance by:
    - ``incoterm_ext`` and ``incoterm_delivery_type`` module at
      ``lp:addons-vauxoo/7.0``.
 ''',
-    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock',
+    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock', 'sale',
                 'freight_weight', 'freight_zone_mapsgoogle', 'incoterm_ext',
                 'incoterm_delivery_type'],
     'data': [
