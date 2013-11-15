@@ -948,6 +948,34 @@ class freight_shipment(osv.Model):
 class sale_order(osv.Model):
 
     _inherit = "sale.order"
+
+    def _get_shipment_weight(self, cr, uid, ids, field_name, arg,
+                             context=None):
+        """
+        This is a method for a fucntional field. It calculate the weight of the
+        sale order by getting the moves associated to every sale orde line at
+        the sale order and then sum the correspoding weight or
+        volumetric weight field of the products.
+        @param filed_name: the name of the field. it could be 'shipment_weight'
+                           or 'shipment_volumetric_weight'.
+        @return: a dictionary with sale order ids as keys and the weight sum
+                 at the values.
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids 
+        res = {}.fromkeys(ids, 0.0)
+        weight_field = 'move_brw.product_id.' + \
+            (field_name == 'shipment_weight' and 'product_tmpl_id.weight' or
+             field_name == 'shipment_volumetric_weight' and 'volumetric_weight' or 0.0)
+        for so_brw in self.browse(cr, uid, ids, context=context):
+            move_brws = \
+                [move_brw
+                 for picking_brw in so_brw.picking_ids
+                 for move_brw in picking_brw.move_lines]
+            for move_brw in move_brws:
+                res[so_brw.id] += (move_brw.product_qty * eval(weight_field))
+        return res
+
     _columns = {
         'prefered_freight_shipment_id': fields.many2one(
             'freight.shipment',
@@ -974,6 +1002,16 @@ class sale_order(osv.Model):
              ('night', 'Night')],
             string='Work Shift',
             help='Work Shift'),
+        'shipment_weight': fields.function(
+            _get_shipment_weight,
+            string='Shipment Weight',
+            type='float',
+            help='The Shipment Weight sum of the sale order lines'),
+        'shipment_volumetric_weight': fields.function(
+            _get_shipment_weight,
+            string='Shipment Volumetric Weight',
+            type='float',
+            help='The Shipment Volumetric Weight sum of the sale order lines'),
     }
 
     def onchange_partner_shipping_id(self, cr, uid, ids, context=None):
