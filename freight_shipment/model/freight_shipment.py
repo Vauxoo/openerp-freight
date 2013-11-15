@@ -1360,3 +1360,15 @@ class res_partner(osv.Model):
             return res.values()[0]
         else:
             return res
+
+
+class purchase_order(osv.Model):
+
+    _inherit = 'purchase.order'
+    _columns = {
+        'freight_shipment_id': fields.many2one(
+            'freight.shipment',
+            string='Freight Shipment',
+            help='The Freight shipment that will collect the purchase order.'),
+    }
+
