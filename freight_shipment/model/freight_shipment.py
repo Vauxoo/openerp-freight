@@ -85,6 +85,8 @@ class stock_picking(osv.Model):
                 fs_zone_picking_ids = []
                 for picking_brw in picking_obj.browse(
                         cr, uid, picking_ids, context=context):
+                    # TODO: be carefull on how the pickings is search here,
+                    # need to filter with a context the two pickings fields.
                     if (picking_brw.sale_id.partner_shipping_id and
                         zone_id in partner_obj.get_zone_ids(
                             cr, uid,
@@ -119,7 +121,7 @@ class freight_shipment(osv.Model):
         context = context or {}
         res = {}.fromkeys(ids, [])
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            for picking_brw in fs_brw.picking_ids:
+            for picking_brw in fs_brw.picking_out_ids:
                 res[fs_brw.id] += [picking_brw.sale_id.id]
             res[fs_brw.id] = list(set(res[fs_brw.id]))
 
@@ -170,7 +172,7 @@ class freight_shipment(osv.Model):
         for fs_brw in self.browse(cr, uid, ids, context=context):
             picking_move_brws = \
                 [move_brw
-                 for picking_brw in fs_brw.picking_ids
+                 for picking_brw in fs_brw.picking_out_ids
                  for move_brw in picking_brw.move_lines]
             pos_move_brws = \
                 [move_brw
@@ -349,7 +351,7 @@ class freight_shipment(osv.Model):
             string='Prefered Sale Orders',
             help=('The Sale Orders who its prefered freight shipment was set'
                   ' with the current order.')),
-        'picking_ids': fields.one2many(
+        'picking_out_ids': fields.one2many(
             'stock.picking', 'freight_shipment_id',
             string='Delivery Orders (Pickings)',
             help='Delivery Orders (Pickings)'),
@@ -817,8 +819,9 @@ class freight_shipment(osv.Model):
         """
         Checks if all the pickings and pos orders in the freight shipment are
         succesfully delivered. Check every element delivery state field. 
-        @return True if all the pos.orders and stock.pickings associated to the
-        given fregith shipment have been succesfully shipped. False otherwise.
+        @return True if all the pos.orders and stock.picking.out associated to
+        the given fregith shipment have been succesfully shipped. False
+        otherwise.
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
@@ -828,7 +831,7 @@ class freight_shipment(osv.Model):
             for pos_brw in fs_brw.pos_order_ids:
                 if pos_brw.delivery_state != 'delivered':
                     pending_items.append(pos_brw.id)
-            for picking_brw in fs_brw.picking_ids:
+            for picking_brw in fs_brw.picking_out_ids:
                 if picking_brw.delivery_state != 'delivered':
                     pending_items.append(picking_brw.id)
             res[fs_brw.id] = not pending_items and True or False
@@ -905,7 +908,7 @@ class freight_shipment(osv.Model):
                  if pos_brw.delivery_state != 'delivered']
             picking_ids = \
                 [picking_brw.id
-                 for picking_brw in fs_brw.picking_ids
+                 for picking_brw in fs_brw.picking_out_ids
                  if picking_brw.delivery_state != 'delivered']
             pos_obj.write(cr, uid, pos_ids, new_values, context=context)
             pos_obj.write(cr, uid, picking_ids, new_values, context=context) 
