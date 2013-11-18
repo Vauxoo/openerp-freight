@@ -1091,7 +1091,8 @@ class sale_order(osv.Model):
                   ' to set the Prefered Freight Shipment field to continue.'
                   ' Or, you can change the incoterm used to one that is not'
                   ' for delivery.'))
-        return super(sale_order, self).action_button_confirm()
+        return super(sale_order, self).action_button_confirm(
+            cr, uid, ids, context=context)
 
 
 class stock_move(osv.osv):
