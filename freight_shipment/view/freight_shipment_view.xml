@@ -27,13 +27,18 @@
                             statusbar_colors="{&quot;draft&quot;:&quot;blue&quot;,&quot;shipped&quot;:&quot;green&quot;}"/>
                     </header>
                     <sheet>
-
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="True"/>
+                                <field name="sequence" readonly="True" invisible="True"/>
+                            </h1>
+                        </div>
                         <group colspan="4">
-                            <field name="name" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
-                            <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="vehicle_id" domain="[(context.get('vehicle_type'),'=',True),('shipment_state', '=', 'free')]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="work_shift" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             <field name="type" invisible="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
-                            <field name="zone_id" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                            <field name="zone_id" attrs="{'readonly':[('state','not in',('draft'))]}"/>
+                            <field name="company_id" attrs="{'readonly':[('state','not in',('draft'))]}" groups="base.group_multi_company"/>
 
                             <group name="dates" string="Dates">
                                 <field name="date_shipped" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
@@ -41,46 +46,59 @@
                                 <field name="date_delivered" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             </group>
                             <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
-                                <field name="weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
-                                <field name="volumetric_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
-                                <field name="max_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
-                                <field name="max_volumetric_weight" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
+                                <field name="weight" readonly="True"/>
+                                <field name="volumetric_weight" readonly="True"/>
+                                <field name="max_weight" readonly="True"/>
+                                <field name="max_volumetric_weight" readonly="True"/>
+                                <field name="initial_shipped_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
+                                <field name="initial_shipped_volumetric_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
+                                <field name="recommended_weight" readonly="True"/>
+                                <field name="recommended_volumetric_weight" readonly="True"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Orders">
-                                <label for="picking_ids"/>
-                                <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]">
-                                    <tree>
-                                        <field name="name"/>
-                                        <field name="origin"/>
-                                        <field name="min_date"/>
-                                        <field name="state"/>
-                                        <field name="delivery_state"/>
-                                    </tree>
-                                </field>
-                                <label for="pos_order_ids"/>
-                                <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}">
-                                    <tree>
-                                        <field name="name"/>
-                                        <field name="pos_reference"/>
-                                        <field name="date_order"/>
-                                        <field name="partner_id"/>
-                                        <field name="user_id"/>
-                                        <field name="state"/>
-                                        <field name="delivery_state"/>
-                                        <button name="action_pos_delivered" string="Delivered" type="object" help="Click this button to indicate if the order have been delivered" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
-                                    </tree>
-                                </field>
+                                <group attrs="{'invisible': [('type', '=', 'delivery')]}">
+                                    <label for="picking_ids"/><newline/>
+                                    <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id}">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="origin"/>
+                                            <field name="min_date"/>
+                                            <field name="state"/>
+                                            <field name="delivery_state"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group attrs="{'invisible': [('type', '=', 'freight')]}">
+                                    <label for="pos_order_ids"/><newline/>
+                                    <field name="pos_order_ids" nolabel="1" widget="many2many" domain="[('delivery','=',True),('freight_shipment_id','=',False)]" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" context="{'filter_pos_order_by_zone': True, 'filter_zone_id': zone_id}">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="pos_reference"/>
+                                            <field name="date_order"/>
+                                            <field name="partner_id"/>
+                                            <field name="user_id"/>
+                                            <field name="state"/>
+                                            <field name="delivery_state"/>
+                                            <button name="action_pos_delivered" string="Delivered" type="object" help="Click this button to indicate if the order have been delivered" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
+                                        </tree>
+                                    </field>
+                                </group>
                             </page>
                             <page string="Sale Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
                                 <group name="sale-order-group" colspan="4">
                                     <group string="Prefered" colspan="4">
                                         <field name="prefered_sale_order_ids" nolabel="1"/>
                                     </group>
-			            <group string="Shipped" colspan="4">
-				         <field name="sale_order_ids" nolabel="1"/>
+                                    <group string="Shipped" colspan="4">
+                                        <field name="sale_order_ids" nolabel="1"/>
                                     </group> 
+                                </group>
+                            </page>
+                            <page string="Purchase Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
+                                <group name="purchase-order-group" colspan="4">
+                                    <field name="purchase_order_ids" nolabel="1"/>
                                 </group>
                             </page>
                             <page string="Exceptions" attrs="{'invisible': [('state', 'not in', ('exception'))]}">
@@ -174,7 +192,7 @@
                     <page string="Freight Shipment">
                         <group>
                             <field name="freight_shipment_id" domain="[('type','=','delivery')]"/>
-                            <field name="delivery_address" domain="[('parent_id','=',partner_id)]"/>
+                            <field name="delivery_address" domain="[('parent_id','=',partner_id)]" on_change="onchange_delivery_address()" attrs="{'required':[('delivery','=',True)]}"/>
                             <field name="delivery"/>
                         </group>
                     </page>
@@ -200,11 +218,20 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@string='Other Information']/group" position="inside">
                     <group name="freigh-section" string="Freight Shipment" colspan="4">
-                        <field name="prefered_freight_shipment_id" required="1" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]"/>
+                        <field name="delivery_date"/>
+                        <field name="work_shift"/>
+                        <field name="shipment_weight"/>
+                        <field name="shipment_volumetric_weight"/>
+                        <field name="prefered_freight_shipment_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]" context="{'filter_freight_shipment_ids': True, 'partner_shipping_id': partner_shipping_id, 'delivery_date': delivery_date, 'work_shift': work_shift, 'incoterm': incoterm}"/>
                         <label for="freight_shipment_ids"/>
                         <field name="freight_shipment_ids" nolabel="1" colspan="4"/>
                     </group>
                 </xpath>
+
+                <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="on_change">onchange_partner_shipping_id()</attribute> 
+                </xpath>
+
             </field>
         </record>
 
@@ -248,6 +275,30 @@
                     <attribute name="attrs">{'invisible': [('is_freight','=',False),('is_delivery','=',False)]}</attribute>
                 </xpath>
 
+                <xpath expr="//group[@string='Vehicle Capacity']/group" position="inside">
+                    <field name="recommended_physical_capacity"/>
+                    <field name="recommended_volumetric_capacity"/>
+                </xpath>
+
+                <xpath expr="//sheet" piosition="inside">
+                    <group string="Shipment Information" attrs="{'invisible': [('is_delivery','=',False),('is_freight','=',False)]}">
+                        <field name="shipment_state" readonly="1"/>
+                        <button name="action_maintenance" string="Set to Maintenance" type="object" help="Click this button to sent the transport unit to maintenance" attrs="{'invisible': [('shipment_state','=','mtto')]}"/>
+                        <button name="action_free" string="Back to Free" type="object" help="Click this button to indicate that the maintenance of the transport unit have been end" attrs="{'invisible': [('shipment_state','!=','mtto')]}"/>
+                    </group>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="freight_shipment_purchase_order_form_view" model="ir.ui.view">
+            <field name="name">Freight Shipment Purchase Order Form View</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='dest_address_id']" position="after">
+                <field name="freight_shipment_id"/>
+            </xpath>
             </field>
         </record>
 

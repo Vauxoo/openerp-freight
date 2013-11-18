@@ -51,13 +51,25 @@ To use this module you need to configure youre OpenERP instance by:
 - Be sure that you have available quantity of the product you are selling. For
   this make a purchase for that product and then receive the corresponding
   products.
+- You need to set to True the
+  `Allow a different address for delivery and invoicing` option in the
+  `Settings Menu > Configuration SideBar Title > Sales Menu >
+  Quotations and Sales Orders Section > Customer Features Section`. This way
+  you will capable of see the delivery address of the partner in the sale
+  order.
 
-.. note:: You can found the dependecies ``freight_zone`` and
-  ``freight_weight`` modules at ``lp:openerp-freight``.
+.. note:: You can found the dependecies:
+   
+   - ``freight_zone`` and ``freight_weight`` modules at ``lp:openerp-freight``.
+   - ``incoterm_ext`` and ``incoterm_delivery_type`` module at
+     ``lp:addons-vauxoo/7.0``.
 ''',
-    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'freight_weight',
-                'freight_zone_mapsgoogle'],
+    'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock', 'sale',
+                'purchase', 'freight_weight', 'freight_zone_mapsgoogle',
+                'incoterm_ext', 'incoterm_delivery_type'],
     'data': [
+        'security/freight_shipment_security.xml',
+        'security/ir.model.access.csv',
         'view/freight_shipment_view.xml',
         'data/freight_shipment_data.xml',
         'wizard/freight_shipment_overdue_view.xml',
