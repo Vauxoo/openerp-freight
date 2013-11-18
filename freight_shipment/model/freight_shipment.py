@@ -154,10 +154,10 @@ class freight_shipment(osv.Model):
         pickings and pos order products weights to calculate the freight
         shipment weights by crossing the stock.move associated to this
         orders lines.
-        @param field_name: ['weight', 'volumetric_weight']
+        @param field_name: ['weight', 'out_volumetric_weight']
         @return:
             - If field_name == weight: sumatory of products gross weights.
-            - If field_name == volumetric_weight: sumatory of products
+            - If field_name == out_volumetric_weight: sumatory of products
               volumetric weights.
         """
         context = context or {}
@@ -165,7 +165,8 @@ class freight_shipment(osv.Model):
         res = {}.fromkeys(ids, 0.0)
         weight_field = 'move_brw.product_id.' + \
             (field_name == 'weight' and 'product_tmpl_id.weight' or
-             field_name == 'volumetric_weight' and 'volumetric_weight' or 0.0)
+             field_name == 'out_volumetric_weight' and 'volumetric_weight'
+             or 0.0)
         for fs_brw in self.browse(cr, uid, ids, context=context):
             picking_move_brws = \
                 [move_brw
@@ -265,14 +266,18 @@ class freight_shipment(osv.Model):
                   ' is not complete delivered (Some shipment orders could not'
                   ' be delivered) then the value of this field will be'
                   ' different of the Weight field.')),
-        'volumetric_weight': fields.function(
+        'out_volumetric_weight': fields.function(
             _get_freight_current_weight,
             type='float',
-            string='Volumetric Weight',
-            help=('The accumulated weight of the shipment. It is a calculated'
-                  ' field that sums the volumetric weights of all orders'
-                  ' belonging to this shipment. The user can not manually'
-                  ' change this field is automatically calculated')),
+            string='Out Orders Volumetric Weight',
+            help=('The out orders accumulated volumetric weight.'
+                  ' It is a calculated field that sums the volumetric weight'
+                  ' of all the out orders that belongs to this shipment.'
+                  ' The user can not manually change this field is'
+                  ' automatically calculated.\n\n'
+                  'Note: An out order means an stock picking out from a sale'
+                  ' order if the shipment is of type freight and means a'
+                  ' pos order if the shipment is of type delivery.')),
         'initial_shipped_volumetric_weight': fields.float(
             string='Shipped Volumetric Weight',
             help=('This is the accumultad volumetric weight when the shipment'
@@ -575,21 +580,21 @@ class freight_shipment(osv.Model):
         It set the exception log messages in the correspoding freight
         shipments.
         @param etype: the exception type. could be:
-                      - 'volumetric_weight'
+                      - 'out_volumetric_weight'
                       - 'weight
         @return: True
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
         exception = {
-            'volumetric_weight': {
+            'out_volumetric_weight': {
                 'error_msg':
                 _(' - Volumetric Weight Exceeded: The volumetric weight of'
                   ' the  %s freigth shipment is greater than the volumetrici'
                   ' weight capacity of the freight shipment transport unit'
                   ' (%s > %s).\n'),
                 'values':
-                ['name', 'volumetric_weight', 'max_volumetric_weight'],
+                ['name', 'out_volumetric_weight', 'max_volumetric_weight'],
             },
             'weight': {
                 'error_msg':
@@ -645,7 +650,7 @@ class freight_shipment(osv.Model):
             exceptions.append(not self.is_weight_fulfill(
                 cr, uid, fso_brw.id, 'recommended_volumetric_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
-                cr, uid, fso_brw.id, 'volumetric_weight', context=context)
+                cr, uid, fso_brw.id, 'out_volumetric_weight', context=context)
 
             exceptions.append(not self.is_weight_fulfill(
                 cr, uid, fso_brw.id, 'recommended_weight', context=context))
@@ -718,7 +723,7 @@ class freight_shipment(osv.Model):
         ids = isinstance(ids, (int, long)) and [ids] or ids
         res = []
         acc_weight = 'volumetric_weight' in weight_field \
-            and 'volumetric_weight' or 'weight'
+            and 'out_volumetric_weight' or 'weight'
         for fs_brw in self.browse(cr, uid, ids, context=context):
             res.append(
                 getattr(fs_brw, acc_weight) <= getattr(fs_brw, weight_field))
@@ -764,7 +769,8 @@ class freight_shipment(osv.Model):
                 cr, uid, fs_brw.id,
                 {'state': 'shipped',
                  'initial_shipped_weight': fs_brw.weight, 
-                 'initial_shipped_volumetric_weight': fs_brw.volumetric_weight, 
+                 'initial_shipped_volumetric_weight':
+                 fs_brw.out_volumetric_weight, 
                  'date_shipped': time.strftime('%Y-%m-%d %H:%M:%S')},
                 context=context)
             vehicle_obj.write(
