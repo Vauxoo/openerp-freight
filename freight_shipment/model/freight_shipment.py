@@ -249,8 +249,7 @@ class freight_shipment(osv.Model):
                   ' is in transit.\n'
                   '\t- Shipment Exception: there was a problem in the'
                   ' shipment.\n'
-                  '\t- Delivered: The shipment arrived to the destination\n'
-            )),
+                  '\t- Delivered: The shipment arrived to the destination\n')),
         'weight': fields.function(
             _get_freight_current_weight,
             type='float',
@@ -339,26 +338,22 @@ class freight_shipment(osv.Model):
              ('freight', 'Freight')],
             required=True,
             string='Type',
-            help='Freight Type',
-        ),
+            help='Freight Type'),
         'prefered_sale_order_ids': fields.one2many(
             'sale.order', 'prefered_freight_shipment_id',
             string='Prefered Sale Orders',
             help=('The Sale Orders who its prefered freight shipment was set'
-                  ' with the current order.')
-        ),
+                  ' with the current order.')),
         'picking_ids': fields.one2many(
             'stock.picking', 'freight_shipment_id',
             string='Delivery Orders (Pickings)',
-            help='Delivery Orders (Pickings)'
-        ),
+            help='Delivery Orders (Pickings)'),
         'sale_order_ids': fields.function(
             fnct=_get_sale_order_ids,
             type='many2many',
             relation='sale.order',
             string='Processed Sale Orders',
-            help=('Sale Orders real send')
-        ),
+            help=('Sale Orders real send')),
         'purchase_order_ids': fields.many2many(
             'purchase.order',
             'freight_shipment_purchase_order_rel',
@@ -369,12 +364,10 @@ class freight_shipment(osv.Model):
         'message_exceptions': fields.text(
             'Exceptions history messages',
             help=('This field holds de the history of exceptions for the'
-                  ' current freight.')
-        ),
+                  ' current freight.')),
         'is_overdue': fields.boolean(
             'Overdue',
             help=('This field set if the freight shipment have any overdue')),
-
         # Note: This field is only a dummy, and it does not show in any place, 
         # Openerp _track attribute make some notifications (mail.messages)
         # when one of the models fields changes. But we are trying to create
@@ -389,8 +382,7 @@ class freight_shipment(osv.Model):
             help=('This field is a flag that permit to know if the shipment'
                   ' was complete delivered all its orders to be delivery. Is'
                   ' it set then all the planned orders were delivered, if it'
-                  ' not, this field will be waiting to be')
-        ),
+                  ' not, this field will be waiting to be')),
         # Note: This field is use like a flag that trigger the message log
         # notifications about the realase of undelivered pos orders and
         # pickings
