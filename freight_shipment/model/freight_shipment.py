@@ -57,6 +57,10 @@ class stock_picking(osv.Model):
             get_delivery_states,
             'Delivery State',
             help='Indicates the delivery state of the order'),
+        'pos_id': fields.many2one(
+            'pos.order',
+            string='POS Order',
+            help='Point of Sale Order that generate this stock picking'),
     }
 
     _defaults = {
