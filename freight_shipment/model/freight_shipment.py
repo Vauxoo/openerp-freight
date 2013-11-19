@@ -74,7 +74,7 @@ class stock_picking(osv.Model):
         context = context or {}
         partner_obj = self.pool.get('res.partner')
         picking_obj = self.pool.get('stock.picking')
-        if (context.get('filter_pickings_by_zone', False)):
+        if context.has_key('filter_pickings_by_zone'):
             zone_id = context.get('filter_zone_id', False)
             if not zone_id:
                 raise osv.except_osv(
@@ -99,7 +99,7 @@ class stock_picking(osv.Model):
                             context=context)):
                         fs_zone_picking_ids.append(picking_brw.id)
                 fs_zone_picking_ids and args.append(
-                    ['id', 'in', fs_zone_picking_ids])
+                    ('id', 'in', fs_zone_picking_ids))
                 #print ' ---- fs_zone_picking_ids', fs_zone_picking_ids
         #print ' ---- args', args
         return super(stock_picking, self)._search(
