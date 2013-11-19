@@ -1236,6 +1236,24 @@ class pos_order(osv.Model):
         res['value']['delivery_address'] = False
         return res
 
+    def create_picking(self, cr, uid, ids, context=None):
+        """
+        Overwrithe the create_picking method defined at the point of sale
+        module to add the pos_id field when creating the stock picking out
+        of the pos order.
+        @return: True
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        super(pos_order, self).create_picking(cr, uid, ids, context=context)
+        for pos_brw in self.browse(cr, uid, ids, context=context):
+            if not pos_brw.state=='draft':
+                continue
+            if pos_brw.picking_id:
+                pos_brw.picking_id.write(
+                    {'pos_id': pos_brw.id}, context=context)
+        return True
+
 
 class vehicle(osv.Model):
 
