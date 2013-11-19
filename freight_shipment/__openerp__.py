@@ -57,6 +57,11 @@ To use this module you need to configure youre OpenERP instance by:
   Quotations and Sales Orders Section > Customer Features Section`. This way
   you will capable of see the delivery address of the partner in the sale
   order.
+- You need to se to True the
+  ``Allow to define several packaging methods on products`` option in the
+  `Settings Menu > Configuration SideBar Title > Warehouse Menu >
+  Location & Warehouse Section > Products Section`. This way
+  you will capable of see and edit the product weights.
 
 .. note:: You can found the dependecies:
    
