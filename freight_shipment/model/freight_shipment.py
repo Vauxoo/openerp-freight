@@ -48,6 +48,11 @@ class stock_picking(osv.Model):
             string='Freight Shipment',
             help='Freight Shipment Order'
         ),
+        'in_fs_id': fields.many2one(
+            'freight.shipment',
+            string='Incoming Freight Shipment',
+            help='Incoming Freigth Shipment Order where this shipment belongs'
+        ),
         'delivery_state': fields.selection(
             get_delivery_states,
             'Delivery State',
@@ -355,6 +360,10 @@ class freight_shipment(osv.Model):
             'stock.picking', 'freight_shipment_id',
             string='Delivery Orders (Pickings)',
             help='Delivery Orders (Pickings)'),
+        'in_picking_ids': fields.one2many(
+            'stock.picking', 'in_fs_id',
+            string='Incoming Pickings',
+            help='Incoming Pickings'),
         'sale_order_ids': fields.function(
             fnct=_get_sale_order_ids,
             type='many2many',
