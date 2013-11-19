@@ -96,8 +96,11 @@
                                     </group> 
                                 </group>
                             </page>
-                            <page string="Purchase Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
-                                <group name="purchase-order-group" colspan="4">
+                            <page string="Incoming" attrs="{'invisible': [('type', '!=', 'freight')]}">
+                                <group name="incoming-group" colspan="4" col="1">
+                                    <label for="in_picking_ids"/>
+                                    <field name="in_picking_ids" nolabel="1"/>
+                                    <label for="purchase_order_ids"/>
                                     <field name="purchase_order_ids" nolabel="1"/>
                                 </group>
                             </page>
