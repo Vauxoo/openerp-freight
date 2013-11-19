@@ -43,15 +43,15 @@ class stock_picking(osv.Model):
 
     _inherit = "stock.picking"
     _columns = {
-        'freight_shipment_id': fields.many2one(
+        'out_fs_id': fields.many2one(
             'freight.shipment',
-            string='Freight Shipment',
-            help='Freight Shipment Order'
+            string='Outgoinh Freight Shipment',
+            help='Outgoinh Freight Shipment Order'
         ),
         'in_fs_id': fields.many2one(
             'freight.shipment',
             string='Incoming Freight Shipment',
-            help='Incoming Freigth Shipment Order where this shipment belongs'
+            help='Incoming Freigth Shipment Order'
         ),
         'delivery_state': fields.selection(
             get_delivery_states,
@@ -357,7 +357,7 @@ class freight_shipment(osv.Model):
             help=('The Sale Orders who its prefered freight shipment was set'
                   ' with the current order.')),
         'out_picking_ids': fields.one2many(
-            'stock.picking', 'freight_shipment_id',
+            'stock.picking', 'out_fs_id',
             string='Outgoing Pickings',
             help='Outgoing Pickings'),
         'in_picking_ids': fields.one2many(
@@ -908,8 +908,6 @@ class freight_shipment(osv.Model):
         ids = isinstance(ids, (int, long)) and [ids] or ids
         pos_obj = self.pool.get('pos.order')
         picking_obj = self.pool.get('stock.picking')
-        new_values = {
-            'freight_shipment_id': False, 'delivery_state': 'exception'}
         for fs_brw in self.browse(cr, uid, ids, context=context):
             pos_ids = \
                 [pos_brw.id
@@ -919,8 +917,14 @@ class freight_shipment(osv.Model):
                 [picking_brw.id
                  for picking_brw in fs_brw.out_picking_ids
                  if picking_brw.delivery_state != 'delivered']
-            pos_obj.write(cr, uid, pos_ids, new_values, context=context)
-            pos_obj.write(cr, uid, picking_ids, new_values, context=context) 
+            pos_obj.write(
+                cr, uid, pos_ids,
+                {'freight_shipment_id': False, 'delivery_state': 'exception'},
+                context=context)
+            picking_obj.write(
+                cr, uid, picking_ids,
+                {'in_fs_id': False, 'out_fs_id': False,
+                 'delivery_state': 'exception'}, context=context) 
         self.write(
             cr, uid, ids, {
                 'state': 'delivered',
@@ -1045,14 +1049,14 @@ class sale_order(osv.Model):
     def _prepare_order_picking(self, cr, uid, order, context=None):
         """
         Overwrite the _prepare_order_picking method to add the prefered fregiht
-        shipment order sete din the sale order to the pickings generating in
+        shipment order set in the sale order to the pickings generating in
         the confirm sale order process.
         """
         context = context or {}
         res = super(sale_order, self)._prepare_order_picking(
             cr, uid, order, context=context)
         res.update(
-            {'freight_shipment_id': order.prefered_freight_shipment_id.id})
+            {'out_fs_id': order.prefered_freight_shipment_id.id})
         return res
 
     # Note: This method is not used yet. Is not of utility in the next
@@ -1126,6 +1130,12 @@ class stock_move(osv.osv):
         res = super(stock_move, self)._prepare_chained_picking(
             cr, uid, picking_name, picking, picking_type, moves_todo,
             context=context)
+        raise osv.except_osv(
+            'Warning',
+            'This method need to be redefined to use the two differente fs'
+            ' relations to in and out pickings')
+        # TODO: check picking_type and with this defiene the field that need
+        # to be overwrited.
         res.update({'freight_shipment_id': picking.freight_shipment_id.id})
         return res
 
