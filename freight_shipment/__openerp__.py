@@ -65,9 +65,11 @@ To use this module you need to configure youre OpenERP instance by:
 
 .. note:: You can found the dependecies:
    
-   - ``freight_zone`` and ``freight_weight`` modules at ``lp:openerp-freight``.
-   - ``incoterm_ext`` and ``incoterm_delivery_type`` module at
-     ``lp:addons-vauxoo/7.0``.
+   - ``freight_weight`` module at ``lp:openerp-freight``.
+   - ``freight_zone_mapsgoogle`` module at ``lp:openerp-freight``.
+   - ``incoterm_ext`` module at ``lp:addons-vauxoo/7.0``.
+   - ``incoterm_delivery_type`` module at ``lp:addons-vauxoo/7.0``.
+   - ``web_gmaps`` module at ``lp:~vauxoo/web-addons/7.0-web_hideleftmenu``.
 ''',
     'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock', 'sale',
                 'purchase', 'freight_weight', 'freight_zone_mapsgoogle',
