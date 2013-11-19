@@ -59,8 +59,8 @@
                         <notebook>
                             <page string="Orders">
                                 <group attrs="{'invisible': [('type', '=', 'delivery')]}">
-                                    <label for="picking_out_ids"/><newline/>
-                                    <field name="picking_out_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id}">
+                                    <label for="out_picking_ids"/><newline/>
+                                    <field name="out_picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id}">
                                         <tree>
                                             <field name="name"/>
                                             <field name="origin"/>
