@@ -1130,7 +1130,7 @@ class stock_move(osv.osv):
         res = super(stock_move, self)._prepare_chained_picking(
             cr, uid, picking_name, picking, picking_type, moves_todo,
             context=context)
-        picking_field = picking_type in ['out'] and 'out_fs_id' ori 'in_fs_id'
+        picking_field = picking_type in ['out'] and 'out_fs_id' or 'in_fs_id'
         res.update(
             {'%s' % (picking_field,): eval('picking.%s.id' % picking_field)})
         return res
