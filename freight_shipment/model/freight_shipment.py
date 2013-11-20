@@ -136,6 +136,25 @@ class freight_shipment(osv.Model):
 
         return res
 
+    # TODO: this method could be merge with the above into one method.
+    def _get_purchase_ids(self, cr, uid, ids, field_name, arg, context=None):
+        """
+        This a functional field method that verify the incoming pickings in the
+        freigh shipment and return its associated purchase orders. This
+        purchase orders are the one who really are into the shipment so there
+        are linked to the freight shipment.
+        @param field_name: 'purchase_order_ids'
+        @return: a dictionary of the form
+                 {freight shipment id: [purchase order ids]}
+        """
+        context = context or {}
+        res = {}.fromkeys(ids, [])
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            for picking_brw in fs_brw.in_picking_ids:
+                res[fs_brw.id] += [picking_brw.purchase_id.id]
+            res[fs_brw.id] = list(set(res[fs_brw.id]))
+        return res
+
     def _get_vehicle_weight_field(self, cr, uid, ids, field_name, arg,
                                   context=None):
         """
@@ -433,13 +452,21 @@ class freight_shipment(osv.Model):
             relation='sale.order',
             string='Processed Sale Orders',
             help=('Sale Orders real send')),
-        'purchase_order_ids': fields.many2many(
-            'purchase.order',
-            'freight_shipment_purchase_order_rel',
-            'fs_id', 'purchase_order_id',
+        'prefered_purchase_ids': fields.one2many(
+            'purchase.order', 'prefered_fs_id',
+            string='Scheduled Purchase Orders',
+            help=('The purchase orders that planned to be collected for this'
+                  ' shipment (through the purchase order itself).'
+                  ' However, these purchase orders are not necessarily those'
+                  ' that were approved to be collected.')),
+        'purchase_order_ids': fields.function(
+            fnct=_get_purchase_ids,
+            type='many2many',
+            relation='purchase.order',
             string='Purchase Orders',
             help=('It represent the purchase orders added to this shipment.'
-                  ' The orders that will be collected by this shipment.')),
+                  ' The orders are approved to be collected by this'
+                  ' shipment.')),
         'message_exceptions': fields.text(
             'Exceptions history messages',
             help=('This field holds de the history of exceptions for the'
@@ -1468,5 +1495,21 @@ class purchase_order(osv.Model):
             'freight.shipment',
             string='Freight Shipment',
             help='The Freight shipment that will collect the purchase order.'),
+        'prefered_fs_id': fields.many2one(
+            'freight.shipment',
+            string='Prefered Freight Shipment',
+            help=('The shipment planned to collect the purchase order'
+                  ' products.'
+                  ' Represent the first shipment order option.'
+                  ' However, is not always the really shipment order used.')),
+        'fs_ids': fields.many2many(
+            'freight.shipment',
+            'purchase_order_freight_shipment_rel',
+            'purchase_id', 'fs_id',
+            string='Final Freight Shipments',
+            help=('The real shipment order where this purchase order was'
+                  ' collected.'
+                  ' A purchase order could be collected by parts, so more than'
+                  ' one shipment order can be used.')),
     }
 
