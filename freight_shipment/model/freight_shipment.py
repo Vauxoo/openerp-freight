@@ -518,29 +518,29 @@ class freight_shipment(osv.Model):
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and
                     not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_volumetric_weight',
-                        context=ctx) and
+                        cr, uid, obj['id'], 'out',
+                        'recommended_volumetric_weight', context=ctx) and
                     self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_weight',
+                        cr, uid, obj['id'], 'out', 'recommended_weight',
                         context=ctx),
             'freight_shipment.mt_fs_w_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
                     not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_weight',
+                        cr, uid, obj['id'], 'out', 'recommended_weight',
                         context=ctx) and 
                     self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_volumetric_weight',
-                        context=ctx),
+                        cr, uid, obj['id'], 'out',
+                        'recommended_volumetric_weight', context=ctx),
             'freight_shipment.mt_fs_w_and_vw_exception':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
                     not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_weight',
+                        cr, uid, obj['id'], 'out', 'recommended_weight',
                         context=ctx) and 
                     not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_volumetric_weight',
-                        context=ctx),
+                        cr, uid, obj['id'], 'out',
+                        'recommended_volumetric_weight', context=ctx),
             'freight_shipment.mt_fs_confirm':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['confirm'],
@@ -779,22 +779,24 @@ class freight_shipment(osv.Model):
             _('Your current burden exceeds the maximum transport unit'
               ' %s capacity. This freight shipment Assing can not be done.'
               ' Please remove some orders items to continue.')
+        scope = 'out'
+        # TODO: this need to be change to a iteration over the next lines
         for fso_brw in self.browse(cr, uid, ids, context=context):
             for max_field in  ['max_volumetric_weight', 'max_weight']:
                 if not self.is_weight_fulfill(
-                    cr, uid, fso_brw.id, max_field, context=context):
+                    cr, uid, fso_brw.id, scope, max_field, context=context):
                     raise osv.except_osv(
                         _('Invalid Procedure!!!'), error_msg % (
                             max_field[4:].replace('_', ' ')))
 
             exceptions = []
             exceptions.append(not self.is_weight_fulfill(
-                cr, uid, fso_brw.id, 'recommended_volumetric_weight', context=context))
+                cr, uid, fso_brw.id, scope, 'recommended_volumetric_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'out_volumetric_weight', context=context)
 
             exceptions.append(not self.is_weight_fulfill(
-                cr, uid, fso_brw.id, 'recommended_weight', context=context))
+                cr, uid, fso_brw.id, scope, 'recommended_weight', context=context))
             exceptions[-1] and self._set_exception_msg(
                 cr, uid, fso_brw.id, 'out_weight', context=context)
 
@@ -848,13 +850,16 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
         return True
 
-    def is_weight_fulfill(self, cr, uid, ids, capacity_weight_field,
+    def is_weight_fulfill(self, cr, uid, ids, scope, capacity_weight_field,
                           context=None):
         """
         Check if the freight accumulated weight value is less or equal to
         a freight max or recommended weight capacity.
+        @param scope: In what scope the capacity field will be checked. Could be in
+            incoming or outgoing orders. The possible value of this parameter:
+            ['in', 'out']
         @param capacity_weight_field: the name of the weight capacity in the
-            freight shipment that want to be check. the posible values are:
+            freight shipment that want to be check. the possible values are:
                 - max_volumetric_weight
                 - max_weight
                 - recommended_weight
@@ -864,8 +869,10 @@ class freight_shipment(osv.Model):
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
         res = []
-        acc_weight = 'volumetric_weight' in capacity_weight_field \
-            and 'out_volumetric_weight' or 'out_weight'
+        acc_weight = '%s_' %(scope,) + (
+            'volumetric_weight' in capacity_weight_field 
+            and 'volumetric_weight' or 'weight')
+
         for fs_brw in self.browse(cr, uid, ids, context=context):
             res.append(
                 getattr(fs_brw, acc_weight)
