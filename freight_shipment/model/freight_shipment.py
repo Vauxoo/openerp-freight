@@ -165,21 +165,52 @@ class freight_shipment(osv.Model):
         pickings and pos order products weights to calculate the freight
         shipment weights by crossing the stock.move associated to this
         orders lines.
-        @param field_name: ['out_weight', 'out_volumetric_weight']
-        @return:
-            - If field_name == weight: sumatory of products gross weights.
-            - If field_name == out_volumetric_weight: sumatory of products
-              volumetric weights.
+        @param field_name: ['out_weight', 'out_volumetric_weight'
+                            'in_weight', 'in_volumetric_weight']
+        @return: depending of what field_name is:
+            - If is 'out_weight' returns the products gross weight sum of the
+              outgoing orders.
+            - If is 'out_volumetric_weight' returns the products volumetric
+              weight sum of the outgoing orders.
+            - If is 'in_weight' returns the products gross weight sum of the
+              incoming orders.
+            - If is 'in_volumetric_weight' returns the products volumetric
+              weight sum of the incoming orders.
+
+        Note: A Freight Shipment have two types of orders associated:
+              Outgoing Order: the orders that need to be shipped by the
+              freight shipment. If is a Freight type shipment then it refers
+              to the sale orders. If is a Delivery type shipment then it
+              refers to the pos orders.
+              Incoming Order: the ordes that will be collected in the freight
+              shipment when is in route. Are represented by the purchase
+              orders and only applies when the shipment if of Freight type.
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
         res = {}.fromkeys(ids, 0.0)
-        weight_field = 'move_brw.product_id.' + \
-            (field_name == 'out_weight' and 'product_tmpl_id.weight' or
-             field_name == 'out_volumetric_weight' and 'volumetric_weight'
-             or 0.0)
+
+        out_weight_fields = ['out_weight', 'out_volumetric_weight']
+        in_weight_fields = ['in_weight', 'in_volumetric_weight']
+        weight_fields = ['out_weight','in_weight']
+        volumetric_weight_fields = \
+            ['out_volumetric_weight', 'in_volumetric_weight']
+
+        match_product_field = \
+            (field_name in weight_fields and 'product_tmpl_id.weight'
+             or field_name in volumetric_weight_fields and 'volumetric_weight'
+             or False)
+        if not match_product_field:
+            raise osv.except_osv(
+                _('Programming Error'),
+                _('The field name you are using in the'
+                  ' _get_freight_current_weight method() is not valid.'
+                  ' If you meant it then you need to over write this method.'))
+
+        weight_field = 'move_brw.product_id.' + match_product_field
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            picking_move_brws = \
+            move_brws = []
+            out_picking_move_brws = \
                 [move_brw
                  for picking_brw in fs_brw.out_picking_ids
                  for move_brw in picking_brw.move_lines]
@@ -187,7 +218,17 @@ class freight_shipment(osv.Model):
                 [move_brw
                  for pos_brw in fs_brw.pos_order_ids
                  for move_brw in pos_brw.picking_id.move_lines]
-            for move_brw in picking_move_brws + pos_move_brws:
+            in_picking_move_brws = \
+                [move_brw
+                 for picking_brw in fs_brw.in_picking_ids
+                 for move_brw in picking_brw.move_lines]
+
+            if field_name in out_weight_fields:
+                move_brws = out_picking_move_brws + pos_move_brws
+            elif field_name in in_weight_fields:
+                move_brws = in_picking_move_brws
+
+            for move_brw in move_brws:
                 res[fs_brw.id] += (move_brw.product_qty * eval(weight_field))
         return res
 
