@@ -48,6 +48,8 @@
                             <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
                                 <field name="out_weight" readonly="True"/>
                                 <field name="out_volumetric_weight" readonly="True"/>
+                                <field name="in_weight" readonly="True"/>
+                                <field name="in_volumetric_weight" readonly="True"/>
                                 <field name="max_weight" readonly="True"/>
                                 <field name="max_volumetric_weight" readonly="True"/>
                                 <field name="initial_shipped_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
