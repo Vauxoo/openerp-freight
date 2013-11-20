@@ -690,7 +690,7 @@ class freight_shipment(osv.Model):
         exception = self._get_fields_exceptions(cr, uid, context=context)
         if etype not in exception.keys():
             raise osv.except_osv(
-                _('Programming Erro'),
+                _('Programming Error!!'),
                 _('The exception to be set by the _set_exception_msg method is'
                   ' not defined. please if you want to use this field need to'
                   ' create the exception first.'))
@@ -717,18 +717,19 @@ class freight_shipment(osv.Model):
         exception_dict = {
             'out_volumetric_weight': {
                 'error_msg':
-                _(' - Volumetric Weight Exceeded: The volumetric weight of'
-                  ' the  %s freigth shipment is greater than the volumetric'
-                  ' weight capacity of the freight shipment transport unit'
-                  ' (%s > %s).\n'),
+                _(' - Outgoing Volumetric Weight Exceeded:'
+                  ' The volumetric weight of the outgoing orders in the %s'
+                  ' shipment is greater than the volumetric weight capacity'
+                  ' of the used transport unit (%s > %s).\n'),
                 'values':
                 ['name', 'out_volumetric_weight', 'max_volumetric_weight'],
             },
             'out_weight': {
                 'error_msg':
-                _(' - Weight Exceeded: The weight of the %s freigth shipment'
+                _(' - Outgoing Weight Exceeded:'
+                  ' The weight of the outgoing orders in the %s shipment'
                   ' is greater than the physical weight capacity of the'
-                  ' freight shipment transport unit (%s > %s).\n'),
+                  ' used transport unit (%s > %s).\n'),
                 'values':
                 ['name', 'out_weight', 'max_weight'],
             }
