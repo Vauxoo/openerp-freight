@@ -98,6 +98,8 @@
                                     <field name="in_picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('in_fs_id', '=', False),('type','=','in')]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id}"/>
                                     <label for="purchase_order_ids"/>
                                     <field name="purchase_order_ids" nolabel="1"/>
+                                    <label for="prefered_purchase_ids"/>
+                                    <field name="prefered_purchase_ids" nolabel="1"/>
                                 </group>
                             </page>
                             <page string="Exceptions" attrs="{'invisible': [('state', 'not in', ('exception'))]}">
