@@ -687,7 +687,34 @@ class freight_shipment(osv.Model):
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
-        exception = {
+        exception = self._get_fields_exceptions(cr, uid, context=context)
+        if etype not in exception.keys():
+            raise osv.except_osv(
+                _('Programming Erro'),
+                _('The exception to be set by the _set_exception_msg method is'
+                  ' not defined. please if you want to use this field need to'
+                  ' create the exception first.'))
+
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            string_param = tuple(
+                 [getattr(fs_brw, val) for val in exception[etype]['values']])
+            values = {'message_exceptions':
+                (fs_brw.message_exceptions or '')
+                + (exception[etype]['error_msg'] % string_param)}
+            self.write(cr, uid, fs_brw.id, values, context=context)
+        return True
+
+    def _get_fields_exceptions(self, cr, uid, context=None):
+        """
+        This method define a dictonary that manage the maximum and recommend
+        weight fields with exception data like error message and values
+        implicated. If there is a weight field exception then this data is
+        used.
+        @return: dictonary with the defined exceptions like:
+            {field_name : {'error_msg', 'values'}}
+        """
+        context = context or {}
+        exception_dict = {
             'out_volumetric_weight': {
                 'error_msg':
                 _(' - Volumetric Weight Exceeded: The volumetric weight of'
@@ -706,22 +733,7 @@ class freight_shipment(osv.Model):
                 ['name', 'out_weight', 'max_weight'],
             }
         }
-
-        if etype not in exception.keys():
-            raise osv.except_osv(
-                _('Programming Erro'),
-                _('The exception to be set by the _set_exception_msg method is'
-                  ' not defined. please if you want to use this field need to'
-                  ' create the exception first.'))
-
-        for fs_brw in self.browse(cr, uid, ids, context=context):
-            string_param = tuple(
-                 [getattr(fs_brw, val) for val in exception[etype]['values']])
-            values = {'message_exceptions':
-                (fs_brw.message_exceptions or '')
-                + (exception[etype]['error_msg'] % string_param)}
-            self.write(cr, uid, fs_brw.id, values, context=context)
-        return True
+        return exception_dict
 
     def action_assign(self, cr, uid, ids, context=None):
         """
