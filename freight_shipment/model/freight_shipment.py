@@ -693,7 +693,8 @@ class freight_shipment(osv.Model):
                 _('Programming Error!!'),
                 _('The exception to be set by the _set_exception_msg method is'
                   ' not defined. please if you want to use this field need to'
-                  ' create the exception first.'))
+                  ' create the exception first. You need to modify the'
+                  ' dictionary return by the _get_fields_exception method.'))
 
         for fs_brw in self.browse(cr, uid, ids, context=context):
             string_param = tuple(
