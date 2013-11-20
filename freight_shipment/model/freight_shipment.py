@@ -733,7 +733,7 @@ class freight_shipment(osv.Model):
                   ' used transport unit (%s > %s).\n'),
                 'values':
                 ['name', 'out_weight', 'max_weight'],
-            }
+            },
             'in_volumetric_weight': {
                 'error_msg':
                 _(' - Incoming Volumetric Weight Exceeded:'
