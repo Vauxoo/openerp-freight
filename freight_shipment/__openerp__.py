@@ -62,6 +62,14 @@ To use this module you need to configure youre OpenERP instance by:
   `Settings Menu > Configuration SideBar Title > Warehouse Menu >
   Location & Warehouse Section > Products Section`. This way
   you will capable of see and edit the product weights.
+- If you want create chained moves (internal) when you confirm a purchase
+  order you need to configure the Input Location. Go to
+  ``Warehouse > Configuration > Locations`` and create a QA location 
+  (Quality Assurance) with ``Fixed location`` as the ``Chained Location Type``
+  and select your Stock location at the ``Chained Location if Fixed`` field.
+  Also you need to set your Stock location, go to
+  ``Warehouse > Configuring > Warehouse`` and select your Stock Warehouse and
+  then set the ``Location Input`` field with your recently created QA Location.
 
 .. note:: You can found the dependecies:
    
