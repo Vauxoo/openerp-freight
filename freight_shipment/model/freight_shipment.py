@@ -312,7 +312,9 @@ class freight_shipment(osv.Model):
                   ' products in the outgoing orders (sale and pos orders)'
                   ' belonging to this shipment. The user can not manually'
                   ' change this field is automatically calculated')),
-        'in_weight': fields.float(
+        'in_weight': fields.function(
+            _get_freight_current_weight,
+            type='float',
             string='Incomming Weight',
             help=('The accumulated weight of the orders to be collected. It'
                   ' is a calculated field that sums the gross weights of all'
@@ -336,7 +338,9 @@ class freight_shipment(osv.Model):
                   ' orders -freight- or pos orders -delivery-) belonging to'
                   ' this shipment. The user can not manually change this field'
                   ' is automatically calculated')),
-        'in_volumetric_weight': fields.float(
+        'in_volumetric_weight': fields.function(
+            _get_freight_current_weight,
+            type='float',
             string='Incoming Volumetric Weight',
             help=('The accumulated volumetric weight of the orders to be'
                   ' collected. It is a calculated field that sums the'
