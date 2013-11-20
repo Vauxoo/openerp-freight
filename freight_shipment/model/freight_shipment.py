@@ -733,6 +733,24 @@ class freight_shipment(osv.Model):
                 'values':
                 ['name', 'out_weight', 'max_weight'],
             }
+            'in_volumetric_weight': {
+                'error_msg':
+                _(' - Incoming Volumetric Weight Exceeded:'
+                  ' The volumetric weight of the incoming orders in the %s'
+                  ' shipment is greater than the volumetric weight capacity'
+                  ' of the used transport unit (%s > %s).\n'),
+                'values':
+                ['name', 'in_volumetric_weight', 'max_volumetric_weight'],
+            },
+            'in_weight': {
+                'error_msg':
+                _(' - Incoming Weight Exceeded:'
+                  ' The weight of the incoming orders in the %s shipment'
+                  ' is greater than the physical weight capacity of the'
+                  ' used transport unit (%s > %s).\n'),
+                'values':
+                ['name', 'in_weight', 'max_weight'],
+            }
         }
         return exception_dict
 
