@@ -265,11 +265,19 @@ class freight_shipment(osv.Model):
         'out_weight': fields.function(
             _get_freight_current_weight,
             type='float',
-            string='Weight',
-            help=('The accumulated weight of the shipment. It is a calculated'
-                  ' field that sums the weights of all orders belonging to'
-                  ' this shipment. The user can not manually change this'
-                  ' field is automatically calculated')),
+            string='Outgoing Weight',
+            help=('The accumulated weight of the orders to be shipped. It'
+                  ' is a calculated field that sums the gross weights of all'
+                  ' products in the outgoing orders (sale and pos orders)'
+                  ' belonging to this shipment. The user can not manually'
+                  ' change this field is automatically calculated')),
+        'in_weight': fields.float(
+            string='Incomming Weight',
+            help=('The accumulated weight of the orders to be collected. It'
+                  ' is a calculated field that sums the gross weights of all'
+                  ' products in the incoming orders (purchase orders)'
+                  ' belonging to this shipment. The user can not manually'
+                  ' change this field is automatically calculated')),
         'initial_shipped_weight': fields.float(
             string='Shipped Weight',
             help=('This is the accumultad weight when the shipment is'
@@ -280,15 +288,21 @@ class freight_shipment(osv.Model):
         'out_volumetric_weight': fields.function(
             _get_freight_current_weight,
             type='float',
-            string='Out Orders Volumetric Weight',
-            help=('The out orders accumulated volumetric weight.'
-                  ' It is a calculated field that sums the volumetric weight'
-                  ' of all the out orders that belongs to this shipment.'
-                  ' The user can not manually change this field is'
-                  ' automatically calculated.\n\n'
-                  'Note: An out order means an stock picking out from a sale'
-                  ' order if the shipment is of type freight and means a'
-                  ' pos order if the shipment is of type delivery.')),
+            string='Outgoing Volumetric Weight',
+            help=('The accumulated volumetric weight of the orders to be'
+                  ' shipped. It is a calculated field that sums the volumetric'
+                  ' weight of all the products in the outgoing orders (sale'
+                  ' orders -freight- or pos orders -delivery-) belonging to'
+                  ' this shipment. The user can not manually change this field'
+                  ' is automatically calculated')),
+        'in_volumetric_weight': fields.float(
+            string='Incoming Volumetric Weight',
+            help=('The accumulated volumetric weight of the orders to be'
+                  ' collected. It is a calculated field that sums the'
+                  ' volumetric weight of all the products in the incoming'
+                  ' orders (purchase orders -applies to freight-) belonging to'
+                  ' this shipment. The user can not manually change this field'
+                  ' is automatically calculated')),
         'initial_shipped_volumetric_weight': fields.float(
             string='Shipped Volumetric Weight',
             help=('This is the accumultad volumetric weight when the shipment'
