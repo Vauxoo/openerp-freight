@@ -30,7 +30,7 @@
             <field name="description">Warning: The Freight Shipment is in Exception State. Recommended Weight and Volumetric Weight Capacities are Exceeded</field>
         </record>
 
-        <record id="mt_fs_w_exception" model="mail.message.subtype">
+        <record id="mt_fs_exception_ow" model="mail.message.subtype">
             <field name="name">Freight Shipment Weight Capacity Exception</field>
             <field name="res_model">freight.shipment</field>
             <field name="default" eval="False"/>
