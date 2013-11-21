@@ -779,26 +779,26 @@ class freight_shipment(osv.Model):
             _('Your current burden exceeds the maximum transport unit'
               ' %s capacity. This freight shipment Assing can not be done.'
               ' Please remove some orders items to continue.')
-        scope = 'out'
-        # TODO: this need to be change to a iteration over the next lines
         for fso_brw in self.browse(cr, uid, ids, context=context):
-            for max_field in  ['max_volumetric_weight', 'max_weight']:
-                if not self.is_weight_fulfill(
-                    cr, uid, fso_brw.id, scope, max_field, context=context):
-                    raise osv.except_osv(
-                        _('Invalid Procedure!!!'), error_msg % (
-                            max_field[4:].replace('_', ' ')))
+            for scope in ['in', 'out']:
+                for max_field in  ['max_volumetric_weight', 'max_weight']:
+                    if not self.is_weight_fulfill(
+                        cr, uid, fso_brw.id, scope, max_field,
+                        context=context):
+                        raise osv.except_osv(
+                            _('Invalid Procedure!!!'), error_msg % (
+                                max_field[4:].replace('_', ' ')))
 
-            exceptions = []
-            exceptions.append(not self.is_weight_fulfill(
-                cr, uid, fso_brw.id, scope, 'recommended_volumetric_weight', context=context))
-            exceptions[-1] and self._set_exception_msg(
-                cr, uid, fso_brw.id, 'out_volumetric_weight', context=context)
+                exceptions = []
+                exceptions.append(not self.is_weight_fulfill(
+                    cr, uid, fso_brw.id, scope, 'recommended_volumetric_weight', context=context))
+                exceptions[-1] and self._set_exception_msg(
+                    cr, uid, fso_brw.id, '%s_volumetric_weight' % (scope,), context=context)
 
-            exceptions.append(not self.is_weight_fulfill(
-                cr, uid, fso_brw.id, scope, 'recommended_weight', context=context))
-            exceptions[-1] and self._set_exception_msg(
-                cr, uid, fso_brw.id, 'out_weight', context=context)
+                exceptions.append(not self.is_weight_fulfill(
+                    cr, uid, fso_brw.id, scope, 'recommended_weight', context=context))
+                exceptions[-1] and self._set_exception_msg(
+                    cr, uid, fso_brw.id, '%s_weight' %(scope,), context=context)
 
             self.assign_sequence(cr, uid, fso_brw.id, context=context)
             self.write(
@@ -877,6 +877,7 @@ class freight_shipment(osv.Model):
             res.append(
                 getattr(fs_brw, acc_weight)
                 <= getattr(fs_brw, capacity_weight_field))
+        # print ' ---- ', (res, scope, capacity_weight_field)
         if len(ids) == 1:
             return res[0]
         else:
