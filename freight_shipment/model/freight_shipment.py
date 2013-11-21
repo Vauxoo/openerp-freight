@@ -532,7 +532,7 @@ class freight_shipment(osv.Model):
                     self.is_weight_fulfill(
                         cr, uid, obj['id'], 'out',
                         'recommended_volumetric_weight', context=ctx),
-            'freight_shipment.mt_fs_w_and_vw_exception':
+            'freight_shipment.mt_fs_exception_ow_ovw':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
                     not self.is_weight_fulfill(
