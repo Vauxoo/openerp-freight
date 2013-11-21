@@ -514,7 +514,7 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_waiting':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['awaiting'],
-            'freight_shipment.mt_fs_vw_exception':
+            'freight_shipment.mt_fs_exception_ovw':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and
                     not self.is_weight_fulfill(
