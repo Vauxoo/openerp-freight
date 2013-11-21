@@ -571,7 +571,6 @@ class freight_shipment(osv.Model):
                         context=context):
                         res[fs_brw.id] = False
                         break
-                print ' ---- ', (res[fs_brw.id], 'ACC MENOR QUE', fulfill)
 
         print ' ---- res', res
 
@@ -608,6 +607,28 @@ class freight_shipment(osv.Model):
                         cr, uid, obj['id'],
                         no_fulfill=[('out', 'recommended_weight'),
                                     ('out', 'recommended_volumetric_weight')],
+                        context=ctx),
+            'freight_shipment.mt_fs_exception_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'],
+                        no_fulfill=('in', 'recommended_weight'),
+                        context=ctx),
+            'freight_shipment.mt_fs_exception_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'],
+                        no_fulfill=('in', 'recommended_volumetric_weight'),
+                        context=ctx),
+            'freight_shipment.mt_fs_exception_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'],
+                        no_fulfill=[('in', 'recommended_weight'),
+                                    ('in', 'recommended_volumetric_weight')],
                         context=ctx),
             'freight_shipment.mt_fs_confirm':
                 lambda self, cr, uid, obj, ctx=None:

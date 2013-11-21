@@ -46,6 +46,36 @@
                 </field>
         </record>
 
+        <record id="mt_fs_exception_iw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight Capacity Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                    Warning: The Shipment is in Exception state.
+                    Recommended Weight capacity is exceeded by the incoming orders.
+                </field>
+        </record>
+
+        <record id="mt_fs_exception_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Volumetric Weight capacity is exceeded by the incoming orders
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_iw_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Weight and Recommended Volumetric Weight capacities are exceeded by the incoming orders
+            </field>
+        </record>
+
         <record id="mt_fs_confirm" model="mail.message.subtype">
             <field name="name">Freight Shipment Confirmed</field>
             <field name="res_model">freight.shipment</field>
