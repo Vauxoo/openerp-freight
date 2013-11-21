@@ -840,7 +840,8 @@ class freight_shipment(osv.Model):
                             _('Invalid Procedure!!!'), error_msg % (
                                 max_field[4:].replace('_', ' ')))
 
-                exceptions = []
+            exceptions = []
+            for scope in ['in', 'out']:
                 exceptions.append(not self.is_weight_fulfill(
                     cr, uid, fso_brw.id, scope, 'recommended_volumetric_weight', context=context))
                 exceptions[-1] and self._set_exception_msg(
