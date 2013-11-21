@@ -507,6 +507,23 @@ class freight_shipment(osv.Model):
         'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id 
     }
 
+    def get_weight_exception(self, cr, uid, context=None):
+        """
+        @return: the list of the valid weight exceptions in the freight
+        shipment. This method is used at the _check_weight_conditions to
+        extract the list of all valid conditions when the fulfill paramter
+        is not given. and weight capacity exception is given like a tuple of
+        the form
+            (scope, weight capacity field)
+        """
+        context = context or {}
+        exception_list = [
+            ('out', 'recommended_weight'),
+            ('out', 'recommended_volumetric_weight'),
+            ('in', 'recommended_weight'),
+            ('in', 'recommended_volumetric_weight')]
+        return exception_list
+
     def _check_weight_conditions(self, cr, uid, ids, no_fulfill=None,
                                  fulfill=None, context=None):
         """
@@ -535,6 +552,11 @@ class freight_shipment(osv.Model):
         no_fulfill = not isinstance(no_fulfill, (list)) and [no_fulfill] \
                      or no_fulfill
         res = {}.fromkeys(ids, True)
+
+        if not fulfill:
+            fulfill = list(
+                set(self.get_weight_exception(cr, uid, context=context)) -
+                set(no_fulfill))
 
         print ' ---- comprobando condiciones'
         for fs_brw in self.browse(cr, uid, ids, context=context):
@@ -574,7 +596,6 @@ class freight_shipment(osv.Model):
                     self._check_weight_conditions(
                         cr, uid, obj['id'],
                         no_fulfill=('out', 'recommended_volumetric_weight'),
-                        fulfill=('out', 'recommended_weight'),
                         context=ctx),
             'freight_shipment.mt_fs_exception_ow':
                 lambda self, cr, uid, obj, ctx=None:
@@ -582,7 +603,6 @@ class freight_shipment(osv.Model):
                     self._check_weight_conditions(
                         cr, uid, obj['id'],
                         no_fulfill=('out', 'recommended_weight'),
-                        fulfill =('out', 'recommended_volumetric_weight'),
                         context=ctx),
             'freight_shipment.mt_fs_exception_ow_ovw':
                 lambda self, cr, uid, obj, ctx=None:
