@@ -509,6 +509,34 @@ class freight_shipment(osv.Model):
         'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id 
     }
 
+    def get_weight_exceptions(self, cr, uid, context=None):
+        """
+        Make and return the dictonary with all the weight capacity exceptions
+        values corresponding values.
+            (scope, weight_capacity_field)
+        """
+        context = context or {}
+        res = {
+            'ow': [('out', 'recommended_weight')],
+            'ovw': [('out', 'recommended_volumetric_weight')],
+            'iw': [('in', 'recommended_weight')],
+            'ivw': [('in', 'recommended_volumetric_weight')],
+        }
+        res.update({
+            'ow_ovw': res['ow'] + res['ovw'],
+            'iw_ivw': res['iw'] + res['ivw'],
+            'ovw_ivw': res['ovw'] + res['ivw'],
+            'ovw_iw': res['ovw'] + res['iw'],
+            'ovw_iw_ivw': res['ovw'] + res['iw'] + res['ivw'],
+            'ow_ivw': res['ow'] + res['ivw'],
+            'ow_iw': res['ow'] + res['iw'],
+            'ow_iw_ivw': res['ow'] + res['iw'] + res['ivw'],
+            'ow_ovw_ivw': res['ow'] + res['ovw'] + res['ivw'],
+            'ow_ovw_iw': res['ow'] + res['ovw'] + res['iw'],
+            'ow_ovw_iw_ivw': res['ow'] + res['ovw'] + res['iw'] + res['ivw'],
+        })
+        return res
+
     def get_weight_exception(self, cr, uid, context=None):
         """
         @return: the list of the valid weight exceptions in the freight
