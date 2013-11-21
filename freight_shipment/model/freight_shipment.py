@@ -527,19 +527,18 @@ class freight_shipment(osv.Model):
         return exception_list
 
     def _check_weight_conditions(self, cr, uid, ids, no_fulfill=None,
-                                 fulfill=None, context=None):
+                                 context=None):
         """
         This method is used in the _track() property of the freigh shipment
         class. It used to check when some list of weight capacities are
-        fulfill and when another list of weight capacites are not fulfill.
-        This method was implemeted in order to verficate the weight capacities
-        and facilitate the 
+        are not fulfill. This method was implemeted in order to verficate the
+        weight capacities and facilitate the check of various weight capacities
+        with different values.
 
         First verificate that the no fulfill weight capacites given are not
         fulfill, if satisfied then verificate the fulfill weight capacities.
 
         @param no_fulfill: list of the weight capacities that need to fail
-        @param fulfill: list of the weight capacities that need to be fulfill
 
         Note: 'weight capacities' are tuples of the form
               ('scope', 'weight_capacity_field')
@@ -548,17 +547,13 @@ class freight_shipment(osv.Model):
         """
         context = context or {}
         no_fulfill = no_fulfill or []
-        fulfill = fulfill or []
         ids = isinstance(ids, (long, int)) and [ids] or ids
-        fulfill = not isinstance(fulfill, (list)) and [fulfill] or fulfill
         no_fulfill = not isinstance(no_fulfill, (list)) and [no_fulfill] \
                      or no_fulfill
         res = {}.fromkeys(ids, True)
-
-        if not fulfill:
-            fulfill = list(
-                set(self.get_weight_exception(cr, uid, context=context)) -
-                set(no_fulfill))
+        fulfill = list(
+            set(self.get_weight_exception(cr, uid, context=context)) -
+            set(no_fulfill))
 
         print ' ---- comprobando condiciones'
         for fs_brw in self.browse(cr, uid, ids, context=context):
