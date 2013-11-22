@@ -1728,3 +1728,15 @@ class purchase_order(osv.Model):
                   ' one shipment order can be used.')),
     }
 
+    def _prepare_order_picking(self, cr, uid, order, context=None):
+        """
+        Overwrite the _prepare_order_picking method to add the prefered
+        fregiht shipment order  in the purchase order to the pickings
+        generated at the purchase order confirm process.
+        """
+        context = context or {}
+        res = super(purchase_order, self)._prepare_order_picking(
+            cr, uid, order, context=context)
+        res.update({'in_fs_id': order.prefered_fs_id.id})
+        return res
+
