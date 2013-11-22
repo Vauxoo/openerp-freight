@@ -653,6 +653,51 @@ class freight_shipment(osv.Model):
                     obj['state'] in ['exception'] and 
                     self._check_weight_conditions(
                         cr, uid, obj['id'], except_key='iw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ovw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ovw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ovw_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ovw_iw', context=ctx),
+            'freight_shipment.mt_fs_exception_ovw_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ovw_iw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ow_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ow_iw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ow_iw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ovw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ow_ovw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ovw_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ow_ovw_iw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ovw_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], except_key='ow_ovw_iw_ivw', context=ctx),
             'freight_shipment.mt_fs_confirm':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['confirm'],

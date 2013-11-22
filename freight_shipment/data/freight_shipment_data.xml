@@ -76,6 +76,114 @@
             </field>
         </record>
 
+        <record id="mt_fs_exception_ovw_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Volumetric Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Volumetric Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ovw_iw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Volumetric Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ovw_iw_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Volumetric Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Weight and the Recommended Volumetric Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ow_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Volumetric Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ow_iw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ow_iw_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Weight and the Recommended Volumetric Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ow_ovw_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Weight and the Recommended Volumetric Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Volumetric Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ow_ovw_iw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Weight and the Recommended Volumetric Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
+        <record id="mt_fs_exception_ow_ovw_iw_ivw" model="mail.message.subtype">
+            <field name="name">Freight Shipment Weight and Volumetric Weight Exception</field>
+            <field name="res_model">freight.shipment</field>
+            <field name="default" eval="False"/>
+            <field name="description">
+                Warning: The Shipment is in Exception state.
+                Recommended Weight and the Recommended Volumetric Weight is exceeded by the outgoing orders.
+                Aso the
+                Recommended Weight and the Recommended Volumetric Weight is exceeded by the incoming orders.
+            </field>
+        </record>
+
         <record id="mt_fs_confirm" model="mail.message.subtype">
             <field name="name">Freight Shipment Confirmed</field>
             <field name="res_model">freight.shipment</field>
