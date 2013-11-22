@@ -572,6 +572,8 @@ class freight_shipment(osv.Model):
             res.extend(except_dict.pop(except_key))
         return res
 
+    # TODO: this method need to be fully tested with all the 16 exceptions for
+    # weight capacity.
     def _check_weight_conditions(self, cr, uid, ids, except_key, context=None):
         """
         This method is used in the _track() property of the freigh shipment
