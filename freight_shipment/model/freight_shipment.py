@@ -265,11 +265,18 @@ class freight_shipment(osv.Model):
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
         res = {}.fromkeys(ids, '')
+
+        if not context.has_key('default_type'):
+            raise osv.except_osv(
+                _('Programming Error!!!'),
+                _('You need to set the context with a key default_type'
+                  ' \'freight\' or \'delivery\' to use'
+                  ' _update_freight_shipment_name method.'))
+
+        default_type = context['default_type']
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            shipment_type = context.get('default_type', False) == 'freight' \
-                and 'FREIGHT/' or \
-                context.get('default_type', False) == 'delivery' \
-                and 'DELIVERY/' or 'SHIPMENT/'
+            shipment_type = default_type  == 'freight' and 'FREIGHT/' or \
+                default_type == 'delivery' and 'DELIVERY/' or 'SHIPMENT/'
             res[fs_brw.id] = '%s -  %s - %s - %s' % (
                 fs_brw.sequence == '/' and shipment_type or fs_brw.sequence,
                 fs_brw.date_delivery or 'NO DELIVERY DATE',
