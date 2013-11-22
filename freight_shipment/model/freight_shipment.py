@@ -599,7 +599,7 @@ class freight_shipment(osv.Model):
             set(self.get_weight_exception(cr, uid, context=context)) -
             set(no_fulfill))
 
-        print ' ---- comprobando condiciones'
+        # print ' ---- comprobando condiciones'
         for fs_brw in self.browse(cr, uid, ids, context=context):
             for capacity in no_fulfill:
                 if self.is_weight_fulfill(
@@ -607,7 +607,7 @@ class freight_shipment(osv.Model):
                     context=context):
                     res[fs_brw.id] = False
                     break
-            print ' ---- ', (res[fs_brw.id], 'ACC MAYOR QUE', no_fulfill)
+            # print ' ---- ', (res[fs_brw.id], 'ACC MAYOR QUE', no_fulfill)
             if res[fs_brw.id]:
                 for capacity in fulfill:
                     if not self.is_weight_fulfill(
@@ -616,7 +616,7 @@ class freight_shipment(osv.Model):
                         res[fs_brw.id] = False
                         break
 
-        print ' ---- res', res
+        # print ' ---- res', res
 
         if len(ids) == 1:
             return res.values()[0]
