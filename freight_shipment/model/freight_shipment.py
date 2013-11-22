@@ -791,7 +791,6 @@ class freight_shipment(osv.Model):
               ' Sequence Code for the model freight shipment. Please select'
               ' one Sequence Code and delete the rest.\n\n Go to Settings >'
               ' Technical > Sequence & Identifiers > Sequence Codes.')
-        freight_type = context.get('default_type', 'shipment').upper() + '/'
         seq_type_id = \
             self._get_seq_type(cr, uid, context=context) or \
             self._create_seq_type(cr, uid, context=context)
@@ -804,10 +803,13 @@ class freight_shipment(osv.Model):
         for fs_brw in self.browse(cr, uid, ids, context=context):
             if fs_brw.sequence != '/':
                 continue
+            freight_type = fs_brw.type.upper() + '/'
+            # print ' ---- freight_type', freight_type
             seq_ids = seq_obj.search(
                 cr, uid, [
                     ('company_id', '=', fs_brw.company_id.id),
-                    ('code', '=', seq_type_code)],
+                    ('code', '=', seq_type_code),
+                    ('prefix', '=', freight_type)],
                 context=context)
             #print ' ---- seq_ids', seq_ids
             if not seq_ids:
