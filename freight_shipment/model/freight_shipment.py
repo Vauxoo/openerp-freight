@@ -1726,6 +1726,12 @@ class purchase_order(osv.Model):
                   ' collected.'
                   ' A purchase order could be collected by parts, so more than'
                   ' one shipment order can be used.')),
+        'picking_address_id': fields.many2one(
+            'res.partner',
+            string='Picking Address',
+            help=('The address were the order will be pick up.'
+                  '\n\n Note: This is necesary to filter the possible freight'
+                  ' shipments that could be used to picking the order'))
     }
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
