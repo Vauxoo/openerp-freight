@@ -537,6 +537,17 @@ class freight_shipment(osv.Model):
         })
         return res
 
+    def get_except_condition_list(self, cr, uid, except_key, context=None):
+        """
+        Search a key in the in the exception key dictionary.
+        @param except_key: the key of the exception. 
+        @return: the list of (scope, weight_capacity_fields) that represent
+                 the exception.
+        """
+        context = context or {}
+        res = self.get_weight_exceptions(cr, uid, context=context) 
+        return res[except_key]
+
     def get_weight_exception(self, cr, uid, context=None):
         """
         @return: the list of the valid weight exceptions in the freight
