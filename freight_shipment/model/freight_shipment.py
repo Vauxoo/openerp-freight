@@ -547,12 +547,12 @@ class freight_shipment(osv.Model):
             (scope, weight capacity field)
         """
         context = context or {}
-        exception_list = [
-            ('out', 'recommended_weight'),
-            ('out', 'recommended_volumetric_weight'),
-            ('in', 'recommended_weight'),
-            ('in', 'recommended_volumetric_weight')]
-        return exception_list
+        except_list = ['ow', 'ovw', 'iw', 'ivw']
+        except_dict = self.get_weight_exceptions(cr, uid, context=context)
+        res = []
+        for except_key in except_list:
+            res.extend(except_dict.pop(except_key))
+        return res
 
     def _check_weight_conditions(self, cr, uid, ids, no_fulfill=None,
                                  context=None):
