@@ -1280,6 +1280,14 @@ class freight_shipment(osv.Model):
                         cr, uid, picking_address_id, context=context)
                     if zone_ids:
                         args.append(['zone_id', 'in', zone_ids])
+            # pos order filter
+            elif context.has_key('delivery_address'):
+                delivery_address = context['delivery_address']
+                if delivery_address:
+                    zone_ids = partner_obj.get_zone_ids(
+                        cr, uid, delivery_address, context=context)
+                    if zone_ids:
+                        args.append(['zone_id', 'in', zone_ids])
 
         return super(freight_shipment, self)._search(cr, uid, args,
                      offset=offset, limit=limit, order=order, context=context,
