@@ -1246,8 +1246,12 @@ class freight_shipment(osv.Model):
                 context=None, count=False, access_rights_uid=None):
         """
         Overwrite the _search() method to filter the freight shipments in the
-        sale order form taking into account the partner shipment zone (with
-        the partnet shipment address), the work_shift and the delivery date. 
+        outcoming and incoming orders like this:
+            - sale order taking into account the partner shipment zone (with
+              the partnet shipment address), the work_shift and the delivery
+              date.
+            - purchase order: take into account the picking address zone.
+            - pos order: take into  account the delivery address zone.
         """
         context = context or {}
         partner_obj = self.pool.get('res.partner')
