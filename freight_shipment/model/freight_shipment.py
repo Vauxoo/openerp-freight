@@ -492,6 +492,7 @@ class freight_shipment(osv.Model):
                   ' current freight.')),
         'is_overdue': fields.boolean(
             'Overdue',
+            track_visibility='onchange',
             help=('This field set if the freight shipment have any overdue')),
         # Note: This field is only a dummy, and it does not show in any place, 
         # Openerp _track attribute make some notifications (mail.messages)
@@ -504,6 +505,7 @@ class freight_shipment(osv.Model):
 
         'is_complete_delivered': fields.boolean(
             'This Freight Shipment was Complete Delivered',
+            track_visibility='onchange',
             help=('This field is a flag that permit to know if the shipment'
                   ' was complete delivered all its orders to be delivery. Is'
                   ' it set then all the planned orders were delivered, if it'
