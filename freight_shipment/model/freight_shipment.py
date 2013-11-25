@@ -1313,16 +1313,14 @@ class sale_order(osv.Model):
             help=('Prefered Freight Shipment Order the users set when creating'
                   ' the Sale Order. This is the prefered Freight Shipment' 
                   ' where the sale order products will be send. Is not always'
-                  'the real final destination')
-        ),
+                  'the real final destination')),
         'freight_shipment_ids': fields.many2many(
             'freight.shipment',
             'sale_orders_freight_shipment_rel',
             'sale_order_id', 'fs_id',
             string='Final Freight Shipments',
             help=('It represent the real final destination Freight Shipment'
-                  ' orders where this sale order was send.')
-        ),
+                  ' orders where this sale order was send.')),
         'delivery_date': fields.datetime(
             'Estimated Delivery Date',
             help='The date that this sale order need to be delivered'),
