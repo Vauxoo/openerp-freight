@@ -1275,11 +1275,9 @@ class freight_shipment(osv.Model):
             # purchase order filter
             elif context.has_key('picking_address_id'):
                 picking_address_id = context['picking_address_id']
-                print ' ---- picking_address_id', picking_address_id
                 if picking_address_id:
                     zone_ids = partner_obj.get_zone_ids(
                         cr, uid, picking_address_id, context=context)
-                    print ' ---- zone_ids', zone_ids
                     if zone_ids:
                         args.append(['zone_id', 'in', zone_ids])
 
@@ -1325,8 +1323,12 @@ class sale_order(osv.Model):
             string='Prefered Freight Shipment',
             help=('Prefered Freight Shipment Order the users set when creating'
                   ' the Sale Order. This is the prefered Freight Shipment' 
-                  ' where the sale order products will be send. Is not always'
-                  'the real final destination')),
+                  ' where the sale order products will be sent. Is not always'
+                  ' the real final destination.\n\n'
+                  ' Note: to filter this field you will need to set the sale'
+                  ' order Delivery Address, a incoterm of type delivery,'
+                  ' the Estimated Delivery Date of the freight shipment and a'
+                  ' Work Shift if is needed.')),
         'freight_shipment_ids': fields.many2many(
             'freight.shipment',
             'sale_orders_freight_shipment_rel',
@@ -1725,9 +1727,13 @@ class purchase_order(osv.Model):
             'freight.shipment',
             string='Prefered Freight Shipment',
             help=('The shipment planned to collect the purchase order'
-                  ' products.'
-                  ' Represent the first shipment order option.'
-                  ' However, is not always the really shipment order used.')),
+                  ' products. Represent the first shipment order option.'
+                  ' However, is not always the really shipment order used.\n\n'
+                  ' Note: to filter the possible freight shipment that adapt'
+                  ' to the current order you need to set the picking address.'
+                  ' This way the freight shipments show will correspond only'
+                  ' to the ones that match with tje current picking address'
+                  ' zone')),
         'fs_ids': fields.many2many(
             'freight.shipment',
             'purchase_order_freight_shipment_rel',
