@@ -1759,7 +1759,12 @@ class purchase_order(osv.Model):
             string='Picking Address',
             help=('The address were the order will be pick up.'
                   '\n\n Note: This is necesary to filter the possible freight'
-                  ' shipments that could be used to picking the order'))
+                  ' shipments that could be used to picking the order')),
+        'is_picking': fields.boolean(
+            'Will be Picked?',
+            help=('Indicates if the purchase order will be picked up for us in'
+                  ' one or more of ours freight shipments. If is True then a'
+                  ' freight shipment needs to be set.')),
     }
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
