@@ -1143,8 +1143,10 @@ class freight_shipment(osv.Model):
 
     def _successfully_delivery_state(self, cr, uid, ids, context=None):
         """
-        Checks if all the pickings and pos orders in the freight shipment are
-        succesfully delivered. Check every element delivery state field. 
+        Checks if all the incoming and outgoinh orders (pickings) and also the
+        pos orders in the freight shipment were succesfully delivered.
+        Check every element delivery state field. 
+
         @return True if all the pos.orders and stock.picking.out associated to
         the given fregith shipment have been succesfully shipped. False
         otherwise.
@@ -1157,7 +1159,7 @@ class freight_shipment(osv.Model):
             for pos_brw in fs_brw.pos_order_ids:
                 if pos_brw.delivery_state != 'delivered':
                     pending_items.append(pos_brw.id)
-            for picking_brw in fs_brw.out_picking_ids:
+            for picking_brw in fs_brw.out_picking_ids + fs_brw.in_picking_ids:
                 if picking_brw.delivery_state != 'delivered':
                     pending_items.append(picking_brw.id)
             res[fs_brw.id] = not pending_items and True or False
