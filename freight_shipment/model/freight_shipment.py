@@ -90,20 +90,28 @@ class stock_picking(osv.Model):
             else:
                 context.pop('filter_pickings_by_zone')
                 context.pop('filter_zone_id')
+                partner_field = context.has_key('outgoing_orders') and \
+                    'picking_brw.sale_id.partner_shipping_id' \
+                    or context.has_key('incoming_orders') and \
+                    'picking_brw.purchase_id.picking_address_id' or False
+                if not partner_field:
+                    raise osv.except_osv(
+                        _('Programming Error!!'),
+                        _('Missing context outgoinhorders or incoming_orders.'
+                          'You need to set one of them.'))
+
                 picking_ids = picking_obj.search(
                     cr, uid, [], context=context)
                 #print ' ---- picling_ids', picking_ids
                 fs_zone_picking_ids = []
                 for picking_brw in picking_obj.browse(
                         cr, uid, picking_ids, context=context):
-                    # TODO: be carefull on how the pickings is search here,
-                    # need to filter with a context the two pickings fields.
-                    if (picking_brw.sale_id.partner_shipping_id and
-                        zone_id in partner_obj.get_zone_ids(
-                            cr, uid,
-                            picking_brw.sale_id.partner_shipping_id.id,
+                    if (eval(partner_field) and zone_id in
+                        partner_obj.get_zone_ids(
+                            cr, uid, eval(partner_field + '.id'),
                             context=context)):
                         fs_zone_picking_ids.append(picking_brw.id)
+
                 fs_zone_picking_ids and args.append(
                     ('id', 'in', fs_zone_picking_ids))
                 #print ' ---- fs_zone_picking_ids', fs_zone_picking_ids
