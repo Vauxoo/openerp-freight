@@ -325,6 +325,7 @@ class freight_shipment(osv.Model):
              ('delivered', 'Delivered')],
             string='State',
             required=True,
+            track_visibility='onchange',
             help=('Indicate Freight Shipment Order State. The possible states'
                   ' are:\n'
                   '\t- Draft: A rough copy of the document, just a draft.\n'
