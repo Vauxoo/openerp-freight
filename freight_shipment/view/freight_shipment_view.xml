@@ -289,7 +289,7 @@
                 <xpath expr="//page[@string='Incoming Shipments &amp; Invoices']/group" position="inside">
                 <group name="freigh-section" string="Freight Shipment" colspan="4">
                     <field name="picking_address_id"/>
-                    <field name="prefered_fs_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]"/>
+                    <field name="prefered_fs_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]" context="{'filter_freight_shipment_ids': True, 'picking_address_id': picking_address_id}"/>
                     <label for="fs_ids"/>
                     <field name="fs_ids" nolabel="1" colspan="4"/>
                 </group>
