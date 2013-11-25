@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.client" id="action_client_map_zone">
+            <field name="name">Gmaps Zone</field>
+            <field name="tag">gmaps.example</field>
+            <field name="res_model">freight.zone</field>
+            <field name="params" eval="{
+                'qweb_action_template': False,
+                'qweb_list_template': False
+                }"/>
+            <field name="help" type="html">
+                <div>
+                    <p>
+                        Here we can show a "Sector" representing a contact/partner using the gmap api.
+                    </p>
+                    <iframe width="200" height="150" src="//www.youtube.com/embed/TuY1py-wPl4?list=UUA7HqlcNzmhUWwPT34WVzrw" frameborder="0" allowfullscreen="true"></iframe>
+                </div>
+            </field>
+        </record>
+        <menuitem action="action_client_map_zone" id="example_gmaps_zone" sequence="1000"/>
+    </data>
+</openerp>
+
