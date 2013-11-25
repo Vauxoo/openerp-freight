@@ -1219,10 +1219,11 @@ class freight_shipment(osv.Model):
 
     def action_dumping(self, cr, uid, ids, context=None):
         """
-        This method is used in the "Release Undelivered Orders" button. Will
-        release the pos orders and picking orders that was unsuccessfully
-        delivered to be later assing to another freight shipment and be re-
-        send.
+        This method is used in the "Release Undelivered/Unpicked Orders"
+        button. Will release the pos orders and outgoing picking orders that
+        were unsuccessfully delivered and the incoming picking orders that
+        were not picked up to be later assing to another freight shipment and
+        be re-send.
         """
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
@@ -1233,16 +1234,20 @@ class freight_shipment(osv.Model):
                 [pos_brw.id
                  for pos_brw in fs_brw.pos_order_ids
                  if pos_brw.delivery_state != 'delivered']
-            picking_ids = \
+            out_picking_ids = \
                 [picking_brw.id
                  for picking_brw in fs_brw.out_picking_ids
+                 if picking_brw.delivery_state != 'delivered']
+            in_picking_ids = \
+                [picking_brw.id
+                 for picking_brw in fs_brw.in_picking_ids
                  if picking_brw.delivery_state != 'delivered']
             pos_obj.write(
                 cr, uid, pos_ids,
                 {'freight_shipment_id': False, 'delivery_state': 'exception'},
                 context=context)
             picking_obj.write(
-                cr, uid, picking_ids,
+                cr, uid, out_picking_ids + in_picking_ids,
                 {'in_fs_id': False, 'out_fs_id': False,
                  'delivery_state': 'exception'}, context=context) 
         self.write(
@@ -1250,7 +1255,7 @@ class freight_shipment(osv.Model):
                 'state': 'delivered',
                 'is_complete_delivered': False}, context=context)
         #print '---- pos_ids', pos_ids
-        #print '---- picking_ids', picking_ids
+        #print '---- out_picking_ids', out_picking_ids
         return True
 
     def _search(self, cr, uid, args, offset=0, limit=None, order=None,
