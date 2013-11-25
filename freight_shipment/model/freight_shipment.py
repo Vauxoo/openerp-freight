@@ -337,7 +337,8 @@ class freight_shipment(osv.Model):
                   '\t- Shipped: Is already send to destination. The shipment'
                   ' is in transit.\n'
                   '\t- Shipment Exception: there was a problem in the'
-                  ' shipment.\n'
+                  ' shipment. Some outogoing orders were no shipped or some'
+                  ' incoming orders were not picked up.\n'
                   '\t- Delivered: The shipment arrived to the destination\n')),
         'out_weight': fields.function(
             _get_freight_current_weight,
