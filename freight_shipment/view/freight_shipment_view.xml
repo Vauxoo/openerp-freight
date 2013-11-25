@@ -225,7 +225,7 @@
                         <field name="shipment_volumetric_weight"/>
                         <field name="prefered_freight_shipment_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]" context="{'filter_freight_shipment_ids': True, 'partner_shipping_id': partner_shipping_id, 'delivery_date': delivery_date, 'work_shift': work_shift, 'incoterm': incoterm}"/>
                         <label for="freight_shipment_ids"/>
-                        <field name="freight_shipment_ids" nolabel="1" colspan="4"/>
+                        <field name="freight_shipment_ids" nolabel="1" colspan="4" readonly="True"/>
                     </group>
                 </xpath>
 
@@ -292,7 +292,7 @@
                     <field name="picking_address_id" attrs="{'required': [('is_picking','=', True)]}"/>
                     <field name="prefered_fs_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]" context="{'filter_freight_shipment_ids': True, 'picking_address_id': picking_address_id}"/>
                     <label for="fs_ids"/>
-                    <field name="fs_ids" nolabel="1" colspan="4"/>
+                    <field name="fs_ids" nolabel="1" colspan="4" readonly="True"/>
                 </group>
             </xpath>
             </field>
