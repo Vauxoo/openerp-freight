@@ -95,7 +95,16 @@
                             <page string="Incoming" attrs="{'invisible': [('type', '!=', 'freight')]}">
                                 <group name="incoming-group" colspan="4" col="1">
                                     <label for="in_picking_ids"/>
-                                    <field name="in_picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('in_fs_id', '=', False),('type','=','in')]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id, 'incoming_orders': True}}"/>
+                                    <field name="in_picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('in_fs_id', '=', False),('type','=','in')]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id, 'incoming_orders': True}}">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="origin"/>
+                                            <field name="min_date"/>
+                                            <field name="state"/>
+                                            <field name="delivery_state"/>
+                                            <button name="action_purchase_delivered" string="Picked Up" type="object" help="Click this button to indicate if the order have been picked" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
+                                        </tree>
+                                    </field>
                                     <label for="purchase_order_ids"/>
                                     <field name="purchase_order_ids" nolabel="1"/>
                                     <label for="prefered_purchase_ids"/>

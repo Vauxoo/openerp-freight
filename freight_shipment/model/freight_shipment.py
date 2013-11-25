@@ -1799,3 +1799,13 @@ class purchase_order(osv.Model):
         res.update({'in_fs_id': order.prefered_fs_id.id})
         return res
 
+    def action_purchase_delivered(self, cr, uid, ids, context=None):
+        """
+        Button method. It set a purchase order delivery state field to the
+        'delivered' state.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'delivery_state': 'delivered'},
+                   context=context)
+        return True
+
