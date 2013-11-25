@@ -69,6 +69,7 @@
                                             <field name="min_date"/>
                                             <field name="state"/>
                                             <field name="delivery_state"/>
+                                            <button name="action_sale_delivered" string="Delivered" type="object" help="Click this button to indicate if the order have been picked" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
                                         </tree>
                                     </field>
                                     <label for ="sale_order_ids"/>

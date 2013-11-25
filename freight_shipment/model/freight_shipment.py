@@ -1466,6 +1466,15 @@ class sale_order(osv.Model):
         return super(sale_order, self).action_button_confirm(
             cr, uid, ids, context=context)
 
+    def action_sale_delivered(self, cr, uid, ids, context=None):
+        """
+        Button method. It set a sale order delivery state field to the
+        'delivered' state.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'delivery_state': 'delivered'},
+                   context=context)
+        return True
 
 class stock_move(osv.osv):
     _inherit = 'stock.move'
