@@ -1474,7 +1474,10 @@ class pos_order(osv.Model):
         'freight_shipment_id': fields.many2one(
             'freight.shipment',
             string='Freight Shipment',
-            help='Freight Shipment'),
+            help=('Freight Shipment. The shipment were this order will be'
+                  ' delivery.\n\n'
+                  ' Note: to filter the freight shipment you need to set the'
+                  ' Pos Order Delivery Address..')),
         'delivery': fields.boolean(
             string='Is Delivery?',
             help=('If this checkbox is checked then current order it or it'
