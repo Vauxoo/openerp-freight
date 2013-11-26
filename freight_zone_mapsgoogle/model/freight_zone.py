@@ -82,12 +82,10 @@ class freight_zone(osv.Model):
         return {
             'name': _('Gmaps Zone'),
             'res_model': 'freight.zone',
+            'context' : {'id':ids}, #Con esto puedo hacer el filtro de la lista de zona en js
             'res_id': ids,
             'type': 'ir.actions.client',
             'tag' : 'gmaps.example',
             'params' : {
-                'domain':[
-                    ('res_id','=',ids),
-                ],
             },
         }                                   
