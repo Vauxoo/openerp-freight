@@ -40,12 +40,22 @@
             </field>
         </record>
 
+       <record id="freight_zone_mapsgoogle_search" model="ir.ui.view">
+            <field name="name">freight Zone</field>
+            <field name="model">freight.zone</field>
+            <field name="arch" type="xml">
+                <search string="freight Zone">
+                    <field name="id"/>
+                </search>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="freight_zone_mapsgoogle_action">
             <field name="name">freight Zone</field>
             <field name="res_model">freight.zone</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,search</field>
             <field name="help">freight Zone Help</field>
         </record>
         
