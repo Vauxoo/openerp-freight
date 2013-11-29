@@ -36,8 +36,6 @@ Freight Zone Gmaps
 This module is responsible for creating a model area, with a field one2many geographical
 coordinates that limit the area.
 
-
-
 ''',
     'depends': ['base', 'decimal_precision', 'freight_partner_assign_precise', 'web_gmaps_action'],
     'data': [

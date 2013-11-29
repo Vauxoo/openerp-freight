@@ -47,11 +47,6 @@ class freight_zone(osv.Model):
         list_zone = self.browse(cr, uid, ids, context=context)
 
         latlng = (gmaps_lat, gmaps_lon)
-        
-        #latlng = (10.48409,-66.910408) #Si, prueba
-        #latlng = (10.531078,-66.971445) #No, prueba
-        #latlng = (10.516437,-66.950099) #Si, prueba
-        #latlng = (10.476310, -66.893070) #Si, "Santa Mónica, Caracas, Distrito Metropolitano de Caracas, Venezuela"
 
         for zone in list_zone: 
             puntos = zone.gmaps_point_ids
@@ -75,7 +70,6 @@ class freight_zone(osv.Model):
     def maps(self, cr, uid, ids, context = None):
         context = context and context or {}
         ids = isinstance(ids, (int, long)) and ids or ids[0]
-        print "******** %s " % (ids)
         return {
             'name': _('Gmaps Zone'),
             'res_model': 'freight.zone',
