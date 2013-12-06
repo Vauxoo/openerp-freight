@@ -6,7 +6,9 @@
 #    All Rights Reserved
 ############# Credits #########################################################
 #    Coded by: Katherine Zaoral <kathy@vauxoo.com>
-#    Planified by: Yanina Aular <yani@vauxoo.com>, Humberto Arocha <hbto@vauxoo.com>
+#    Planified by: Yanina Aular <yani@vauxoo.com>,
+#                  Katherine Zaoral <kathy@vauxoo.com>,
+#                  Humberto Arocha <hbto@vauxoo.com>
 #    Audited by: Humberto Arocha <hbto@vauxoo.com>
 ###############################################################################
 #    This program is free software: you can redistribute it and/or modify
@@ -43,15 +45,24 @@ class stock_picking(osv.Model):
 
     _inherit = "stock.picking"
     _columns = {
-        'freight_shipment_id': fields.many2one(
+        'out_fs_id': fields.many2one(
             'freight.shipment',
-            string='Freight Shipment',
-            help='Freight Shipment Order'
+            string='Outgoinh Freight Shipment',
+            help='Outgoinh Freight Shipment Order'
+        ),
+        'in_fs_id': fields.many2one(
+            'freight.shipment',
+            string='Incoming Freight Shipment',
+            help='Incoming Freigth Shipment Order'
         ),
         'delivery_state': fields.selection(
             get_delivery_states,
             'Delivery State',
             help='Indicates the delivery state of the order'),
+        'pos_id': fields.many2one(
+            'pos.order',
+            string='POS Order',
+            help='Point of Sale Order that generate this stock picking'),
     }
 
     _defaults = {
@@ -69,7 +80,7 @@ class stock_picking(osv.Model):
         context = context or {}
         partner_obj = self.pool.get('res.partner')
         picking_obj = self.pool.get('stock.picking')
-        if (context.get('filter_pickings_by_zone', False)):
+        if context.has_key('filter_pickings_by_zone'):
             zone_id = context.get('filter_zone_id', False)
             if not zone_id:
                 raise osv.except_osv(
@@ -79,20 +90,30 @@ class stock_picking(osv.Model):
             else:
                 context.pop('filter_pickings_by_zone')
                 context.pop('filter_zone_id')
+                partner_field = context.has_key('outgoing_orders') and \
+                    'picking_brw.sale_id.partner_shipping_id' \
+                    or context.has_key('incoming_orders') and \
+                    'picking_brw.purchase_id.picking_address_id' or False
+                if not partner_field:
+                    raise osv.except_osv(
+                        _('Programming Error!!'),
+                        _('Missing context outgoinhorders or incoming_orders.'
+                          'You need to set one of them.'))
+
                 picking_ids = picking_obj.search(
                     cr, uid, [], context=context)
                 #print ' ---- picling_ids', picking_ids
                 fs_zone_picking_ids = []
                 for picking_brw in picking_obj.browse(
                         cr, uid, picking_ids, context=context):
-                    if (picking_brw.sale_id.partner_shipping_id and
-                        zone_id in partner_obj.get_zone_ids(
-                            cr, uid,
-                            picking_brw.sale_id.partner_shipping_id.id,
+                    if (eval(partner_field) and zone_id in
+                        partner_obj.get_zone_ids(
+                            cr, uid, eval(partner_field + '.id'),
                             context=context)):
                         fs_zone_picking_ids.append(picking_brw.id)
+
                 fs_zone_picking_ids and args.append(
-                    ['id', 'in', fs_zone_picking_ids])
+                    ('id', 'in', fs_zone_picking_ids))
                 #print ' ---- fs_zone_picking_ids', fs_zone_picking_ids
         #print ' ---- args', args
         return super(stock_picking, self)._search(
@@ -119,10 +140,29 @@ class freight_shipment(osv.Model):
         context = context or {}
         res = {}.fromkeys(ids, [])
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            for picking_brw in fs_brw.picking_ids:
+            for picking_brw in fs_brw.out_picking_ids:
                 res[fs_brw.id] += [picking_brw.sale_id.id]
             res[fs_brw.id] = list(set(res[fs_brw.id]))
 
+        return res
+
+    # TODO: this method could be merge with the above into one method.
+    def _get_purchase_ids(self, cr, uid, ids, field_name, arg, context=None):
+        """
+        This a functional field method that verify the incoming pickings in the
+        freigh shipment and return its associated purchase orders. This
+        purchase orders are the one who really are into the shipment so there
+        are linked to the freight shipment.
+        @param field_name: 'purchase_order_ids'
+        @return: a dictionary of the form
+                 {freight shipment id: [purchase order ids]}
+        """
+        context = context or {}
+        res = {}.fromkeys(ids, [])
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            for picking_brw in fs_brw.in_picking_ids:
+                res[fs_brw.id] += [picking_brw.purchase_id.id]
+            res[fs_brw.id] = list(set(res[fs_brw.id]))
         return res
 
     def _get_vehicle_weight_field(self, cr, uid, ids, field_name, arg,
@@ -154,28 +194,70 @@ class freight_shipment(osv.Model):
         pickings and pos order products weights to calculate the freight
         shipment weights by crossing the stock.move associated to this
         orders lines.
-        @param field_name: ['weight', 'volumetric_weight']
-        @return:
-            - If field_name == weight: sumatory of products gross weights.
-            - If field_name == volumetric_weight: sumatory of products
-              volumetric weights.
+        @param field_name: ['out_weight', 'out_volumetric_weight'
+                            'in_weight', 'in_volumetric_weight']
+        @return: depending of what field_name is:
+            - If is 'out_weight' returns the products gross weight sum of the
+              outgoing orders.
+            - If is 'out_volumetric_weight' returns the products volumetric
+              weight sum of the outgoing orders.
+            - If is 'in_weight' returns the products gross weight sum of the
+              incoming orders.
+            - If is 'in_volumetric_weight' returns the products volumetric
+              weight sum of the incoming orders.
+
+        Note: A Freight Shipment have two types of orders associated:
+              Outgoing Order: the orders that need to be shipped by the
+              freight shipment. If is a Freight type shipment then it refers
+              to the sale orders. If is a Delivery type shipment then it
+              refers to the pos orders.
+              Incoming Order: the ordes that will be collected in the freight
+              shipment when is in route. Are represented by the purchase
+              orders and only applies when the shipment if of Freight type.
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
         res = {}.fromkeys(ids, 0.0)
-        weight_field = 'move_brw.product_id.' + \
-            (field_name == 'weight' and 'product_tmpl_id.weight' or
-             field_name == 'volumetric_weight' and 'volumetric_weight' or 0.0)
+
+        out_weight_fields = ['out_weight', 'out_volumetric_weight']
+        in_weight_fields = ['in_weight', 'in_volumetric_weight']
+        weight_fields = ['out_weight','in_weight']
+        volumetric_weight_fields = \
+            ['out_volumetric_weight', 'in_volumetric_weight']
+
+        match_product_field = \
+            (field_name in weight_fields and 'product_tmpl_id.weight'
+             or field_name in volumetric_weight_fields and 'volumetric_weight'
+             or False)
+        if not match_product_field:
+            raise osv.except_osv(
+                _('Programming Error'),
+                _('The field name you are using in the'
+                  ' _get_freight_current_weight method() is not valid.'
+                  ' If you meant it then you need to over write this method.'))
+
+        weight_field = 'move_brw.product_id.' + match_product_field
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            picking_move_brws = \
+            move_brws = []
+            out_picking_move_brws = \
                 [move_brw
-                 for picking_brw in fs_brw.picking_ids
+                 for picking_brw in fs_brw.out_picking_ids
                  for move_brw in picking_brw.move_lines]
             pos_move_brws = \
                 [move_brw
                  for pos_brw in fs_brw.pos_order_ids
                  for move_brw in pos_brw.picking_id.move_lines]
-            for move_brw in picking_move_brws + pos_move_brws:
+            in_picking_move_brws = \
+                [move_brw
+                 for picking_brw in fs_brw.in_picking_ids
+                 for move_brw in picking_brw.move_lines]
+
+            if field_name in out_weight_fields:
+                move_brws = out_picking_move_brws + pos_move_brws
+            elif field_name in in_weight_fields:
+                move_brws = in_picking_move_brws
+
+            for move_brw in move_brws:
                 res[fs_brw.id] += (move_brw.product_qty * eval(weight_field))
         return res
 
@@ -191,11 +273,18 @@ class freight_shipment(osv.Model):
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
         res = {}.fromkeys(ids, '')
+
+        if not context.has_key('default_type'):
+            raise osv.except_osv(
+                _('Programming Error!!!'),
+                _('You need to set the context with a key default_type'
+                  ' \'freight\' or \'delivery\' to use'
+                  ' _update_freight_shipment_name method.'))
+
+        default_type = context['default_type']
         for fs_brw in self.browse(cr, uid, ids, context=context):
-            shipment_type = context.get('default_type', False) == 'freight' \
-                and 'FREIGHT/' or \
-                context.get('default_type', False) == 'delivery' \
-                and 'DELIVERY/' or 'SHIPMENT/'
+            shipment_type = default_type  == 'freight' and 'FREIGHT/' or \
+                default_type == 'delivery' and 'DELIVERY/' or 'SHIPMENT/'
             res[fs_brw.id] = '%s -  %s - %s - %s' % (
                 fs_brw.sequence == '/' and shipment_type or fs_brw.sequence,
                 fs_brw.date_delivery or 'NO DELIVERY DATE',
@@ -236,6 +325,7 @@ class freight_shipment(osv.Model):
              ('delivered', 'Delivered')],
             string='State',
             required=True,
+            track_visibility='onchange',
             help=('Indicate Freight Shipment Order State. The possible states'
                   ' are:\n'
                   '\t- Draft: A rough copy of the document, just a draft.\n'
@@ -248,17 +338,27 @@ class freight_shipment(osv.Model):
                   '\t- Shipped: Is already send to destination. The shipment'
                   ' is in transit.\n'
                   '\t- Shipment Exception: there was a problem in the'
-                  ' shipment.\n'
-                  '\t- Delivered: The shipment arrived to the destination\n'
-            )),
-        'weight': fields.function(
+                  ' shipment. Some outogoing orders were no shipped or some'
+                  ' incoming orders were not picked up.\n'
+                  '\t- Delivered: The shipment arrived to the destination\n')),
+        'out_weight': fields.function(
             _get_freight_current_weight,
             type='float',
-            string='Weight',
-            help=('The accumulated weight of the shipment. It is a calculated'
-                  ' field that sums the weights of all orders belonging to'
-                  ' this shipment. The user can not manually change this'
-                  ' field is automatically calculated')),
+            string='Outgoing Weight',
+            help=('The accumulated weight of the orders to be shipped. It'
+                  ' is a calculated field that sums the gross weights of all'
+                  ' products in the outgoing orders (sale and pos orders)'
+                  ' belonging to this shipment. The user can not manually'
+                  ' change this field is automatically calculated')),
+        'in_weight': fields.function(
+            _get_freight_current_weight,
+            type='float',
+            string='Incomming Weight',
+            help=('The accumulated weight of the orders to be collected. It'
+                  ' is a calculated field that sums the gross weights of all'
+                  ' products in the incoming orders (purchase orders)'
+                  ' belonging to this shipment. The user can not manually'
+                  ' change this field is automatically calculated')),
         'initial_shipped_weight': fields.float(
             string='Shipped Weight',
             help=('This is the accumultad weight when the shipment is'
@@ -266,14 +366,26 @@ class freight_shipment(osv.Model):
                   ' is not complete delivered (Some shipment orders could not'
                   ' be delivered) then the value of this field will be'
                   ' different of the Weight field.')),
-        'volumetric_weight': fields.function(
+        'out_volumetric_weight': fields.function(
             _get_freight_current_weight,
             type='float',
-            string='Volumetric Weight',
-            help=('The accumulated weight of the shipment. It is a calculated'
-                  ' field that sums the volumetric weights of all orders'
-                  ' belonging to this shipment. The user can not manually'
-                  ' change this field is automatically calculated')),
+            string='Outgoing Volumetric Weight',
+            help=('The accumulated volumetric weight of the orders to be'
+                  ' shipped. It is a calculated field that sums the volumetric'
+                  ' weight of all the products in the outgoing orders (sale'
+                  ' orders -freight- or pos orders -delivery-) belonging to'
+                  ' this shipment. The user can not manually change this field'
+                  ' is automatically calculated')),
+        'in_volumetric_weight': fields.function(
+            _get_freight_current_weight,
+            type='float',
+            string='Incoming Volumetric Weight',
+            help=('The accumulated volumetric weight of the orders to be'
+                  ' collected. It is a calculated field that sums the'
+                  ' volumetric weight of all the products in the incoming'
+                  ' orders (purchase orders -applies to freight-) belonging to'
+                  ' this shipment. The user can not manually change this field'
+                  ' is automatically calculated')),
         'initial_shipped_volumetric_weight': fields.float(
             string='Shipped Volumetric Weight',
             help=('This is the accumultad volumetric weight when the shipment'
@@ -339,42 +451,49 @@ class freight_shipment(osv.Model):
              ('freight', 'Freight')],
             required=True,
             string='Type',
-            help='Freight Type',
-        ),
+            help='Freight Type'),
         'prefered_sale_order_ids': fields.one2many(
             'sale.order', 'prefered_freight_shipment_id',
             string='Prefered Sale Orders',
             help=('The Sale Orders who its prefered freight shipment was set'
-                  ' with the current order.')
-        ),
-        'picking_ids': fields.one2many(
-            'stock.picking', 'freight_shipment_id',
-            string='Delivery Orders (Pickings)',
-            help='Delivery Orders (Pickings)'
-        ),
+                  ' with the current order.')),
+        'out_picking_ids': fields.one2many(
+            'stock.picking', 'out_fs_id',
+            string='Outgoing Pickings',
+            help='Outgoing Pickings'),
+        'in_picking_ids': fields.one2many(
+            'stock.picking', 'in_fs_id',
+            string='Incoming Pickings',
+            help='Incoming Pickings'),
         'sale_order_ids': fields.function(
             fnct=_get_sale_order_ids,
             type='many2many',
             relation='sale.order',
             string='Processed Sale Orders',
-            help=('Sale Orders real send')
-        ),
-        'purchase_order_ids': fields.many2many(
-            'purchase.order',
-            'freight_shipment_purchase_order_rel',
-            'fs_id', 'purchase_order_id',
+            help=('Sale Orders real send')),
+        'prefered_purchase_ids': fields.one2many(
+            'purchase.order', 'prefered_fs_id',
+            string='Scheduled Purchase Orders',
+            help=('The purchase orders that planned to be collected for this'
+                  ' shipment (through the purchase order itself).'
+                  ' However, these purchase orders are not necessarily those'
+                  ' that were approved to be collected.')),
+        'purchase_order_ids': fields.function(
+            fnct=_get_purchase_ids,
+            type='many2many',
+            relation='purchase.order',
             string='Purchase Orders',
             help=('It represent the purchase orders added to this shipment.'
-                  ' The orders that will be collected by this shipment.')),
+                  ' The orders are approved to be collected by this'
+                  ' shipment.')),
         'message_exceptions': fields.text(
             'Exceptions history messages',
             help=('This field holds de the history of exceptions for the'
-                  ' current freight.')
-        ),
+                  ' current freight.')),
         'is_overdue': fields.boolean(
             'Overdue',
+            track_visibility='onchange',
             help=('This field set if the freight shipment have any overdue')),
-
         # Note: This field is only a dummy, and it does not show in any place, 
         # Openerp _track attribute make some notifications (mail.messages)
         # when one of the models fields changes. But we are trying to create
@@ -386,11 +505,11 @@ class freight_shipment(osv.Model):
 
         'is_complete_delivered': fields.boolean(
             'This Freight Shipment was Complete Delivered',
+            track_visibility='onchange',
             help=('This field is a flag that permit to know if the shipment'
                   ' was complete delivered all its orders to be delivery. Is'
                   ' it set then all the planned orders were delivered, if it'
-                  ' not, this field will be waiting to be')
-        ),
+                  ' not, this field will be waiting to be')),
         # Note: This field is use like a flag that trigger the message log
         # notifications about the realase of undelivered pos orders and
         # pickings
@@ -409,6 +528,115 @@ class freight_shipment(osv.Model):
         'company_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).company_id.id 
     }
 
+    def get_weight_exceptions(self, cr, uid, context=None):
+        """
+        Make and return the dictonary with all the weight capacity exceptions
+        values corresponding values.
+            (scope, weight_capacity_field)
+        """
+        context = context or {}
+        res = {
+            'ow': [('out', 'recommended_weight')],
+            'ovw': [('out', 'recommended_volumetric_weight')],
+            'iw': [('in', 'recommended_weight')],
+            'ivw': [('in', 'recommended_volumetric_weight')],
+        }
+        res.update({
+            'ow_ovw': res['ow'] + res['ovw'],
+            'iw_ivw': res['iw'] + res['ivw'],
+            'ovw_ivw': res['ovw'] + res['ivw'],
+            'ovw_iw': res['ovw'] + res['iw'],
+            'ovw_iw_ivw': res['ovw'] + res['iw'] + res['ivw'],
+            'ow_ivw': res['ow'] + res['ivw'],
+            'ow_iw': res['ow'] + res['iw'],
+            'ow_iw_ivw': res['ow'] + res['iw'] + res['ivw'],
+            'ow_ovw_ivw': res['ow'] + res['ovw'] + res['ivw'],
+            'ow_ovw_iw': res['ow'] + res['ovw'] + res['iw'],
+            'ow_ovw_iw_ivw': res['ow'] + res['ovw'] + res['iw'] + res['ivw'],
+        })
+        return res
+
+    def get_except_condition_list(self, cr, uid, except_key, context=None):
+        """
+        Search a key in the in the exception key dictionary.
+        @param except_key: the key of the exception. 
+        @return: the list of (scope, weight_capacity_fields) that represent
+                 the exception.
+        """
+        context = context or {}
+        res = self.get_weight_exceptions(cr, uid, context=context) 
+        return res[except_key]
+
+    def get_weight_exception(self, cr, uid, context=None):
+        """
+        @return: the list of the valid weight exceptions in the freight
+        shipment. This method is used at the _check_weight_conditions to
+        extract the list of all valid conditions when the fulfill paramter
+        is not given. and weight capacity exception is given like a tuple of
+        the form
+            (scope, weight capacity field)
+        """
+        context = context or {}
+        except_list = ['ow', 'ovw', 'iw', 'ivw']
+        except_dict = self.get_weight_exceptions(cr, uid, context=context)
+        res = []
+        for except_key in except_list:
+            res.extend(except_dict.pop(except_key))
+        return res
+
+    # TODO: this method need to be fully tested with all the 16 exceptions for
+    # weight capacity.
+    def _check_weight_conditions(self, cr, uid, ids, except_key, context=None):
+        """
+        This method is used in the _track() property of the freigh shipment
+        class. It used to check when some list of weight capacities are
+        are not fulfill. This method was implemeted in order to verficate the
+        weight capacities and facilitate the check of various weight capacities
+        with different values.
+
+        First verificate that the no fulfill weight capacites given are not
+        fulfill, if satisfied then verificate the fulfill weight capacities.
+
+        @param except_key: string with the key of the exception.
+
+        Note: 'weight capacities' are tuples of the form
+              ('scope', 'weight_capacity_field')
+
+        @retun: True or False
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        res = {}.fromkeys(ids, True)
+        no_fulfill = self.get_except_condition_list(
+            cr, uid, except_key, context=context)
+        fulfill = list(
+            set(self.get_weight_exception(cr, uid, context=context)) -
+            set(no_fulfill))
+
+        # print ' ---- comprobando condiciones'
+        for fs_brw in self.browse(cr, uid, ids, context=context):
+            for capacity in no_fulfill:
+                if self.is_weight_fulfill(
+                    cr, uid, fs_brw.id, capacity[0], capacity[1], 
+                    context=context):
+                    res[fs_brw.id] = False
+                    break
+            # print ' ---- ', (res[fs_brw.id], 'ACC MAYOR QUE', no_fulfill)
+            if res[fs_brw.id]:
+                for capacity in fulfill:
+                    if not self.is_weight_fulfill(
+                        cr, uid, fs_brw.id, capacity[0], capacity[1], 
+                        context=context):
+                        res[fs_brw.id] = False
+                        break
+
+        # print ' ---- res', res
+
+        if len(ids) == 1:
+            return res.values()[0]
+        else:
+            return res
+
     _track = {
         'state': {
             'freight_shipment.mt_fs_new':
@@ -416,33 +644,81 @@ class freight_shipment(osv.Model):
             'freight_shipment.mt_fs_waiting':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['awaiting'],
-            'freight_shipment.mt_fs_vw_exception':
+            'freight_shipment.mt_fs_exception_ovw':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and
-                    not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_volumetric_weight',
-                        context=ctx) and
-                    self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_weight',
-                        context=ctx),
-            'freight_shipment.mt_fs_w_exception':
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ovw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
-                    not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_weight',
-                        context=ctx) and 
-                    self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_volumetric_weight',
-                        context=ctx),
-            'freight_shipment.mt_fs_w_and_vw_exception':
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ovw':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['exception'] and 
-                    not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_weight',
-                        context=ctx) and 
-                    not self.is_weight_fulfill(
-                        cr, uid, obj['id'], 'recommended_volumetric_weight',
-                        context=ctx),
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow_ovw', context=ctx),
+            'freight_shipment.mt_fs_exception_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'iw', context=ctx),
+            'freight_shipment.mt_fs_exception_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'iw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ovw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ovw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ovw_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ovw_iw', context=ctx),
+            'freight_shipment.mt_fs_exception_ovw_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ovw_iw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow_iw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow_iw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ovw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow_ovw_ivw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ovw_iw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow_ovw_iw', context=ctx),
+            'freight_shipment.mt_fs_exception_ow_ovw_iw_ivw':
+                lambda self, cr, uid, obj, ctx=None:
+                    obj['state'] in ['exception'] and 
+                    self._check_weight_conditions(
+                        cr, uid, obj['id'], 'ow_ovw_iw_ivw', context=ctx),
             'freight_shipment.mt_fs_confirm':
                 lambda self, cr, uid, obj, ctx=None:
                     obj['state'] in ['confirm'],
@@ -536,7 +812,6 @@ class freight_shipment(osv.Model):
               ' Sequence Code for the model freight shipment. Please select'
               ' one Sequence Code and delete the rest.\n\n Go to Settings >'
               ' Technical > Sequence & Identifiers > Sequence Codes.')
-        freight_type = context.get('default_type', 'shipment').upper() + '/'
         seq_type_id = \
             self._get_seq_type(cr, uid, context=context) or \
             self._create_seq_type(cr, uid, context=context)
@@ -549,10 +824,13 @@ class freight_shipment(osv.Model):
         for fs_brw in self.browse(cr, uid, ids, context=context):
             if fs_brw.sequence != '/':
                 continue
+            freight_type = fs_brw.type.upper() + '/'
+            # print ' ---- freight_type', freight_type
             seq_ids = seq_obj.search(
                 cr, uid, [
                     ('company_id', '=', fs_brw.company_id.id),
-                    ('code', '=', seq_type_code)],
+                    ('code', '=', seq_type_code),
+                    ('prefix', '=', freight_type)],
                 context=context)
             #print ' ---- seq_ids', seq_ids
             if not seq_ids:
@@ -583,31 +861,21 @@ class freight_shipment(osv.Model):
         It set the exception log messages in the correspoding freight
         shipments.
         @param etype: the exception type. could be:
-                      - 'volumetric_weight'
-                      - 'weight
+                      - 'out_volumetric_weight'
+                      - 'out_weight
         @return: True
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
-        exception = {
-            'volumetric_weight': {
-                'error_msg':
-                _(' - Volumetric Weight Exceeded: The volumetric weight of'
-                  ' the  %s freigth shipment is greater than the volumetrici'
-                  ' weight capacity of the freight shipment transport unit'
-                  ' (%s > %s).\n'),
-                'values':
-                ['name', 'volumetric_weight', 'max_volumetric_weight'],
-            },
-            'weight': {
-                'error_msg':
-                _(' - Weight Exceeded: The weight of the %s freigth shipment'
-                  ' is greater than the physical weight capacity of the'
-                  ' freight shipment transport unit (%s > %s).\n'),
-                'values':
-                ['name', 'weight', 'max_weight'],
-            }
-        }
+        exception = self._get_fields_exceptions(cr, uid, context=context)
+        if etype not in exception.keys():
+            raise osv.except_osv(
+                _('Programming Error!!'),
+                _('The exception to be set by the _set_exception_msg method is'
+                  ' not defined. please if you want to use this field need to'
+                  ' create the exception first. You need to modify the'
+                  ' dictionary return by the _get_fields_exception method.'))
+
         for fs_brw in self.browse(cr, uid, ids, context=context):
             string_param = tuple(
                  [getattr(fs_brw, val) for val in exception[etype]['values']])
@@ -616,6 +884,56 @@ class freight_shipment(osv.Model):
                 + (exception[etype]['error_msg'] % string_param)}
             self.write(cr, uid, fs_brw.id, values, context=context)
         return True
+
+    def _get_fields_exceptions(self, cr, uid, context=None):
+        """
+        This method define a dictonary that manage the maximum and recommend
+        weight fields with exception data like error message and values
+        implicated. If there is a weight field exception then this data is
+        used.
+        @return: dictonary with the defined exceptions like:
+            {field_name : {'error_msg', 'values'}}
+        """
+        context = context or {}
+        exception_dict = {
+            'out_volumetric_weight': {
+                'error_msg':
+                _(' - Outgoing Volumetric Weight Exceeded:'
+                  ' The volumetric weight of the outgoing orders in the %s'
+                  ' shipment is greater than the volumetric weight capacity'
+                  ' of the used transport unit (%s > %s).\n'),
+                'values':
+                ['name', 'out_volumetric_weight', 'max_volumetric_weight'],
+            },
+            'out_weight': {
+                'error_msg':
+                _(' - Outgoing Weight Exceeded:'
+                  ' The weight of the outgoing orders in the %s shipment'
+                  ' is greater than the physical weight capacity of the'
+                  ' used transport unit (%s > %s).\n'),
+                'values':
+                ['name', 'out_weight', 'max_weight'],
+            },
+            'in_volumetric_weight': {
+                'error_msg':
+                _(' - Incoming Volumetric Weight Exceeded:'
+                  ' The volumetric weight of the incoming orders in the %s'
+                  ' shipment is greater than the volumetric weight capacity'
+                  ' of the used transport unit (%s > %s).\n'),
+                'values':
+                ['name', 'in_volumetric_weight', 'max_volumetric_weight'],
+            },
+            'in_weight': {
+                'error_msg':
+                _(' - Incoming Weight Exceeded:'
+                  ' The weight of the incoming orders in the %s shipment'
+                  ' is greater than the physical weight capacity of the'
+                  ' used transport unit (%s > %s).\n'),
+                'values':
+                ['name', 'in_weight', 'max_weight'],
+            }
+        }
+        return exception_dict
 
     def action_assign(self, cr, uid, ids, context=None):
         """
@@ -642,23 +960,26 @@ class freight_shipment(osv.Model):
               ' %s capacity. This freight shipment Assing can not be done.'
               ' Please remove some orders items to continue.')
         for fso_brw in self.browse(cr, uid, ids, context=context):
-            for max_field in  ['max_volumetric_weight', 'max_weight']:
-                if not self.is_weight_fulfill(
-                    cr, uid, fso_brw.id, max_field, context=context):
-                    raise osv.except_osv(
-                        _('Invalid Procedure!!!'), error_msg % (
-                            max_field[4:].replace('_', ' ')))
+            for scope in ['in', 'out']:
+                for max_field in  ['max_volumetric_weight', 'max_weight']:
+                    if not self.is_weight_fulfill(
+                        cr, uid, fso_brw.id, scope, max_field,
+                        context=context):
+                        raise osv.except_osv(
+                            _('Invalid Procedure!!!'), error_msg % (
+                                max_field[4:].replace('_', ' ')))
 
             exceptions = []
-            exceptions.append(not self.is_weight_fulfill(
-                cr, uid, fso_brw.id, 'recommended_volumetric_weight', context=context))
-            exceptions[-1] and self._set_exception_msg(
-                cr, uid, fso_brw.id, 'volumetric_weight', context=context)
+            for scope in ['in', 'out']:
+                exceptions.append(not self.is_weight_fulfill(
+                    cr, uid, fso_brw.id, scope, 'recommended_volumetric_weight', context=context))
+                exceptions[-1] and self._set_exception_msg(
+                    cr, uid, fso_brw.id, '%s_volumetric_weight' % (scope,), context=context)
 
-            exceptions.append(not self.is_weight_fulfill(
-                cr, uid, fso_brw.id, 'recommended_weight', context=context))
-            exceptions[-1] and self._set_exception_msg(
-                cr, uid, fso_brw.id, 'weight', context=context)
+                exceptions.append(not self.is_weight_fulfill(
+                    cr, uid, fso_brw.id, scope, 'recommended_weight', context=context))
+                exceptions[-1] and self._set_exception_msg(
+                    cr, uid, fso_brw.id, '%s_weight' %(scope,), context=context)
 
             self.assign_sequence(cr, uid, fso_brw.id, context=context)
             self.write(
@@ -710,12 +1031,16 @@ class freight_shipment(osv.Model):
         self.write(cr, uid, ids, {'state': 'confirm'}, context=context)
         return True
 
-    def is_weight_fulfill(self, cr, uid, ids, weight_field, context=None):
+    def is_weight_fulfill(self, cr, uid, ids, scope, capacity_weight_field,
+                          context=None):
         """
         Check if the freight accumulated weight value is less or equal to
         a freight max or recommended weight capacity.
-        @param weight_field: the name of the weight capacity in the freight
-            shipment. the posible values are:
+        @param scope: In what scope the capacity field will be checked. Could be in
+            incoming or outgoing orders. The possible value of this parameter:
+            ['in', 'out']
+        @param capacity_weight_field: the name of the weight capacity in the
+            freight shipment that want to be check. the possible values are:
                 - max_volumetric_weight
                 - max_weight
                 - recommended_weight
@@ -725,11 +1050,15 @@ class freight_shipment(osv.Model):
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
         res = []
-        acc_weight = 'volumetric_weight' in weight_field \
-            and 'volumetric_weight' or 'weight'
+        acc_weight = '%s_' %(scope,) + (
+            'volumetric_weight' in capacity_weight_field 
+            and 'volumetric_weight' or 'weight')
+
         for fs_brw in self.browse(cr, uid, ids, context=context):
             res.append(
-                getattr(fs_brw, acc_weight) <= getattr(fs_brw, weight_field))
+                getattr(fs_brw, acc_weight)
+                <= getattr(fs_brw, capacity_weight_field))
+        # print ' ---- ', (res, scope, capacity_weight_field)
         if len(ids) == 1:
             return res[0]
         else:
@@ -771,8 +1100,9 @@ class freight_shipment(osv.Model):
             self.write(
                 cr, uid, fs_brw.id,
                 {'state': 'shipped',
-                 'initial_shipped_weight': fs_brw.weight, 
-                 'initial_shipped_volumetric_weight': fs_brw.volumetric_weight, 
+                 'initial_shipped_weight': fs_brw.out_weight,
+                 'initial_shipped_volumetric_weight':
+                 fs_brw.out_volumetric_weight, 
                  'date_shipped': time.strftime('%Y-%m-%d %H:%M:%S')},
                 context=context)
             vehicle_obj.write(
@@ -817,10 +1147,13 @@ class freight_shipment(osv.Model):
 
     def _successfully_delivery_state(self, cr, uid, ids, context=None):
         """
-        Checks if all the pickings and pos orders in the freight shipment are
-        succesfully delivered. Check every element delivery state field. 
-        @return True if all the pos.orders and stock.pickings associated to the
-        given fregith shipment have been succesfully shipped. False otherwise.
+        Checks if all the incoming and outgoinh orders (pickings) and also the
+        pos orders in the freight shipment were succesfully delivered.
+        Check every element delivery state field. 
+
+        @return True if all the pos.orders and stock.picking.out associated to
+        the given fregith shipment have been succesfully shipped. False
+        otherwise.
         """
         context = context or {}
         ids = isinstance(ids, (long, int)) and [ids] or ids
@@ -830,7 +1163,7 @@ class freight_shipment(osv.Model):
             for pos_brw in fs_brw.pos_order_ids:
                 if pos_brw.delivery_state != 'delivered':
                     pending_items.append(pos_brw.id)
-            for picking_brw in fs_brw.picking_ids:
+            for picking_brw in fs_brw.out_picking_ids + fs_brw.in_picking_ids:
                 if picking_brw.delivery_state != 'delivered':
                     pending_items.append(picking_brw.id)
             res[fs_brw.id] = not pending_items and True or False
@@ -889,64 +1222,96 @@ class freight_shipment(osv.Model):
 
     def action_dumping(self, cr, uid, ids, context=None):
         """
-        This method is used in the "Release Undelivered Orders" button. Will
-        release the pos orders and picking orders that was unsuccessfully
-        delivered to be later assing to another freight shipment and be re-
-        send.
+        This method is used in the "Release Undelivered/Unpicked Orders"
+        button. Will release the pos orders and outgoing picking orders that
+        were unsuccessfully delivered and the incoming picking orders that
+        were not picked up to be later assing to another freight shipment and
+        be re-send.
         """
         context = context or {}
         ids = isinstance(ids, (int, long)) and [ids] or ids
         pos_obj = self.pool.get('pos.order')
         picking_obj = self.pool.get('stock.picking')
-        new_values = {
-            'freight_shipment_id': False, 'delivery_state': 'exception'}
         for fs_brw in self.browse(cr, uid, ids, context=context):
             pos_ids = \
                 [pos_brw.id
                  for pos_brw in fs_brw.pos_order_ids
                  if pos_brw.delivery_state != 'delivered']
-            picking_ids = \
+            out_picking_ids = \
                 [picking_brw.id
-                 for picking_brw in fs_brw.picking_ids
+                 for picking_brw in fs_brw.out_picking_ids
                  if picking_brw.delivery_state != 'delivered']
-            pos_obj.write(cr, uid, pos_ids, new_values, context=context)
-            pos_obj.write(cr, uid, picking_ids, new_values, context=context) 
+            in_picking_ids = \
+                [picking_brw.id
+                 for picking_brw in fs_brw.in_picking_ids
+                 if picking_brw.delivery_state != 'delivered']
+            pos_obj.write(
+                cr, uid, pos_ids,
+                {'freight_shipment_id': False, 'delivery_state': 'exception'},
+                context=context)
+            picking_obj.write(
+                cr, uid, out_picking_ids + in_picking_ids,
+                {'in_fs_id': False, 'out_fs_id': False,
+                 'delivery_state': 'exception'}, context=context) 
         self.write(
             cr, uid, ids, {
                 'state': 'delivered',
                 'is_complete_delivered': False}, context=context)
         #print '---- pos_ids', pos_ids
-        #print '---- picking_ids', picking_ids
+        #print '---- out_picking_ids', out_picking_ids
         return True
 
     def _search(self, cr, uid, args, offset=0, limit=None, order=None,
                 context=None, count=False, access_rights_uid=None):
         """
         Overwrite the _search() method to filter the freight shipments in the
-        sale order form taking into account the partner shipment zone (with
-        the partnet shipment address), the work_shift and the delivery date. 
+        outcoming and incoming orders like this:
+            - sale order taking into account the partner shipment zone (with
+              the partnet shipment address), the work_shift and the delivery
+              date.
+            - purchase order: take into account the picking address zone.
+            - pos order: take into  account the delivery address zone.
         """
         context = context or {}
         partner_obj = self.pool.get('res.partner')
         incoterm_obj = self.pool.get('stock.incoterms')
-        if (context.get('filter_freight_shipment_ids', False)):
-            incoterm_id = context.get('incoterm', False)
-            is_delivery = incoterm_id and incoterm_obj.browse(
-                cr, uid, incoterm_id, context=context).is_delivery or False
-            partner_shipping_id = context.get('partner_shipping_id', False)
-            work_shift = context.get('work_shift', False)
-            delivery_date = context.get('delivery_date', False)
+        if context.has_key('filter_freight_shipment_ids'):
+            # sale order filter
+            if context.has_key('partner_shipping_id'):
+                incoterm_id = context.get('incoterm', False)
+                is_delivery = incoterm_id and incoterm_obj.browse(
+                    cr, uid, incoterm_id, context=context).is_delivery
+                partner_shipping_id = context.get('partner_shipping_id')
+                work_shift = context.get('work_shift', False)
+                delivery_date = context.get('delivery_date', False)
+                if is_delivery:
+                    if partner_shipping_id:
+                        zone_ids = partner_obj.get_zone_ids(
+                            cr, uid, partner_shipping_id, context=context)
+                        if zone_ids:
+                            args.append(['zone_id', 'in', zone_ids])
+                    if work_shift:
+                        args.append(['work_shift','=', work_shift])
+                    if delivery_date:
+                        args.append(['date_delivery', '<=', delivery_date])
 
-            if is_delivery:
-                if partner_shipping_id:
+            # purchase order filter
+            elif context.has_key('picking_address_id'):
+                picking_address_id = context['picking_address_id']
+                if picking_address_id:
                     zone_ids = partner_obj.get_zone_ids(
-                        cr, uid, partner_shipping_id, context=context)
+                        cr, uid, picking_address_id, context=context)
                     if zone_ids:
                         args.append(['zone_id', 'in', zone_ids])
-                if work_shift:
-                    args.append(['work_shift','=', work_shift])
-                if delivery_date:
-                    args.append(['date_delivery', '<=', delivery_date])
+            # pos order filter
+            elif context.has_key('delivery_address'):
+                delivery_address = context['delivery_address']
+                if delivery_address:
+                    zone_ids = partner_obj.get_zone_ids(
+                        cr, uid, delivery_address, context=context)
+                    if zone_ids:
+                        args.append(['zone_id', 'in', zone_ids])
+
         return super(freight_shipment, self)._search(cr, uid, args,
                      offset=offset, limit=limit, order=order, context=context,
                      count=count, access_rights_uid=access_rights_uid)
@@ -989,17 +1354,19 @@ class sale_order(osv.Model):
             string='Prefered Freight Shipment',
             help=('Prefered Freight Shipment Order the users set when creating'
                   ' the Sale Order. This is the prefered Freight Shipment' 
-                  ' where the sale order products will be send. Is not always'
-                  'the real final destination')
-        ),
+                  ' where the sale order products will be sent. Is not always'
+                  ' the real final destination.\n\n'
+                  ' Note: to filter this field you will need to set the sale'
+                  ' order Delivery Address, a incoterm of type delivery,'
+                  ' the Estimated Delivery Date of the freight shipment and a'
+                  ' Work Shift if is needed.')),
         'freight_shipment_ids': fields.many2many(
             'freight.shipment',
             'sale_orders_freight_shipment_rel',
             'sale_order_id', 'fs_id',
             string='Final Freight Shipments',
             help=('It represent the real final destination Freight Shipment'
-                  ' orders where this sale order was send.')
-        ),
+                  ' orders where this sale order was send.')),
         'delivery_date': fields.datetime(
             'Estimated Delivery Date',
             help='The date that this sale order need to be delivered'),
@@ -1035,14 +1402,14 @@ class sale_order(osv.Model):
     def _prepare_order_picking(self, cr, uid, order, context=None):
         """
         Overwrite the _prepare_order_picking method to add the prefered fregiht
-        shipment order sete din the sale order to the pickings generating in
+        shipment order set in the sale order to the pickings generating in
         the confirm sale order process.
         """
         context = context or {}
         res = super(sale_order, self)._prepare_order_picking(
             cr, uid, order, context=context)
         res.update(
-            {'freight_shipment_id': order.prefered_freight_shipment_id.id})
+            {'out_fs_id': order.prefered_freight_shipment_id.id})
         return res
 
     # Note: This method is not used yet. Is not of utility in the next
@@ -1099,8 +1466,18 @@ class sale_order(osv.Model):
                   ' to set the Prefered Freight Shipment field to continue.'
                   ' Or, you can change the incoterm used to one that is not'
                   ' for delivery.'))
-        return super(sale_order, self).action_button_confirm()
+        return super(sale_order, self).action_button_confirm(
+            cr, uid, ids, context=context)
 
+    def action_sale_delivered(self, cr, uid, ids, context=None):
+        """
+        Button method. It set a sale order delivery state field to the
+        'delivered' state.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'delivery_state': 'delivered'},
+                   context=context)
+        return True
 
 class stock_move(osv.osv):
     _inherit = 'stock.move'
@@ -1115,7 +1492,9 @@ class stock_move(osv.osv):
         res = super(stock_move, self)._prepare_chained_picking(
             cr, uid, picking_name, picking, picking_type, moves_todo,
             context=context)
-        res.update({'freight_shipment_id': picking.freight_shipment_id.id})
+        picking_field = picking_type in ['out'] and 'out_fs_id' or 'in_fs_id'
+        res.update(
+            {'%s' % (picking_field,): eval('picking.%s.id' % picking_field)})
         return res
 
 
@@ -1127,7 +1506,10 @@ class pos_order(osv.Model):
         'freight_shipment_id': fields.many2one(
             'freight.shipment',
             string='Freight Shipment',
-            help='Freight Shipment'),
+            help=('Freight Shipment. The shipment were this order will be'
+                  ' delivery.\n\n'
+                  ' Note: to filter the freight shipment you need to set the'
+                  ' Pos Order Delivery Address..')),
         'delivery': fields.boolean(
             string='Is Delivery?',
             help=('If this checkbox is checked then current order it or it'
@@ -1214,6 +1596,24 @@ class pos_order(osv.Model):
             cr, uid, ids, part, context=context)
         res['value']['delivery_address'] = False
         return res
+
+    def create_picking(self, cr, uid, ids, context=None):
+        """
+        Overwrithe the create_picking method defined at the point of sale
+        module to add the pos_id field when creating the stock picking out
+        of the pos order.
+        @return: True
+        """
+        context = context or {}
+        ids = isinstance(ids, (long, int)) and [ids] or ids
+        super(pos_order, self).create_picking(cr, uid, ids, context=context)
+        for pos_brw in self.browse(cr, uid, ids, context=context):
+            if not pos_brw.state=='draft':
+                continue
+            if pos_brw.picking_id:
+                pos_brw.picking_id.write(
+                    {'pos_id': pos_brw.id}, context=context)
+        return True
 
 
 class vehicle(osv.Model):
@@ -1366,9 +1766,58 @@ class purchase_order(osv.Model):
 
     _inherit = 'purchase.order'
     _columns = {
-        'freight_shipment_id': fields.many2one(
+        'prefered_fs_id': fields.many2one(
             'freight.shipment',
-            string='Freight Shipment',
-            help='The Freight shipment that will collect the purchase order.'),
+            string='Prefered Freight Shipment',
+            help=('The shipment planned to collect the purchase order'
+                  ' products. Represent the first shipment order option.'
+                  ' However, is not always the really shipment order used.\n\n'
+                  ' Note: to filter the possible freight shipment that adapt'
+                  ' to the current order you need to set the picking address.'
+                  ' This way the freight shipments show will correspond only'
+                  ' to the ones that match with tje current picking address'
+                  ' zone')),
+        'fs_ids': fields.many2many(
+            'freight.shipment',
+            'purchase_order_freight_shipment_rel',
+            'purchase_id', 'fs_id',
+            string='Final Freight Shipments',
+            help=('The real shipment order where this purchase order was'
+                  ' collected.'
+                  ' A purchase order could be collected by parts, so more than'
+                  ' one shipment order can be used.')),
+        'picking_address_id': fields.many2one(
+            'res.partner',
+            string='Picking Address',
+            help=('The address were the order will be pick up.'
+                  '\n\n Note: This is necesary to filter the possible freight'
+                  ' shipments that could be used to picking the order')),
+        'is_picking': fields.boolean(
+            'Will be Picked?',
+            help=('Indicates if the purchase order will be picked up for us in'
+                  ' one or more of ours freight shipments. If is True then a'
+                  ' freight shipment needs to be set.')),
     }
+
+    def _prepare_order_picking(self, cr, uid, order, context=None):
+        """
+        Overwrite the _prepare_order_picking method to add the prefered
+        fregiht shipment order  in the purchase order to the pickings
+        generated at the purchase order confirm process.
+        """
+        context = context or {}
+        res = super(purchase_order, self)._prepare_order_picking(
+            cr, uid, order, context=context)
+        res.update({'in_fs_id': order.prefered_fs_id.id})
+        return res
+
+    def action_purchase_delivered(self, cr, uid, ids, context=None):
+        """
+        Button method. It set a purchase order delivery state field to the
+        'delivered' state.
+        """
+        context = context or {}
+        self.write(cr, uid, ids, {'delivery_state': 'delivered'},
+                   context=context)
+        return True
 

@@ -6,7 +6,9 @@
 #    All Rights Reserved
 ############# Credits #########################################################
 #    Coded by: Katherine Zaoral <kathy@vauxoo.com>
-#    Planified by: Yanina Aular <yani@vauxoo.com>, Humberto Arocha <hbto@vauxoo.com>
+#    Planified by: Yanina Aular <yani@vauxoo.com>,
+#                  Katherine Zaoral <kathy@vauxoo.com>,
+#                  Humberto Arocha <hbto@vauxoo.com>
 #    Audited by: Humberto Arocha <hbto@vauxoo.com>
 ###############################################################################
 #    This program is free software: you can redistribute it and/or modify
@@ -57,12 +59,27 @@ To use this module you need to configure youre OpenERP instance by:
   Quotations and Sales Orders Section > Customer Features Section`. This way
   you will capable of see the delivery address of the partner in the sale
   order.
+- You need to se to True the
+  ``Allow to define several packaging methods on products`` option in the
+  `Settings Menu > Configuration SideBar Title > Warehouse Menu >
+  Location & Warehouse Section > Products Section`. This way
+  you will capable of see and edit the product weights.
+- If you want create chained moves (internal) when you confirm a purchase
+  order you need to configure the Input Location. Go to
+  ``Warehouse > Configuration > Locations`` and create a QA location 
+  (Quality Assurance) with ``Fixed location`` as the ``Chained Location Type``
+  and select your Stock location at the ``Chained Location if Fixed`` field.
+  Also you need to set your Stock location, go to
+  ``Warehouse > Configuring > Warehouse`` and select your Stock Warehouse and
+  then set the ``Location Input`` field with your recently created QA Location.
 
 .. note:: You can found the dependecies:
    
-   - ``freight_zone`` and ``freight_weight`` modules at ``lp:openerp-freight``.
-   - ``incoterm_ext`` and ``incoterm_delivery_type`` module at
-     ``lp:addons-vauxoo/7.0``.
+   - ``freight_weight`` module at ``lp:openerp-freight``.
+   - ``freight_zone_mapsgoogle`` module at ``lp:openerp-freight``.
+   - ``incoterm_ext`` module at ``lp:addons-vauxoo/7.0``.
+   - ``incoterm_delivery_type`` module at ``lp:addons-vauxoo/7.0``.
+   - ``web_gmaps`` module at ``lp:~vauxoo/web-addons/7.0-web_hideleftmenu``.
 ''',
     'depends': ['base', 'mail', 'fleet', 'point_of_sale', 'stock', 'sale',
                 'purchase', 'freight_weight', 'freight_zone_mapsgoogle',

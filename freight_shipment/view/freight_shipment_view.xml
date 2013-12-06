@@ -20,7 +20,7 @@
                         <button name="action_loaded" string="Ready" type="object" states="confirm" help="Click this button to make the freisht shipment execute" class="oe_highlight"/>
                         <button name="action_shipped" string="Dispatch" type="object" states="loaded" help="Click this button to set the order to vehicle can go out" class="oe_highlight"/>
                         <button name="action_delivered" string="Delivered" type="object" states="shipped" help="Click this button to set the order to vehicle can go out" class="oe_highlight"/>
-                        <button name="action_dumping" string="Release Undelivered Orders" type="object" states="shipment_exception" help="Click this button to liberate the unsuccessfull delivery lines" class="oe_highlight"/>
+                        <button name="action_dumping" string="Release Undelivered/Unpicked Orders" type="object" states="shipment_exception" help="Click this button to liberate the unsuccessfull delivery lines" class="oe_highlight"/>
                         <field name="state"
                             widget="statusbar"
                             statusbar_visible="draft,awaiting,confirm,loaded,shipped,delivered"
@@ -46,29 +46,36 @@
                                 <field name="date_delivered" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}"/>
                             </group>
                             <group name="weight-capacity" string="Weight Capacities" colspan="4" col="4">
-                                <field name="weight" readonly="True"/>
-                                <field name="volumetric_weight" readonly="True"/>
                                 <field name="max_weight" readonly="True"/>
                                 <field name="max_volumetric_weight" readonly="True"/>
-                                <field name="initial_shipped_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
-                                <field name="initial_shipped_volumetric_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
                                 <field name="recommended_weight" readonly="True"/>
                                 <field name="recommended_volumetric_weight" readonly="True"/>
+                                <field name="out_weight" readonly="True"/>
+                                <field name="out_volumetric_weight" readonly="True"/>
+                                <field name="in_weight" readonly="True"/>
+                                <field name="in_volumetric_weight" readonly="True"/>
+                                <field name="initial_shipped_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
+                                <field name="initial_shipped_volumetric_weight" readonly="True" attrs="{'invisible': [('state','not in',['shipped','shipment_exception','delivered'])]}"/>
                             </group>
                         </group>
                         <notebook>
-                            <page string="Orders">
-                                <group attrs="{'invisible': [('type', '=', 'delivery')]}">
-                                    <label for="picking_ids"/><newline/>
-                                    <field name="picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('freight_shipment_id', '=', False)]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id}">
+                            <page string="Outgoing">
+                                <group attrs="{'invisible': [('type', '=', 'delivery')]}" colspan="4" col="1">
+                                    <label for="out_picking_ids"/>
+                                    <field name="out_picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('out_fs_id', '=', False),('type','=','out')]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id, 'outgoing_orders': True}">
                                         <tree>
                                             <field name="name"/>
                                             <field name="origin"/>
                                             <field name="min_date"/>
                                             <field name="state"/>
                                             <field name="delivery_state"/>
+                                            <button name="action_sale_delivered" string="Delivered" type="object" help="Click this button to indicate if the order have been picked" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
                                         </tree>
                                     </field>
+                                    <label for ="sale_order_ids"/>
+                                    <field name="sale_order_ids" nolabel="1"/>
+                                    <label for="prefered_sale_order_ids"/>
+                                    <field name="prefered_sale_order_ids" nolabel="1"/>
                                 </group>
                                 <group attrs="{'invisible': [('type', '=', 'freight')]}">
                                     <label for="pos_order_ids"/><newline/>
@@ -86,19 +93,23 @@
                                     </field>
                                 </group>
                             </page>
-                            <page string="Sale Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
-                                <group name="sale-order-group" colspan="4">
-                                    <group string="Prefered" colspan="4">
-                                        <field name="prefered_sale_order_ids" nolabel="1"/>
-                                    </group>
-                                    <group string="Shipped" colspan="4">
-                                        <field name="sale_order_ids" nolabel="1"/>
-                                    </group> 
-                                </group>
-                            </page>
-                            <page string="Purchase Orders" attrs="{'invisible': [('type', '!=', 'freight')]}">
-                                <group name="purchase-order-group" colspan="4">
+                            <page string="Incoming" attrs="{'invisible': [('type', '!=', 'freight')]}">
+                                <group name="incoming-group" colspan="4" col="1">
+                                    <label for="in_picking_ids"/>
+                                    <field name="in_picking_ids" nolabel="1" attrs="{'readonly':[('state','not in',('draft', 'awaiting'))]}" widget="many2many" domain="[('in_fs_id', '=', False),('type','=','in')]" context="{'filter_pickings_by_zone': True, 'filter_zone_id': zone_id, 'incoming_orders': True}}">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="origin"/>
+                                            <field name="min_date"/>
+                                            <field name="state"/>
+                                            <field name="delivery_state"/>
+                                            <button name="action_purchase_delivered" string="Picked Up" type="object" help="Click this button to indicate if the order have been picked" icon="gtk-ok" attrs="{'invisible': [('delivery_state','=','delivered')]}"/>
+                                        </tree>
+                                    </field>
+                                    <label for="purchase_order_ids"/>
                                     <field name="purchase_order_ids" nolabel="1"/>
+                                    <label for="prefered_purchase_ids"/>
+                                    <field name="prefered_purchase_ids" nolabel="1"/>
                                 </group>
                             </page>
                             <page string="Exceptions" attrs="{'invisible': [('state', 'not in', ('exception'))]}">
@@ -110,6 +121,7 @@
 
                     </sheet>
                     <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
                         <field name="message_ids" widget="mail_thread"/>
                     </div>
                 </form>
@@ -155,6 +167,37 @@
                 </p>
             </field>
         </record>
+        
+        <record id="undelivered_pos_order_tree_form" model="ir.ui.view">
+            <field name="name">Unsuccessfully delivered POS order tree</field>
+            <field name="model">pos.order</field>
+            <field name="priority">40</field>
+            <field name="arch" type="xml">
+                <tree string="Unsuccesfully Delivered POS Orders" version="7.0" create="false">
+                    <field name="name"/>
+                    <field name="delivery_state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="undelivered_pos_order_action" model="ir.actions.act_window">
+            <field name="name">Unsuccesfully Delivered POS Order</field>
+            <field name="res_model">pos.order</field>
+            <field name="view_type">tree</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[('delivery_state','=','exception')]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    There is not unsuccesfully delivery pos orders.
+                </p>
+            </field>
+        </record>
+        
+        <record id="undelivered_pos_order_action_view" model="ir.actions.act_window.view">
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="undelivered_pos_order_tree_form"/>
+            <field name="act_window_id" ref="undelivered_pos_order_action"/>
+        </record>
 
         <menuitem 
             id="delivery_main_menu"
@@ -183,6 +226,13 @@
             action="freight_shipment_delivery_action"
             />
 
+        <menuitem 
+            id="undelivered_pos_order_menu"
+            name="Undelivered POS Orders"
+            parent="freight_shipment_main_menu"
+            action="undelivered_pos_order_action"
+            />
+
         <record id="pos_order_form_w_delivery" model="ir.ui.view">
             <field name="name">Pos Order Form with Delivery</field>
             <field name="model">pos.order</field>
@@ -191,7 +241,7 @@
                 <xpath expr="//notebook" position="inside">
                     <page string="Freight Shipment">
                         <group>
-                            <field name="freight_shipment_id" domain="[('type','=','delivery')]"/>
+                            <field name="freight_shipment_id" domain="[('type','=','delivery')]" context="{'filter_freight_shipment_ids': True, 'delivery_address': delivery_address}"/>
                             <field name="delivery_address" domain="[('parent_id','=',partner_id)]" on_change="onchange_delivery_address()" attrs="{'required':[('delivery','=',True)]}"/>
                             <field name="delivery"/>
                         </group>
@@ -224,7 +274,7 @@
                         <field name="shipment_volumetric_weight"/>
                         <field name="prefered_freight_shipment_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]" context="{'filter_freight_shipment_ids': True, 'partner_shipping_id': partner_shipping_id, 'delivery_date': delivery_date, 'work_shift': work_shift, 'incoterm': incoterm}"/>
                         <label for="freight_shipment_ids"/>
-                        <field name="freight_shipment_ids" nolabel="1" colspan="4"/>
+                        <field name="freight_shipment_ids" nolabel="1" colspan="4" readonly="True"/>
                     </group>
                 </xpath>
 
@@ -232,17 +282,6 @@
                     <attribute name="on_change">onchange_partner_shipping_id()</attribute> 
                 </xpath>
 
-            </field>
-        </record>
-
-        <record id="freight_shipment_picking_form_view" model="ir.ui.view">
-            <field name="name">Freight Shipment Picking Form View</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form" position="inside">
-                    <field name="freight_shipment_id"/>
-                </xpath>
             </field>
         </record>
 
@@ -296,8 +335,14 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-            <xpath expr="//field[@name='dest_address_id']" position="after">
-                <field name="freight_shipment_id"/>
+                <xpath expr="//page[@string='Incoming Shipments &amp; Invoices']/group" position="inside">
+                <group name="freigh-section" string="Freight Shipment" colspan="4">
+                    <field name="is_picking"/>
+                    <field name="picking_address_id" attrs="{'required': [('is_picking','=', True)]}"/>
+                    <field name="prefered_fs_id" domain="[('type', '=', 'freight'),('state','in',['draft','awaiting'])]" context="{'filter_freight_shipment_ids': True, 'picking_address_id': picking_address_id}"/>
+                    <label for="fs_ids"/>
+                    <field name="fs_ids" nolabel="1" colspan="4" readonly="True"/>
+                </group>
             </xpath>
             </field>
         </record>
