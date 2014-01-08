@@ -50,8 +50,11 @@ class product_product(osv.Model):
             result[obj.id] = obj.volume / 5000
         return result
     def _set_volumetric_weight(self, cr, uid, id, name, value, args, context=None):
-        return self.write(cr, uid, [id], {'volumetric_weight': value},
-                context=context)
+        cr.execute(
+            'UPDATE product_product '
+            'SET volumetric_weight = %s '
+            'WHERE id = %s' % (value, id))
+        return True
 
     _columns = {
             'volumetric_weight':fields.function(
